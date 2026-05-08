@@ -46,9 +46,11 @@ test("Mobile usability: beginner terminal remains usable at 390px", async ({ bro
   if (overflow.hasOverflow) addLabHealth(report, { mobileFailures: ["horizontal overflow at 390px"] });
   expect(overflow.hasOverflow).toBeFalsy();
 
-  await expect(page.locator("#terminalInput")).toBeVisible();
-  await expect(page.locator("#terminalInput")).toBeEnabled();
-  pushCheck(report, "terminal input visible", true, "terminal input visible");
+  await expect(page.locator("#terminalInput")).toBeHidden();
+  await expect(page.locator("#terminalInput")).toHaveAttribute("readonly", "");
+  await expect(page.locator("[data-mobile-command-choice-panel]")).toBeVisible();
+  await expect(page.locator("[data-mobile-command-choice='dir']")).toBeVisible();
+  pushCheck(report, "mobile command choices visible", true, "command-choice panel visible");
 
   const commandHelpReachable = await controlVisibleOrReachable(page, "#commandSheetBtn", "Command Help");
   const hintReachable = await controlVisibleOrReachable(page, "#hintBtn", "Hint");
@@ -64,18 +66,18 @@ test("Mobile usability: beginner terminal remains usable at 390px", async ({ bro
   const dirResult = await runTerminalCommand(page, "dir", { resetBefore: true });
   report.commandResults.push(dirResult);
   addLabHealth(report, { commandsTested: ["dir"] });
-  const inputCovered = await page.evaluate(() => {
-    const input = document.querySelector("#terminalInput")?.getBoundingClientRect();
+  const panelCovered = await page.evaluate(() => {
+    const panel = document.querySelector("[data-mobile-command-choice-panel]")?.getBoundingClientRect();
     const blockers = ["#taskCompleteCard", "#taskCompleteOverlay", "#walkthroughCard", "#walkthroughOverlay"]
       .map((selector) => document.querySelector(selector))
       .filter((node) => node && !node.hidden && window.getComputedStyle(node).display !== "none")
       .map((node) => node.getBoundingClientRect());
-    if (!input) return true;
-    return blockers.some((rect) => !(rect.right < input.left || rect.left > input.right || rect.bottom < input.top || rect.top > input.bottom));
+    if (!panel) return true;
+    return blockers.some((rect) => !(rect.right < panel.left || rect.left > panel.right || rect.bottom < panel.top || rect.top > panel.bottom));
   });
-  pushCheck(report, "Tiny Wins does not cover input", !inputCovered, dirResult.notes);
-  if (inputCovered) addLabHealth(report, { mobileFailures: ["tiny win covers terminal input"] });
-  expect(inputCovered).toBeFalsy();
+  pushCheck(report, "Tiny Wins does not cover command choices", !panelCovered, dirResult.notes);
+  if (panelCovered) addLabHealth(report, { mobileFailures: ["tiny win covers command choices"] });
+  expect(panelCovered).toBeFalsy();
 
   const outputScrolls = await page.locator("#terminalOutput").evaluate((node) => {
     const style = window.getComputedStyle(node);
@@ -88,9 +90,10 @@ test("Mobile usability: beginner terminal remains usable at 390px", async ({ bro
   expect(outputScrolls).toBeTruthy();
 
   const walkthrough = await runWalkthroughDemo(page, { resetBefore: true });
-  pushCheck(report, "input usable after opening/closing walkthrough", walkthrough.inputEnabledAfterTry && await page.locator("#terminalInput").isVisible(), "terminal input usable");
-  if (!walkthrough.inputEnabledAfterTry) addLabHealth(report, { mobileFailures: ["input unusable after walkthrough"] });
-  expect(walkthrough.inputEnabledAfterTry).toBeTruthy();
+  const choicesUsableAfterWalkthrough = await page.locator("[data-mobile-command-choice='dir']").isVisible();
+  pushCheck(report, "command choices usable after opening/closing walkthrough", choicesUsableAfterWalkthrough, "command choices usable");
+  if (!choicesUsableAfterWalkthrough) addLabHealth(report, { mobileFailures: ["command choices unusable after walkthrough"] });
+  expect(choicesUsableAfterWalkthrough).toBeTruthy();
 
   await attachSmokeData(testInfo, report);
   await context.close();

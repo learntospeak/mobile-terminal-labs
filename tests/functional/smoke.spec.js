@@ -591,13 +591,14 @@ test("Mobile smoke: terminal, subnetting, and HTTP controls remain usable", asyn
   observePage(page, report);
 
   await gotoAndStabilize(page, "/terminal-coach.html?track=linux");
-  await assertVisible(page, "#terminalInput");
+  await assertVisible(page, "[data-mobile-command-choice-panel]");
+  await expect(page.locator("#terminalInput")).toBeHidden();
   let overflow = await checkNoHorizontalOverflow(page);
   pushCheck(report, "linux mobile no horizontal overflow", !overflow.hasOverflow, JSON.stringify(overflow));
   let terminalResult = await runTerminalCommand(page, "pwd", { resetBefore: true });
   report.commandResults.push(terminalResult);
   pushCheck(report, "linux mobile terminal command works", terminalResult.delta.length > 0, terminalResult.notes);
-  pushCheck(report, "linux mobile terminal input visible", await page.locator("#terminalInput").isVisible(), "#terminalInput visible");
+  pushCheck(report, "linux mobile command choices visible", await page.locator("[data-mobile-command-choice-panel]").isVisible(), "command choices visible");
   pushCheck(report, "mobile ask coach button remains in existing controls", await page.locator("#needHelpBtn").count() === 1, "#needHelpBtn present");
   const jumpTopVisible = await page.locator("#terminalJumpTopBtn").isVisible();
   const jumpLatestVisible = await page.locator("#terminalJumpLatestBtn").isVisible();

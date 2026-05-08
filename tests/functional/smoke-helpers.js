@@ -213,6 +213,26 @@ async function runTerminalCommand(page, command, options = {}) {
   await dismissTaskCompleteIfPresent(page);
 
   const before = await getTerminalSnapshot(page);
+  const mobileChoice = page.locator(`[data-mobile-command-choice="${command}"]`).first();
+  if (await mobileChoice.isVisible().catch(() => false)) {
+    await mobileChoice.click();
+    await waitForTerminalMutation(page, before.lineCount, command);
+    const after = await getTerminalSnapshot(page);
+    const delta = after.lines.slice(before.lineCount);
+    const accepted = classifyTerminalAcceptance(command, delta);
+    const progressed = after.stepBadge !== before.stepBadge || after.scenarioTitle !== before.scenarioTitle || delta.some((line) => /scenario complete/i.test(line.text));
+
+    return {
+      command,
+      accepted,
+      progressed,
+      before,
+      after,
+      delta,
+      notes: delta.map((line) => line.text).slice(-4).join(" | ")
+    };
+  }
+
   const input = page.locator("#terminalInput");
   await input.click();
   await input.fill(command);

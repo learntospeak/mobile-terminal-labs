@@ -378,6 +378,21 @@
     return !isMobileTerminalLayout();
   }
 
+  function syncMobileTerminalInputMode() {
+    if (!els.terminalInput) {
+      return;
+    }
+
+    const mobile = isMobileTerminalLayout();
+    els.terminalInput.readOnly = mobile;
+    els.terminalInput.tabIndex = mobile ? -1 : 0;
+    els.terminalInput.setAttribute("aria-readonly", mobile ? "true" : "false");
+
+    if (mobile && document.activeElement === els.terminalInput) {
+      els.terminalInput.blur();
+    }
+  }
+
   function isCiscoState() {
     return typeof StateManager.isCiscoState === "function" && StateManager.isCiscoState(session.state);
   }
@@ -924,6 +939,8 @@
       return;
     }
 
+    syncMobileTerminalInputMode();
+
     if (els.terminalMobileControlMount) {
       [
         els.terminalControls,
@@ -961,6 +978,7 @@
   }
 
   function syncMobileInputState(active) {
+    syncMobileTerminalInputMode();
     if (!isMobileTerminalLayout()) {
       document.body.classList.remove(
         "terminal-mobile-active",
@@ -3197,6 +3215,115 @@
     return "";
   }
 
+  function pushUniqueCommandChoice(choices, command) {
+    const normalized = String(command || "").trim().replace(/\s+/g, " ");
+    if (!normalized) {
+      return;
+    }
+
+    const key = normalized.toLowerCase();
+    if (!choices.some((choice) => choice.toLowerCase() === key)) {
+      choices.push(normalized);
+    }
+  }
+
+  function commandChoicesFromHints(step = currentStep()) {
+    const commands = [];
+    (step?.hints || []).forEach((hint) => {
+      const match = String(hint || "").match(/`([^`]+)`/);
+      if (!match) {
+        return;
+      }
+
+      match[1].split(/\s+or\s+/i).forEach((command) => pushUniqueCommandChoice(commands, command));
+    });
+    return commands;
+  }
+
+  function currentDirectoryChoiceCommands() {
+    if (!session.state || StateManager.isCiscoState(session.state)) {
+      return [];
+    }
+
+    const windows = StateManager.isWindowsState(session.state);
+    const children = StateManager.listChildren(session.state, session.state.cwd, true);
+    const directories = children.filter((node) => node.type === "dir").slice(0, 2);
+    const files = children.filter((node) => node.type === "file").slice(0, 1);
+    const choices = [];
+
+    directories.forEach((node) => pushUniqueCommandChoice(choices, `cd ${node.name}`));
+    files.forEach((node) => pushUniqueCommandChoice(choices, `${windows ? "type" : "cat"} ${node.name}`));
+
+    return choices;
+  }
+
+  function mobileCommandChoices() {
+    const scenario = currentScenario();
+    const step = currentStep();
+    const choices = [];
+    const shell = scenario?.shell || (StateManager.isWindowsState(session.state) ? "cmd" : StateManager.isCiscoState(session.state) ? "cisco" : "linux");
+
+    pushUniqueCommandChoice(choices, suggestedCommandForStep(step));
+    commandChoicesFromHints(step).forEach((command) => pushUniqueCommandChoice(choices, command));
+
+    if (shell === "cmd") {
+      ["dir", ...currentDirectoryChoiceCommands(), "cd .."].forEach((command) => pushUniqueCommandChoice(choices, command));
+    } else if (shell === "cisco") {
+      ["show running-config", "show ip interface brief", "enable", "exit"].forEach((command) => pushUniqueCommandChoice(choices, command));
+    } else {
+      ["pwd", "ls", ...currentDirectoryChoiceCommands(), "cd .."].forEach((command) => pushUniqueCommandChoice(choices, command));
+    }
+
+    if (choices.length < 3) {
+      pushUniqueCommandChoice(choices, "help");
+    }
+
+    return choices.slice(0, 5);
+  }
+
+  function renderMobileCommandChoices() {
+    if (!els.terminalMobileControlMount) {
+      return;
+    }
+
+    let panel = els.terminalMobileControlMount.querySelector("[data-mobile-command-choice-panel]");
+    if (!isMobileTerminalLayout()) {
+      panel?.remove();
+      return;
+    }
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.className = "terminal-mobile-command-panel";
+      panel.dataset.mobileCommandChoicePanel = "true";
+      panel.setAttribute("aria-label", "Mobile terminal command choices");
+      els.terminalMobileControlMount.prepend(panel);
+    }
+
+    const prompt = document.createElement("p");
+    prompt.className = "terminal-mobile-command-prompt";
+    prompt.textContent = currentInputPromptLabel();
+
+    const label = document.createElement("p");
+    label.className = "terminal-mobile-command-label";
+    label.textContent = "Choose a command";
+
+    const grid = document.createElement("div");
+    grid.className = "terminal-mobile-command-grid";
+
+    mobileCommandChoices().forEach((command) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "terminal-mobile-command-choice";
+      button.dataset.mobileCommandChoice = command;
+      button.textContent = command;
+      button.addEventListener("click", () => runMobileCommandChoice(command));
+      grid.appendChild(button);
+    });
+
+    panel.replaceChildren(prompt, label, grid);
+  }
+
   function fallbackDemoOutput(command) {
     if (!command) {
       return [];
@@ -4562,6 +4689,7 @@
   function focusTerminalInputAtEnd() {
     if (
       !els.terminalInput
+      || isMobileTerminalLayout()
       || session.ticketBriefingOpen
       || session.beginnerGuideOpen
       || session.helpAssistantOpen
@@ -4781,6 +4909,7 @@
     }
     els.terminalInput.autocomplete = passwordEntry ? "new-password" : "off";
     els.terminalInput.setAttribute("aria-label", passwordEntry ? "Admin password" : "Terminal command");
+    syncMobileTerminalInputMode();
   }
 
   function shellLabel() {
@@ -4880,6 +5009,7 @@
 
     syncMobileAppBarTitle();
     syncMobileAppBarActions();
+    renderMobileCommandChoices();
     document.body.classList.toggle("terminal-beginner-mode", beginnerMode);
     if (els.mobileMenuCommandsBtn) {
       els.mobileMenuCommandsBtn.textContent = beginnerMode ? "Command Help" : "Commands";
@@ -8158,6 +8288,22 @@
     const rawInput = els.terminalInput.value.trim();
     if (!rawInput) return;
 
+    await runTerminalCommandInput(rawInput);
+  }
+
+  async function runMobileCommandChoice(command) {
+    const rawInput = String(command || "").trim();
+    if (!rawInput) return;
+
+    if (els.terminalInput) {
+      els.terminalInput.value = rawInput;
+      els.terminalInput.blur();
+    }
+
+    await runTerminalCommandInput(rawInput, { source: "mobile-choice" });
+  }
+
+  async function runTerminalCommandInput(rawInput, options = {}) {
     mobileDebug("command submitted");
 
     if (session.beginnerGuideOpen) {
@@ -8179,7 +8325,12 @@
     if (!isPasswordEntry) {
       pushHistory(rawInput);
     }
-    els.terminalInput.value = "";
+    if (els.terminalInput) {
+      els.terminalInput.value = "";
+      if (options.source === "mobile-choice") {
+        els.terminalInput.blur();
+      }
+    }
 
     if (session.errorLogFlow) {
       await handleTerminalErrorLogFlow(rawInput);
@@ -8251,7 +8402,7 @@
 
     renderPanel();
     persistSectionProgress();
-    if (!session.ticketBriefingOpen && !session.beginnerGuideOpen && document.activeElement === els.terminalInput) {
+    if (!isMobileTerminalLayout() && !session.ticketBriefingOpen && !session.beginnerGuideOpen && document.activeElement === els.terminalInput) {
       window.requestAnimationFrame(() => {
         focusTerminalInputAtEnd();
       });
@@ -8390,8 +8541,12 @@
       const meaning = chip.getAttribute("data-command-family-meaning") || "Command filled. Press Run when ready.";
       if (els.terminalInput && command) {
         els.terminalInput.value = command;
-        els.terminalInput.focus({ preventScroll: true });
-        els.terminalInput.setSelectionRange(command.length, command.length);
+        if (!isMobileTerminalLayout()) {
+          els.terminalInput.focus({ preventScroll: true });
+          els.terminalInput.setSelectionRange(command.length, command.length);
+        } else {
+          els.terminalInput.blur();
+        }
       }
       fillText(els.commandFamilyChipNote, meaning, { hideWhenEmpty: false });
     });
@@ -8542,6 +8697,11 @@
       });
 
       els.terminalInput.addEventListener("focus", () => {
+        if (isMobileTerminalLayout()) {
+          els.terminalInput.blur();
+          syncMobileInputState(false);
+          return;
+        }
         session.mobileBlurTimer = cancelScheduledTimeout(session.mobileBlurTimer);
         mobileDebug("input focus");
         syncMobileInputState(true);
@@ -8551,8 +8711,9 @@
 
       els.terminalInput.addEventListener("click", () => {
         if (!isMobileTerminalLayout()) return;
-        syncMobileInputState(true);
-        scheduleMobileTerminalReveal(0);
+        els.terminalInput.blur();
+        syncMobileInputState(false);
+        renderMobileCommandChoices();
       });
 
       els.terminalInput.addEventListener("blur", () => {
@@ -8720,6 +8881,7 @@
     previewScenario,
     previewScenarioById,
     resetScenario,
+    runMobileCommandChoice,
     nextScenario,
     previousScenario
   };
