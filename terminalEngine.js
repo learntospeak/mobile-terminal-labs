@@ -255,6 +255,7 @@
     mobileContextCollapsed: false,
     terminalEntries: [],
     reviewStats: null,
+    missionReviewDismissed: false,
     resumePromptVisible: false,
     outputPinnedToLatest: true,
     debugScenarioKey: "",
@@ -4251,6 +4252,8 @@
       return;
     }
 
+    ensureMissionReviewCloseButton();
+
     const stats = session.reviewStats || createReviewStats();
     const hasScoringData = Boolean(
       stats.totalSubmitted
@@ -4311,8 +4314,9 @@
       ? "Strong technicians do not stop at a likely fix. They confirm the result and leave a clear trail of evidence."
       : "Good support and security work is not just about finding an answer. It is about using evidence, choosing safe actions, and proving the result.";
 
-    els.missionReviewCard.hidden = !session.scenarioCompleted;
-    if (!session.scenarioCompleted) {
+    els.missionReviewCard.hidden = !session.scenarioCompleted || session.missionReviewDismissed;
+    els.missionReviewCard.setAttribute("aria-hidden", els.missionReviewCard.hidden ? "true" : "false");
+    if (!session.scenarioCompleted || session.missionReviewDismissed) {
       return;
     }
 
@@ -4342,6 +4346,39 @@
     renderListItems(els.missionReviewStrengths, strengths);
     renderListItems(els.missionReviewImprovements, improvements.length ? improvements : ["Keep using evidence-led sequencing and verification discipline."]);
     fillText(els.missionReviewTakeaway, takeaway, { hideWhenEmpty: false });
+  }
+
+  function ensureMissionReviewCloseButton() {
+    if (!els.missionReviewCard || els.missionReviewCard.querySelector("[data-mission-review-close]")) {
+      return;
+    }
+
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "mission-review-close";
+    closeBtn.dataset.missionReviewClose = "true";
+    closeBtn.textContent = "Close";
+    closeBtn.setAttribute("aria-label", "Close mission review");
+    closeBtn.addEventListener("click", () => closeMissionReview());
+
+    const heading = els.missionReviewCard.querySelector("h3");
+    if (heading) {
+      const header = document.createElement("div");
+      header.className = "mission-review-head";
+      heading.parentNode.insertBefore(header, heading);
+      header.append(heading, closeBtn);
+    } else {
+      els.missionReviewCard.prepend(closeBtn);
+    }
+  }
+
+  function closeMissionReview() {
+    session.missionReviewDismissed = true;
+    if (els.missionReviewCard) {
+      els.missionReviewCard.hidden = true;
+      els.missionReviewCard.setAttribute("aria-hidden", "true");
+    }
+    focusTerminalInputAtEnd();
   }
 
   function renderStageUI(stageInfo = visibleStageInfo(currentScenario()), scenario = currentScenario()) {
@@ -5505,6 +5542,7 @@
     session.hintLevel = -1;
     session.scenarioCompleted = false;
     session.reviewStats = createReviewStats();
+    session.missionReviewDismissed = false;
     session.ticketBriefingSeen = false;
     session.ticketBriefingOpen = false;
     session.coachMode = false;
@@ -5578,6 +5616,7 @@
 
     session.completedScenarioIds.add(scenario.id);
     session.scenarioCompleted = true;
+    session.missionReviewDismissed = false;
     if (finalStageInfo?.stage?.completionSummary) {
       printStageLine(`${beginnerTrack ? "Section Complete" : "Stage Complete"}: ${finalStageInfo.stage.title}`);
       printStageLine(finalStageInfo.stage.completionSummary);
