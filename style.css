@@ -543,6 +543,51 @@ button::before {
     0 0 12px rgba(245, 158, 11, 0.45);
 }
 
+button::before,
+.section-btn::before,
+.mode-btn::before,
+.exam-btn::before,
+.protocol-link::before,
+.terminal-link::before,
+.challenge-link::before,
+.app-action-btn::before,
+.app-action-link::before,
+.subnet-mobile-menu-link::before,
+.led {
+  animation: netlabLightFlicker var(--netlab-light-cycle, 3.7s) steps(1, end) infinite;
+  animation-delay: var(--netlab-light-delay, -0.4s);
+  transform-origin: center;
+}
+
+button:nth-of-type(3n + 1)::before,
+.section-btn:nth-of-type(3n + 1)::before,
+.mode-btn:nth-of-type(3n + 1)::before,
+.app-action-btn:nth-of-type(3n + 1)::before,
+.app-action-link:nth-of-type(3n + 1)::before {
+  --netlab-light-cycle: 2.9s;
+  --netlab-light-delay: -0.9s;
+  animation-name: netlabLightDoublePulse;
+}
+
+button:nth-of-type(3n + 2)::before,
+.section-btn:nth-of-type(3n + 2)::before,
+.mode-btn:nth-of-type(3n + 2)::before,
+.app-action-btn:nth-of-type(3n + 2)::before,
+.app-action-link:nth-of-type(3n + 2)::before {
+  --netlab-light-cycle: 4.6s;
+  --netlab-light-delay: -1.7s;
+}
+
+button:nth-of-type(3n)::before,
+.section-btn:nth-of-type(3n)::before,
+.mode-btn:nth-of-type(3n)::before,
+.app-action-btn:nth-of-type(3n)::before,
+.app-action-link:nth-of-type(3n)::before {
+  --netlab-light-cycle: 3.3s;
+  --netlab-light-delay: -2.4s;
+  animation-name: netlabLightLongGap;
+}
+
 #topButtons,
 #modeButtons,
 #extraButtons,
@@ -2419,11 +2464,35 @@ body {
 }
 
 .led-blink {
-  animation: ledBlink 2.2s infinite;
+  --netlab-light-cycle: 2.2s;
+  animation-name: netlabLightDoublePulse;
 }
 
 .led-blink-slow {
-  animation: ledBlink 3.4s infinite;
+  --netlab-light-cycle: 4.8s;
+  animation-name: netlabLightLongGap;
+}
+
+.router-leds .led:nth-child(1) {
+  --netlab-light-cycle: 2.4s;
+  --netlab-light-delay: -0.2s;
+  animation-name: netlabLightDoublePulse;
+}
+
+.router-leds .led:nth-child(2) {
+  --netlab-light-cycle: 4.1s;
+  --netlab-light-delay: -1.3s;
+}
+
+.router-leds .led:nth-child(3) {
+  --netlab-light-cycle: 3.3s;
+  --netlab-light-delay: -2.1s;
+  animation-name: netlabLightLongGap;
+}
+
+.router-leds .led:nth-child(4) {
+  --netlab-light-cycle: 5.2s;
+  --netlab-light-delay: -0.8s;
 }
 
 @keyframes ledBlink {
@@ -2433,6 +2502,64 @@ body {
 
   50% {
     opacity: 0.32;
+  }
+}
+
+@keyframes netlabLightFlicker {
+  0%, 7%, 16%, 49%, 59%, 100% {
+    opacity: 1;
+    filter: brightness(1.18) saturate(1.08);
+  }
+
+  8%, 14%, 52%, 57% {
+    opacity: 0.28;
+    filter: brightness(0.58) saturate(0.82);
+  }
+}
+
+@keyframes netlabLightDoublePulse {
+  0%, 5%, 11%, 30%, 100% {
+    opacity: 1;
+    filter: brightness(1.22) saturate(1.1);
+  }
+
+  6%, 10%, 34%, 70% {
+    opacity: 0.34;
+    filter: brightness(0.62) saturate(0.84);
+  }
+
+  72% {
+    opacity: 0.68;
+  }
+}
+
+@keyframes netlabLightLongGap {
+  0%, 4%, 42%, 49%, 100% {
+    opacity: 1;
+    filter: brightness(1.16) saturate(1.06);
+  }
+
+  6%, 38%, 44%, 82% {
+    opacity: 0.24;
+    filter: brightness(0.54) saturate(0.78);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button::before,
+  .section-btn::before,
+  .mode-btn::before,
+  .exam-btn::before,
+  .protocol-link::before,
+  .terminal-link::before,
+  .challenge-link::before,
+  .app-action-btn::before,
+  .app-action-link::before,
+  .subnet-mobile-menu-link::before,
+  .led {
+    animation: none !important;
+    opacity: 1;
+    filter: none;
   }
 }
 

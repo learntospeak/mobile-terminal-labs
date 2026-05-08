@@ -70,6 +70,34 @@
   transform: translateY(-50%);
 }
 
+.http-shell-link::before,
+.http-back-btn::before,
+.http-next-btn::before,
+.http-answer-btn::before {
+  animation: netlabLightFlicker var(--netlab-light-cycle, 3.8s) steps(1, end) infinite;
+  animation-delay: var(--netlab-light-delay, -0.7s);
+  transform-origin: center;
+}
+
+.http-shell-link:nth-of-type(2n + 1)::before,
+.http-answer-btn:nth-of-type(3n + 1)::before {
+  --netlab-light-cycle: 3.1s;
+  --netlab-light-delay: -1.4s;
+  animation-name: netlabLightDoublePulse;
+}
+
+.http-shell-link:nth-of-type(2n)::before,
+.http-answer-btn:nth-of-type(3n + 2)::before {
+  --netlab-light-cycle: 4.7s;
+  --netlab-light-delay: -0.4s;
+}
+
+.http-answer-btn:nth-of-type(3n)::before {
+  --netlab-light-cycle: 3.4s;
+  --netlab-light-delay: -2.2s;
+  animation-name: netlabLightLongGap;
+}
+
 .http-shell-link.is-home {
   border-color: rgba(56, 189, 248, 0.34);
 }

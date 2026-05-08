@@ -120,6 +120,36 @@
     0 0 12px rgba(34, 197, 94, 0.55);
 }
 
+.terminal-nav-link::before,
+.environment-route-link::before,
+.terminal-history-btn::before,
+.terminal-run-btn::before,
+.terminal-mobile-menu-link::before {
+  animation: netlabLightFlicker var(--netlab-light-cycle, 3.6s) steps(1, end) infinite;
+  animation-delay: var(--netlab-light-delay, -0.6s);
+  transform-origin: center;
+}
+
+.environment-route-link:nth-of-type(3n + 1)::before,
+.terminal-mobile-menu-link:nth-of-type(3n + 1)::before {
+  --netlab-light-cycle: 2.8s;
+  --netlab-light-delay: -1.1s;
+  animation-name: netlabLightDoublePulse;
+}
+
+.environment-route-link:nth-of-type(3n + 2)::before,
+.terminal-mobile-menu-link:nth-of-type(3n + 2)::before {
+  --netlab-light-cycle: 4.4s;
+  --netlab-light-delay: -2s;
+}
+
+.environment-route-link:nth-of-type(3n)::before,
+.terminal-mobile-menu-link:nth-of-type(3n)::before {
+  --netlab-light-cycle: 3.2s;
+  --netlab-light-delay: -0.3s;
+  animation-name: netlabLightLongGap;
+}
+
 .terminal-nav-link:hover {
   background: linear-gradient(180deg, #4b5664 0%, #232c36 48%, #10161b 100%);
   border-color: #7b8796;
@@ -1404,6 +1434,9 @@
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
+  animation: none;
+  filter: none;
+  opacity: 1;
 }
 
 .terminal-controls #needHelpBtn::before {

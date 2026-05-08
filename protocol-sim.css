@@ -136,6 +136,34 @@
     0 0 12px rgba(56, 189, 248, 0.55);
 }
 
+.nav-link::before,
+.simulation-mobile-status::before,
+.status-badge::before {
+  animation: netlabLightFlicker var(--netlab-light-cycle, 3.9s) steps(1, end) infinite;
+  animation-delay: var(--netlab-light-delay, -0.5s);
+  transform-origin: center;
+}
+
+.nav-link:nth-of-type(2n + 1)::before,
+.status-badge:nth-of-type(3n + 1)::before {
+  --netlab-light-cycle: 2.9s;
+  --netlab-light-delay: -1.2s;
+  animation-name: netlabLightDoublePulse;
+}
+
+.nav-link:nth-of-type(2n)::before,
+.status-badge:nth-of-type(3n + 2)::before {
+  --netlab-light-cycle: 4.5s;
+  --netlab-light-delay: -2.2s;
+}
+
+.status-badge:nth-of-type(3n)::before,
+.simulation-mobile-status::before {
+  --netlab-light-cycle: 3.2s;
+  --netlab-light-delay: -0.8s;
+  animation-name: netlabLightLongGap;
+}
+
 .nav-link:hover {
   background: linear-gradient(180deg, #4b5664 0%, #232c36 48%, #10161b 100%);
   border-color: #7b8796;
