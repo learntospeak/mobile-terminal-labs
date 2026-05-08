@@ -3254,6 +3254,11 @@
     touch-action: manipulation;
   }
 
+  .terminal-mobile-command-choice::before {
+    content: none;
+    display: none;
+  }
+
   .terminal-mobile-command-choice:focus-visible {
     outline: 2px solid rgba(34, 211, 238, 0.9);
     outline-offset: 2px;
