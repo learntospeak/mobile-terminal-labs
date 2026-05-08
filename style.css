@@ -65,6 +65,55 @@ body:not(.terminal-page) .router-shell {
   margin-inline: auto;
 }
 
+.mascot-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(8, 13, 20, 0.96) 0%, rgba(4, 8, 14, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 24px rgba(2, 6, 23, 0.2);
+}
+
+.mascot {
+  display: block;
+  width: 92px;
+  max-width: 100%;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.mascot--small {
+  width: 54px;
+}
+
+.mascot--medium {
+  width: 86px;
+}
+
+.mascot--hero {
+  width: clamp(92px, 16vw, 142px);
+}
+
+.mascot-message {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.mascot-card--hero {
+  align-self: stretch;
+  flex: 0 0 min(260px, 34%);
+  justify-content: center;
+  padding: 14px;
+}
+
 body:not(.terminal-page) #practiceSection,
 body:not(.terminal-page) .hub-page-top,
 body:not(.terminal-page) .hub-resume-panel,
@@ -847,6 +896,18 @@ button:nth-of-type(3n)::before,
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 18px 34px rgba(2, 6, 23, 0.24);
   width: 100%;
+}
+
+.hub-hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.hub-hero-copy-block {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .hub-hero-panel h2 {
@@ -2989,6 +3050,21 @@ h3 {
 
   .hub-hero-panel {
     padding: 18px 18px 20px;
+  }
+
+  .hub-hero-content {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mascot-card--hero {
+    align-self: stretch;
+    flex-basis: auto;
+    justify-content: flex-start;
+  }
+
+  .mascot--hero {
+    width: 82px;
   }
 
   .hub-hero-panel h2 {

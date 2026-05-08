@@ -256,6 +256,8 @@
     terminalEntries: [],
     reviewStats: null,
     missionReviewDismissed: false,
+    mascotState: "",
+    mascotMessage: "",
     resumePromptVisible: false,
     outputPinnedToLatest: true,
     debugScenarioKey: "",
@@ -4648,6 +4650,138 @@
     return reference;
   }
 
+  function patchMascotApi() {
+    return window.PatchMascot || null;
+  }
+
+  function commandMascotState(scenario = currentScenario(), step = currentStep()) {
+    const text = [
+      scenario?.title,
+      scenario?.objective,
+      scenario?.category,
+      ...(Array.isArray(scenario?.commandFocus) ? scenario.commandFocus : []),
+      step?.objective,
+      ...(Array.isArray(step?.hints) ? step.hints : [])
+    ].join(" ").toLowerCase();
+
+    if (/\b(nslookup|dns)\b/.test(text)) return "nslookup";
+    if (/\b(ipconfig|network info|adapter|interface)\b/.test(text)) return "ipconfig";
+    if (/\b(traceroute|tracert|pathping|trace)\b/.test(text)) return "traceroute";
+    if (/\b(ping|connection|reachability|icmp)\b/.test(text)) return "ping";
+    if (/\b(dir|cd|folder|file|directory|type|cat|ls|read)\b/.test(text)) return "files";
+    return "main";
+  }
+
+  function defaultMascotMessage(state) {
+    const messages = {
+      main: "Try this first.",
+      thinking: "Look at the task, then choose one command.",
+      confused: "No stress — try again.",
+      happy: "Nice — you found it.",
+      nicework: "Nice work — keep going.",
+      excited: "Great progress.",
+      ping: "Let’s check the connection.",
+      traceroute: "Trace the path step by step.",
+      ipconfig: "This shows network information.",
+      nslookup: "Let’s check DNS.",
+      files: "This shows what is inside the folder."
+    };
+    return messages[state] || messages.main;
+  }
+
+  function setMascotState(state, message = "") {
+    session.mascotState = patchMascotApi()?.normalizeState?.(state) || state || "main";
+    session.mascotMessage = message || defaultMascotMessage(session.mascotState);
+  }
+
+  function activeMascotState() {
+    if (session.mascotState) {
+      return session.mascotState;
+    }
+    if (session.scenarioCompleted) {
+      return "excited";
+    }
+    return commandMascotState();
+  }
+
+  function ensureMascotCard(parent, variant) {
+    if (!parent || !patchMascotApi()) {
+      return null;
+    }
+
+    let card = parent.querySelector(`[data-patch-mascot="${variant}"]`);
+    if (card) {
+      return card;
+    }
+
+    card = document.createElement("aside");
+    card.className = `mascot-card terminal-mascot-card terminal-mascot-card--${variant}`;
+    card.dataset.patchMascot = variant;
+    card.setAttribute("aria-label", "Patch, the beginner IT guide");
+
+    const img = document.createElement("img");
+    img.className = variant === "mobile" ? "mascot mascot--small" : "mascot mascot--medium";
+    img.dataset.patchMascotImage = "true";
+
+    const message = document.createElement("p");
+    message.className = "mascot-message terminal-mascot-message";
+    message.dataset.patchMascotMessage = "true";
+
+    card.append(img, message);
+    return card;
+  }
+
+  function syncMascotCard(card, state, message) {
+    if (!card) {
+      return;
+    }
+
+    const api = patchMascotApi();
+    const img = card.querySelector("[data-patch-mascot-image]");
+    const copy = card.querySelector("[data-patch-mascot-message]");
+    if (img) {
+      img.src = api.getMascotSrc(state);
+      img.alt = api.getMascotAlt(state);
+    }
+    if (copy) {
+      copy.textContent = message || defaultMascotMessage(state);
+    }
+  }
+
+  function renderTerminalMascot() {
+    const api = patchMascotApi();
+    if (!api) {
+      return;
+    }
+
+    const scenario = currentScenario();
+    if (!scenario) {
+      return;
+    }
+
+    const state = activeMascotState();
+    const message = session.mascotMessage || defaultMascotMessage(state);
+    const desktopCard = ensureMascotCard(els.scenarioPanel, "desktop");
+    if (desktopCard && els.scenarioPanel) {
+      const scenarioCard = els.scenarioPanel.querySelector(".scenario-card");
+      if (scenarioCard && desktopCard.parentElement !== els.scenarioPanel) {
+        scenarioCard.insertAdjacentElement("afterend", desktopCard);
+      } else if (!desktopCard.parentElement) {
+        els.scenarioPanel.prepend(desktopCard);
+      }
+      syncMascotCard(desktopCard, state, message);
+    }
+
+    const mobileCard = ensureMascotCard(els.terminalMobileDock, "mobile");
+    if (mobileCard && els.terminalMobileDock) {
+      if (mobileCard.parentElement !== els.terminalMobileDock) {
+        const controlMount = els.terminalMobileControlMount || els.terminalDockInputMount;
+        els.terminalMobileDock.insertBefore(mobileCard, controlMount || null);
+      }
+      syncMascotCard(mobileCard, state, message);
+    }
+  }
+
   function terminalDistanceFromLatest() {
     if (!els.terminalOutput) {
       return 0;
@@ -5047,6 +5181,7 @@
     syncMobileAppBarTitle();
     syncMobileAppBarActions();
     renderMobileCommandChoices();
+    renderTerminalMascot();
     document.body.classList.toggle("terminal-beginner-mode", beginnerMode);
     if (els.mobileMenuCommandsBtn) {
       els.mobileMenuCommandsBtn.textContent = beginnerMode ? "Command Help" : "Commands";
@@ -5543,6 +5678,8 @@
     session.scenarioCompleted = false;
     session.reviewStats = createReviewStats();
     session.missionReviewDismissed = false;
+    session.mascotState = "";
+    session.mascotMessage = "";
     session.ticketBriefingSeen = false;
     session.ticketBriefingOpen = false;
     session.coachMode = false;
@@ -5617,6 +5754,7 @@
     session.completedScenarioIds.add(scenario.id);
     session.scenarioCompleted = true;
     session.missionReviewDismissed = false;
+    setMascotState("excited", "Great progress.");
     if (finalStageInfo?.stage?.completionSummary) {
       printStageLine(`${beginnerTrack ? "Section Complete" : "Stage Complete"}: ${finalStageInfo.stage.title}`);
       printStageLine(finalStageInfo.stage.completionSummary);
@@ -8243,6 +8381,7 @@
     }
 
     if (evaluation.success) {
+      setMascotState(session.stepIndex + (evaluation.advanceBy || 1) >= totalStepsForScenario(currentScenario()) ? "excited" : "nicework", "Nice — you found it.");
       const nextStep = currentScenario().steps?.[session.stepIndex + (evaluation.advanceBy || 1)] || null;
       const proofText = String(evaluation.feedback || step.successFeedback || "Good. That command moved the investigation forward.").trim();
       const whyText = String(step.whyThisMatters || step.completionSummary || "").trim();
@@ -8279,6 +8418,9 @@
 
     if (evaluation.classification !== "exploration") {
       NetlabApp?.showProgressPulse?.({ label: "Try Again", tone: "error" });
+      setMascotState("confused", "No stress — try again.");
+    } else {
+      setMascotState(commandMascotState(currentScenario(), step), "Good context. Keep checking.");
     }
 
     if (evaluation.source === "exploration" || evaluation.classification === "exploration") {
@@ -8468,6 +8610,7 @@
       return;
     }
 
+    setMascotState("thinking", "Try this first.");
     openWalkthrough(entries, { source: payload.source, startIndex: 0 });
     renderPanel();
   }
@@ -8500,6 +8643,7 @@
     }
 
     session.hintLevel = Math.min(2, session.hintLevel + 1);
+    setMascotState("thinking", "Look at the task, then choose one command.");
     printHintLine(`Hint ${session.hintLevel + 1} [${hintContextLabel()}]: ${walkthroughHintText(currentStep(), session.hintLevel + 1, currentScenario())}`);
     renderPanel();
     persistSectionProgress();

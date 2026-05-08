@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="./supabase-config.js?v=20260421sup1" defer></script>
   <script src="./app-data.js?v=20260429micro1" defer></script>
+  <script src="./mascot.js?v=20260508patch1" defer></script>
   <script src="./index.js?v=20260506hub2" defer></script>
 </head>
 <body>
@@ -28,11 +29,19 @@
 
       <section class="hub-page-top">
         <section id="hubResumePanel" class="hub-hero-panel">
-          <h2>Practise terminal troubleshooting in your browser.</h2>
-          <p class="hub-hero-copy">Start with guided Windows CMD tickets, then move into Linux, Cisco CLI, and cyber investigation labs when you are ready.</p>
-          <div class="hub-hero-actions">
-            <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner">Start Beginner Terminal Lab</a>
-            <div id="hubResumeActions" class="hub-resume-actions" hidden></div>
+          <div class="hub-hero-content">
+            <div class="hub-hero-copy-block">
+              <h2>Practise terminal troubleshooting in your browser.</h2>
+              <p class="hub-hero-copy">Start with guided Windows CMD tickets, then move into Linux, Cisco CLI, and cyber investigation labs when you are ready.</p>
+              <div class="hub-hero-actions">
+                <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner">Start Beginner Terminal Lab</a>
+                <div id="hubResumeActions" class="hub-resume-actions" hidden></div>
+              </div>
+            </div>
+            <aside class="mascot-card mascot-card--hero" aria-label="Patch, the beginner IT guide">
+              <img class="mascot mascot--hero" src="./assets/mascot/patch-main.png" alt="Patch, the beginner IT guide">
+              <p class="mascot-message">Learn practical IT skills by doing.</p>
+            </aside>
           </div>
         </section>
       </section>

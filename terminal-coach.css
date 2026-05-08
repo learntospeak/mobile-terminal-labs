@@ -362,6 +362,19 @@
     0 14px 24px rgba(0, 0, 0, 0.26);
 }
 
+.terminal-mascot-card {
+  margin: 0 0 16px;
+  padding: 12px;
+}
+
+.terminal-mascot-card--desktop {
+  align-items: center;
+}
+
+.terminal-mascot-message {
+  color: #dbeafe;
+}
+
 .scenario-category {
   margin: 0 0 8px;
   color: #7dd3fc;
@@ -3167,6 +3180,22 @@
   .terminal-page.terminal-beginner-mode .beginner-task-strip,
   .terminal-page.terminal-beginner-mode .beginner-help-strip {
     display: none;
+  }
+
+  .terminal-mascot-card--desktop {
+    display: none;
+  }
+
+  .terminal-mascot-card--mobile {
+    display: flex;
+    margin: 0 0 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .terminal-mascot-card--mobile .mascot-message {
+    font-size: 12px;
+    line-height: 1.35;
   }
 
   .mission-review-page {
