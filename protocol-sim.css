@@ -818,3 +818,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+.nav-link::before,
+.step-options button::before,
+.sim-controls button::before {
+  left: auto;
+  right: 10px;
+  top: 8px;
+  transform: none;
+}
+
+.nav-link,
+.step-options button,
+.sim-controls button {
+  padding-left: 14px;
+  padding-right: 34px;
+}

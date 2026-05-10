@@ -3849,3 +3849,44 @@
     font-size: 11px;
   }
 }
+
+.terminal-nav-link::before,
+.environment-route-link::before,
+.terminal-history-btn::before,
+.terminal-run-btn::before,
+.terminal-mobile-menu-link::before,
+.command-sheet-close::before,
+.command-sheet-clear::before,
+.command-sheet-tab::before,
+.command-card-copy::before,
+.command-card-toggle::before,
+.ticket-briefing-close::before,
+.ticket-briefing-start::before {
+  left: auto;
+  right: 10px;
+  top: 8px;
+  transform: none;
+}
+
+.terminal-nav-link,
+.environment-route-link,
+.terminal-history-btn,
+.terminal-run-btn,
+.terminal-mobile-menu-link,
+.command-sheet-close,
+.command-sheet-clear,
+.command-sheet-tab,
+.command-card-copy,
+.command-card-toggle,
+.ticket-briefing-close,
+.ticket-briefing-start {
+  padding-left: 14px;
+  padding-right: 34px;
+}
+
+.command-sheet-tab::before,
+.command-card-copy::before,
+.command-card-toggle::before {
+  right: 8px;
+  top: 7px;
+}

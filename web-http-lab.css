@@ -1079,3 +1079,21 @@
     font-size: 12px;
   }
 }
+
+.http-shell-link::before,
+.http-back-btn::before,
+.http-next-btn::before,
+.http-answer-btn::before {
+  left: auto;
+  right: 10px;
+  top: 8px;
+  transform: none;
+}
+
+.http-shell-link,
+.http-back-btn,
+.http-next-btn,
+.http-answer-btn {
+  padding-left: 14px;
+  padding-right: 34px;
+}

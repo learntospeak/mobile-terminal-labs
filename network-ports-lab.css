@@ -547,3 +547,22 @@
     font-size: 18px;
   }
 }
+
+.ports-category-card,
+.ports-quiz-option,
+.portsResetQuizBtn,
+.ports-nav-link,
+.ports-modal-close {
+  padding-right: 34px;
+}
+
+.ports-category-card::before,
+.ports-quiz-option::before,
+.ports-modal-close::before,
+#portsNextQuizBtn::before,
+#portsResetQuizBtn::before {
+  left: auto;
+  right: 10px;
+  top: 8px;
+  transform: none;
+}

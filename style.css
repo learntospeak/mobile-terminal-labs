@@ -4193,3 +4193,47 @@ body.merge-page:not(.http-flow-page) {
     padding-right: 10px;
   }
 }
+
+button::before,
+.section-btn::before,
+.mode-btn::before,
+.exam-btn::before,
+.protocol-link::before,
+.terminal-link::before,
+.challenge-link::before,
+.app-action-btn::before,
+.app-action-link::before,
+.subnet-mobile-menu-link::before,
+.subnet-dashboard-page .mode-btn::before,
+.subnet-dashboard-page .section-btn::before,
+.subnet-dashboard-page .app-action-btn::before,
+.subnet-dashboard-page .app-action-link::before,
+.subnet-dashboard-page #answers button::before,
+.subnet-dashboard-page #actionButtons button::before,
+.subnet-mobile-appbar-btn::before,
+.subnet-mobile-overlay-close::before {
+  left: auto;
+  right: 10px;
+  top: 8px;
+  transform: none;
+}
+
+button,
+.section-btn,
+.mode-btn,
+.exam-btn,
+.protocol-link,
+.terminal-link,
+.challenge-link,
+.app-action-btn,
+.app-action-link,
+.subnet-mobile-menu-link,
+.subnet-dashboard-page .mode-btn,
+.subnet-dashboard-page .section-btn,
+.subnet-dashboard-page .app-action-btn,
+.subnet-dashboard-page .app-action-link,
+.subnet-dashboard-page #answers button,
+.subnet-dashboard-page #actionButtons button {
+  padding-left: 14px;
+  padding-right: 34px;
+}

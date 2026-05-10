@@ -1159,3 +1159,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+.flow-nav-link::before,
+.action-buttons button::before,
+.flow-controls button::before {
+  left: auto;
+  right: 10px;
+  top: 8px;
+  transform: none;
+}
+
+.flow-nav-link,
+.action-buttons button,
+.flow-controls button {
+  padding-left: 14px;
+  padding-right: 34px;
+}
