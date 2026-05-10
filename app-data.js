@@ -12,6 +12,10 @@
       label: "Subnetting Lab",
       href: "./subnetting-lab.html"
     },
+    "network-ports-lab": {
+      label: "Network Ports Lab",
+      href: "./network-ports-lab.html"
+    },
     "linux-terminal": {
       label: "Linux Terminal Lab",
       href: "./terminal-coach.html?track=linux"

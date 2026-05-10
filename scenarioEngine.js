@@ -796,6 +796,74 @@
     return match ? match[0].trim() : text.trim();
   }
 
+  function conciseSentence(text, fallback = "") {
+    const normalized = String(text || "").replace(/\s+/g, " ").trim();
+    if (!normalized) return fallback;
+    const first = firstSentence(normalized).replace(/[.!?]+$/g, "").trim();
+    return first || fallback;
+  }
+
+  function commandHintFromStep(stepConfig, shell = "") {
+    if (stepConfig?.commandHint) return stepConfig.commandHint;
+    const hinted = (stepConfig?.hints || [])
+      .map((hint) => String(hint || "").match(/`([^`]+)`/)?.[1])
+      .find(Boolean);
+    if (hinted) return `Try: ${hinted}`;
+    if (stepConfig?.demoCommand) return `Try: ${stepConfig.demoCommand}`;
+    const family = String(stepConfig?.commandFamily || "").trim();
+    if (family) return `Use ${family}.`;
+    const rule = (stepConfig?.accepts || []).find((item) => item && (item.command || item.finalCwd));
+    if (rule?.command) return `Use ${rule.command}.`;
+    if (rule?.finalCwd) return `Use cd.`;
+    if (shell === "cmd") return "Use a CMD check.";
+    if (shell === "cisco") return "Use the matching IOS command.";
+    return "Use the matching terminal command.";
+  }
+
+  function evidenceHintFromStep(stepConfig) {
+    if (stepConfig?.evidenceHint) return stepConfig.evidenceHint;
+    const text = `${stepConfig?.objective || ""} ${stepConfig?.commandFamily || ""}`.toLowerCase();
+    if (/\bping\b|\breachab|\brespond/.test(text)) return "Look for replies or timeout.";
+    if (/\bnslookup\b|\bdns\b|\bresolve|\bhostname\b/.test(text)) return "Look for an IP answer or DNS error.";
+    if (/\btracert\b|\btraceroute\b|\bpath\b|\bhop\b/.test(text)) return "Look for hops or the stop point.";
+    if (/\bipconfig\b|\broute\b|\bgateway\b|\badapter\b/.test(text)) return "Look for IP, gateway, and DNS values.";
+    if (/\bnmap\b|\bport\b|\bservice\b|\bscan\b/.test(text)) return "Look for open ports or service details.";
+    if (/\bdir\b|\bls\b|\bpwd\b|\bcd\b|\btree\b/.test(text)) return "Look for the right path or file.";
+    if (/\bcat\b|\btype\b|\bgrep\b|\bfindstr\b|\blog\b|\bnote\b/.test(text)) return "Look for the relevant line.";
+    if (/\bshow\b|\binterface\b|\broute\b|\brunning-config\b|\bstartup-config\b/.test(text)) return "Look for the expected device state.";
+    if (/\bkill\b|\btaskkill\b|\bprocess\b/.test(text)) return "Look for the target process state.";
+    return "Look for evidence that answers the task.";
+  }
+
+  function successMeaningFromStep(stepConfig) {
+    if (stepConfig?.successMeaning) return stepConfig.successMeaning;
+    const text = `${stepConfig?.objective || ""} ${stepConfig?.successFeedback || ""}`.toLowerCase();
+    if (/\bping\b|\breachab|\brespond/.test(text)) return "Basic reachability is proven.";
+    if (/\bnslookup\b|\bdns\b|\bresolve|\bhostname\b/.test(text)) return "Name resolution is now tested.";
+    if (/\btracert\b|\btraceroute\b|\bpath\b|\bhop\b/.test(text)) return "The network path is visible.";
+    if (/\bipconfig\b|\bgateway\b|\badapter\b|\bdns server\b/.test(text)) return "Local network config is visible.";
+    if (/\bnmap\b|\bport\b|\bservice\b|\bscan\b/.test(text)) return "Service evidence is confirmed.";
+    if (/\bdir\b|\bls\b|\bpwd\b|\bcd\b|\btree\b/.test(text)) return "The working context is clear.";
+    if (/\bcat\b|\btype\b|\bgrep\b|\bfindstr\b|\blog\b|\bnote\b/.test(text)) return "The file evidence is visible.";
+    if (/\binterface\b|\broute\b|\bhostname\b|\bno shutdown\b|\bip address\b/.test(text)) return "The device state can now be verified.";
+    if (/\bkill\b|\btaskkill\b|\bprocess\b/.test(text)) return "The corrective action is complete.";
+    return "The result moves the ticket forward.";
+  }
+
+  function firstActionFromStep(stepConfig) {
+    if (stepConfig?.firstAction) return stepConfig.firstAction;
+    const text = `${stepConfig?.objective || ""} ${stepConfig?.commandFamily || ""}`.toLowerCase();
+    if (/\bping\b|\breachab/.test(text)) return "Start with reachability.";
+    if (/\bnslookup\b|\bdns\b|\bresolve/.test(text)) return "Check DNS next.";
+    if (/\btracert\b|\btraceroute\b|\bpath\b/.test(text)) return "Trace the route.";
+    if (/\bipconfig\b|\bgateway\b|\badapter\b/.test(text)) return "Confirm IP config.";
+    if (/\bnmap\b|\bport\b|\bservice\b/.test(text)) return "Check the target port.";
+    if (/\bdir\b|\bls\b|\bpwd\b|\bcd\b|\btree\b/.test(text)) return "Confirm where you are.";
+    if (/\bcat\b|\btype\b|\bgrep\b|\bfindstr\b|\blog\b|\bnote\b/.test(text)) return "Open the evidence.";
+    if (/\bshow\b|\binterface\b|\broute\b/.test(text)) return "Check current state.";
+    return "Run the next focused check.";
+  }
+
   function getTargetPath(stepConfig) {
     const rule = (stepConfig.accepts || []).find((item) => item && (item.finalCwd || item.fileExists));
     if (!rule) return "";
@@ -1030,38 +1098,38 @@
   }
 
   function enrichSuccessFeedback(stepConfig, scenario) {
-    const base = String(stepConfig?.successFeedback || "That command moves the task forward.").trim();
+    const base = conciseSentence(stepConfig?.successFeedback || stepConfig?.objective, "Command accepted");
     const text = `${stepConfig?.objective || ""} ${base}`.toLowerCase();
 
-    if (/that proves|you proved|you confirmed|you verified|does not prove/i.test(base)) {
+    if (/^result:/i.test(base)) {
       return base;
     }
 
     if (/\bping\b|\breachab|\bresponds\b/.test(text)) {
-      return `${base} You now have network evidence, not just a user report, and you can decide whether the next check belongs to DNS, routing, or the service itself.`;
+      return `Result: ${base}. Meaning: Basic reachability is proven.`;
     }
 
     if (/\bnslookup\b|\bdns\b|\bresolve\b/.test(text)) {
-      return `${base} That separates name resolution from pure connectivity and keeps the diagnosis honest.`;
+      return `Result: ${base}. Meaning: DNS is now tested.`;
     }
 
     if (/\bdir\b|\bls\b|\bpwd\b|\bcd\b|\btree\b/.test(text)) {
-      return `${base} You have confirmed the working context and can move forward without guessing at paths or artifact names.`;
+      return `Result: ${base}. Meaning: The working context is clear.`;
     }
 
     if (/\bcat\b|\btype\b|\bgrep\b|\bfindstr\b|\bread\b|\blog\b|\bnote\b/.test(text)) {
-      return `${base} You converted a file or note into usable evidence for the next decision.`;
+      return `Result: ${base}. Meaning: The file evidence is visible.`;
     }
 
     if (/\binterface\b|\broute\b|\bhostname\b|\bno shutdown\b|\bip address\b/.test(text)) {
-      return `${base} The configuration or state change is visible now, which means you can move into verification instead of assumption.`;
+      return `Result: ${base}. Meaning: The device state can be verified.`;
     }
 
     if (/\bkill\b|\btaskkill\b|\bprocess\b/.test(text)) {
-      return `${base} The corrective action is done, but a professional still verifies that the symptom actually cleared.`;
+      return `Result: ${base}. Meaning: The process action is complete.`;
     }
 
-    return `${base} Use that result to choose the next logical check instead of widening the investigation too early.`;
+    return `Result: ${base}. Meaning: The ticket moves forward.`;
   }
 
   function enrichPartialFeedbackEntry(entry, stepConfig) {
@@ -1074,7 +1142,7 @@
 
     return {
       ...entry,
-      feedback: `${feedback} Right now, stay focused on the current question before you widen the workflow.`
+      feedback: `${feedback} Stay on the current task.`
     };
   }
 
@@ -1088,8 +1156,8 @@
       ...entry,
       feedback: /does not yet complete|background|useful later|not the root cause|does not complete/i.test(feedback)
         ? feedback
-        : `${feedback} It is useful background, but it does not yet complete the objective.`,
-      coach: coach || "Use the discovery you just gathered to decide the narrowest next command that actually answers the ticket."
+        : `${feedback} Useful context, but the task is still open.`,
+      coach: coach || "Use the last output to choose the next focused command."
     };
   }
 
@@ -1103,7 +1171,7 @@
       return nextStep.objective;
     }
 
-    return "Continue with the current mission objective and verify the result before you close the work.";
+    return "Continue the ticket and verify the result.";
   }
 
   function inferRealWorldNote(stepConfig, scenario) {
@@ -1112,26 +1180,26 @@
     const text = `${stepConfig?.objective || ""} ${stepConfig?.successFeedback || ""} ${scenario?.title || ""}`.toLowerCase();
 
     if (/\bping\b|\breachab|\bresponds\b/.test(text)) {
-      return "In real support work, a successful ping narrows the fault but does not justify closing the ticket without application or name-resolution checks.";
+      return "Reachability is only the first gate.";
     }
 
     if (/\bnslookup\b|\bdns\b|\bresolve\b|\bhostname\b/.test(text)) {
-      return "Real incidents often stall when name resolution is assumed instead of tested directly. A quick DNS check can save a lot of guesswork.";
+      return "DNS should be tested, not assumed.";
     }
 
     if (/\bdir\b|\bls\b|\bpwd\b|\bcd\b|\btree\b/.test(text)) {
-      return "Technicians lose time when they act in the wrong directory or on the wrong host. Context checks are quiet, but they prevent expensive mistakes.";
+      return "Path checks prevent noisy troubleshooting.";
     }
 
     if (/\bcat\b|\btype\b|\bgrep\b|\bfindstr\b|\blog\b|\bnote\b/.test(text)) {
-      return "Ticket notes and logs often contain the first reliable evidence. Reading them early keeps the rest of the investigation anchored to facts.";
+      return "Logs and notes anchor the next move.";
     }
 
     if (/\binterface\b|\broute\b|\bhostname\b|\bno shutdown\b|\bip address\b/.test(text)) {
-      return "Network changes should be traceable to an observed device state. Operators who verify before and after changes create safer maintenance records.";
+      return "Network changes need visible before/after state.";
     }
 
-    return "Professional troubleshooting is not just about using the right command. It is about proving what changed in your understanding after you ran it.";
+    return "Good troubleshooting turns output into the next action.";
   }
 
   function ensureProgressiveHints(stepConfig, scenario) {
@@ -1141,11 +1209,11 @@
     const context = inferStepContext(scenario, stepConfig) || "Use what the terminal already shows you to narrow the next move.";
     while (hints.length < 3) {
       if (hints.length === 0) {
-        hints.push("Start with discovery. Use the terminal to reduce guesswork before you act.");
+        hints.push(firstActionFromStep(stepConfig));
       } else if (hints.length === 1) {
         hints.push(context);
       } else {
-        hints.push("Use the command family that best matches the current objective and the evidence you already have.");
+        hints.push(commandHintFromStep(stepConfig, scenario?.shell));
       }
     }
 
@@ -1153,12 +1221,7 @@
   }
 
   function inferWhyThisMatters(stepConfig) {
-    const base = stepConfig.whyThisMatters || firstSentence(stepConfig.explanation);
-    if (/before you close|before you move on|before you act|before you change anything/i.test(base)) {
-      return base;
-    }
-
-    return `${base} That discipline is what keeps a technician from confusing activity with proof.`;
+    return conciseSentence(stepConfig.whyThisMatters || stepConfig.explanation, successMeaningFromStep(stepConfig));
   }
 
   function buildExplorationRules(scenario, stepConfig) {
@@ -1231,6 +1294,13 @@
       successFeedback: enrichSuccessFeedback(stepConfig, scenario),
       nextObjective: inferNextObjective(stepConfig, scenario),
       realWorldNote: inferRealWorldNote(stepConfig, scenario),
+      firstAction: firstActionFromStep(stepConfig),
+      commandHint: commandHintFromStep(stepConfig, scenario?.shell),
+      evidenceHint: evidenceHintFromStep(stepConfig),
+      successMeaning: successMeaningFromStep(stepConfig),
+      failureHint: stepConfig.failureHint || "Not quite. Use the check that answers this task.",
+      nextAction: stepConfig.nextAction || inferNextObjective(stepConfig, scenario),
+      reviewPoint: stepConfig.reviewPoint || successMeaningFromStep(stepConfig),
       partials: (stepConfig.partials || []).map((entry) => enrichPartialFeedbackEntry(entry, stepConfig)),
       exploration: [
         ...buildExplorationRules(scenario, stepConfig).map((entry) => enrichExplorationEntry(entry)),
@@ -1463,21 +1533,17 @@
     const symptoms = [];
 
     if (/\bdns\b|\bresolve\b|\bhostname\b|\bnslookup\b/.test(text)) {
-      symptoms.push("The reported issue points to a name-resolution failure rather than a total network outage.");
-      symptoms.push("IP connectivity may still work even if hostnames fail.");
+      symptoms.push("Names may fail while IP connectivity still works.");
     } else if (/\blog\b|\bcrash\b|\bpanic\b|\bservice\b/.test(text)) {
-      symptoms.push("Service behavior needs to be confirmed from host-side evidence.");
-      symptoms.push("The reported fault is based on symptoms, not yet on verified root cause.");
+      symptoms.push("Host evidence is needed before root cause.");
     } else if (/\bshare\b|\bfileserver\b|\bnet use\b/.test(text)) {
-      symptoms.push("Shared resource access appears affected from the workstation perspective.");
-      symptoms.push("The issue could still be reachability, name resolution, or share state.");
+      symptoms.push("Share access may be reachability, DNS, or share state.");
     } else if (/\brouter\b|\binterface\b|\bno shutdown\b|\bcisco\b/.test(text)) {
-      symptoms.push("The branch network appears impacted, but the device state still needs to be inspected.");
-      symptoms.push("Configuration should not be changed before the current operational state is clear.");
+      symptoms.push("Inspect device state before changing config.");
     } else if (shell === "cmd") {
-      symptoms.push("The workstation issue still needs evidence from the command line.");
+      symptoms.push("The workstation needs command-line evidence.");
     } else {
-      symptoms.push("The report provides a symptom, not a confirmed technical cause.");
+      symptoms.push("The report is a symptom, not a cause.");
     }
 
     return symptoms.slice(0, 3);
@@ -1495,17 +1561,17 @@
 
     const facts = [];
     if (scenario?.objective) {
-      facts.push(`The current assignment is to ${String(scenario.objective).replace(/\.$/, "")}.`);
+      facts.push(`Objective: ${String(scenario.objective).replace(/\.$/, "")}.`);
     }
     if (scenario?.scenarioIntro) {
       facts.push(firstSentence(scenario.scenarioIntro));
     }
     if (shell === "cisco") {
-      facts.push("The training device is simulated, but the IOS workflow is meant to mirror real operator discipline.");
+      facts.push("Simulated IOS device.");
     } else if (shell === "cmd") {
-      facts.push("The workstation environment is simulated and intended for evidence-led support practice.");
+      facts.push("Simulated Windows workstation.");
     } else if (scenario?.mode === "challenge") {
-      facts.push("The environment is controlled for training and should be investigated methodically.");
+      facts.push("Controlled training target.");
     }
 
     return facts.filter(Boolean).slice(0, 3);
@@ -1518,17 +1584,17 @@
 
     return [
       inferDoNotAssumeNote(scenario),
-      "Do not change settings until you have evidence that justifies the action.",
-      "Verify the final state before you close the ticket."
+      "Change settings only with evidence.",
+      "Verify before closing the ticket."
     ].filter(Boolean).slice(0, 3);
   }
 
   function inferEscalationNote(scenario, shell) {
     if (scenario?.escalationNote) return scenario.escalationNote;
-    if (scenario?.mode === "challenge") return "Escalate only after you can explain what the evidence supports and what still needs confirmation.";
-    if (shell === "cisco") return "If the live device state still does not match the intended branch design after verification, capture the evidence before escalation.";
+    if (scenario?.mode === "challenge") return "Escalate with evidence and open questions.";
+    if (shell === "cisco") return "Escalate with current and expected device state.";
     if (/\bdns\b|\bresolve\b|\bhostname\b/.test(scenarioTextBlob(scenario))) {
-      return "If DNS remains the leading hypothesis after local checks, collect the command evidence before escalation.";
+      return "If DNS still looks likely, attach command evidence.";
     }
     return "";
   }
@@ -1537,86 +1603,86 @@
     const text = scenarioTextBlob(scenario);
 
     if (/\bdns\b|\bnslookup\b|\bresolve\b|\bhostname\b/.test(text)) {
-      return "The report suggests something works by IP but fails by name, so DNS is suspicious but not yet guilty.";
+      return "Works by IP, fails by name. DNS is suspect.";
     }
 
     if (/\blog\b|\bcrash\b|\bpanic\b|\bworker\b|\bservice note\b/.test(text)) {
-      return "A service owner or operator has reported a fault, but the ticket still needs evidence from the host before anyone can claim to know the cause.";
+      return "Service fault reported. Host evidence needed.";
     }
 
     if (/\binterface\b|\bno shutdown\b|\brouter\b|\bcisco\b/.test(text)) {
-      return "The site says the network link or branch access is broken, but the device state still has to be inspected before you change configuration.";
+      return "Branch access is affected. Inspect device state first.";
     }
 
     if (/\bshare\b|\bnet use\b|\bfileserver\b/.test(text)) {
-      return "The user says the shared workspace is unavailable, but you still need to separate reachability, name resolution, and share state.";
+      return "Shared workspace unavailable. Separate reachability, DNS, and share state.";
     }
 
     if (/\bprocess\b|\btaskkill\b|\bkill\b|\brogue\b/.test(text)) {
-      return "The symptom points to a runaway process or unstable service, but you should confirm the exact process before taking action.";
+      return "Confirm the exact process before stopping it.";
     }
 
     if (/\bproxy\b|\bhttp\b|\brequest\b|\bresponse\b|\bparameter\b|\bweb\b/.test(text)) {
-      return "The application is behaving unexpectedly, but the useful evidence still needs to be isolated from the surrounding traffic or surface noise.";
+      return "Unexpected app behavior. Isolate the useful evidence.";
     }
 
     if (/\bnmap\b|\bnetcat\b|\bport\b|\bservice\b|\bscan\b/.test(text)) {
-      return "The ticket needs network evidence first, not a guess based on symptoms or assumptions about which service matters.";
+      return "Collect network evidence before guessing.";
     }
 
     if (shell === "cmd") {
-      return "The user report gives you a symptom, not a root cause. Start by proving what the workstation actually shows you.";
+      return "Start with workstation evidence.";
     }
 
     if (shell === "cisco") {
-      return "The change request or outage note gives you a direction, but the device still needs to be inspected before you touch the running state.";
+      return "Inspect the device before changing running state.";
     }
 
-    return "The starting note gives you a symptom, not a conclusion. Use the terminal to turn that report into evidence.";
+    return "Turn the report into terminal evidence.";
   }
 
   function inferDoNotAssumeNote(scenario) {
     const text = scenarioTextBlob(scenario);
 
     if (/\bdns\b|\bresolve\b|\bhostname\b/.test(text)) {
-      return "Do not assume the server is down just because a name fails to resolve.";
+      return "Do not call the server down until reachability is tested.";
     }
 
     if (/\bping\b|\breachab|\bport\b|\bservice\b/.test(text)) {
-      return "Do not confuse basic network reachability with application health or user access.";
+      return "Reachable does not always mean healthy.";
     }
 
     if (/\blog\b|\bconfig\b|\bfile\b/.test(text)) {
-      return "Do not assume the first file you open contains the real answer; confirm the artifact is the right one first.";
+      return "Confirm the right artifact before reading deeply.";
     }
 
     if (/\binterface\b|\brouter\b|\bno shutdown\b|\bip address\b/.test(text)) {
-      return "Do not change configuration before you can describe the current device state clearly.";
+      return "Describe current state before config changes.";
     }
 
     if (/\bprocess\b|\bkill\b|\btaskkill\b/.test(text)) {
-      return "Do not stop a process until you have proven it is the one tied to the symptom.";
+      return "Stop only the proven target process.";
     }
 
-    return "Do not assume the first plausible answer is the right one. Collect enough evidence to justify the next move.";
+    return "Collect evidence before choosing a fix.";
   }
 
   function inferProfessionalVerificationNote(scenario) {
     const text = scenarioTextBlob(scenario);
 
     if (/\brouter\b|\binterface\b|\bcisco\b/.test(text)) {
-      return "A professional closes the task only after the device state and the expected operational view agree.";
+      return "Close only after state matches the expected result.";
     }
 
     if (/\bshare\b|\bfileserver\b|\bservice\b|\bprocess\b/.test(text)) {
-      return "A professional verifies the visible result before closing the ticket, rather than assuming the first corrective step solved the symptom.";
+      return "Verify the visible result before closing.";
     }
 
     if (/\bproxy\b|\bhttp\b|\bweb\b|\bchallenge\b/.test(text)) {
-      return "A professional records what the evidence supports, what it does not prove yet, and what the next justified step would be.";
+      return "Record evidence, limits, and the next justified step.";
     }
 
-    return "A professional verifies the final state before marking the work complete.";
+    return "Verify the final state before closing.";
   }
 
   function scenarioEasterEgg(scenario) {
@@ -1644,9 +1710,9 @@
     const verification = inferProfessionalVerificationNote(scenario);
 
     return [
-      `${role}, you are picking up ticket ${ticketId}: ${scenario.title}.`,
+      `Ticket ${ticketId}: ${scenario.title}.`,
       symptom,
-      intro || `Your current objective is to ${String(summary || scenario.objective || "").replace(/\.$/, "")}.`,
+      intro || `Objective: ${String(summary || scenario.objective || "").replace(/\.$/, "")}.`,
       caution,
       verification
     ].filter(Boolean).join(" ");
@@ -1689,13 +1755,13 @@
     let note = "";
 
     if (scenario?.mode === "challenge") {
-      note = "This is a controlled challenge environment. Investigate methodically, justify each action with evidence, and avoid treating the lab like a production target.";
+      note = "Controlled challenge lab. Use evidence and keep actions scoped.";
     } else if (shell === "cisco") {
-      note = "This is a simulated network device. Review the current state first, make the smallest justified change, and verify the operational result before you consider the task complete.";
+      note = "Simulated network device. Inspect, change only what is needed, verify.";
     } else if (shell === "cmd") {
-      note = "This is a simulated Windows support environment. Commands are scoped to a safe lab and should be used to confirm evidence before any corrective action is taken.";
+      note = "Simulated Windows support host. Confirm evidence before action.";
     } else {
-      note = `This is a simulated ${String(contextMeta?.environmentLabel || "Linux Terminal Learning").toLowerCase()} environment. Treat command output like case evidence and keep your next move tied to what the system actually shows you.`;
+      note = `Simulated ${String(contextMeta?.environmentLabel || "Linux Terminal Learning").toLowerCase()} environment. Let output guide the next command.`;
     }
 
     if (easterEgg) {
@@ -1725,8 +1791,8 @@
     const lastObjective = scenarioSteps(scenario).slice(-1)[0]?.objective;
     return [
       lastObjective || "Confirm the final command output supports the conclusion.",
-      "Confirm what the command output does and does not prove before you close the ticket.",
-      "Confirm the final state matches the objective from the user or system perspective."
+      "Confirm what the output proves.",
+      "Confirm the final state matches the ticket."
     ];
   }
 
@@ -1803,63 +1869,63 @@
     const templates = {
       orientation: {
         title: "Orientation",
-        briefing: "Establish the starting context so you know where you are, what artifacts exist, and what the ticket is actually asking you to prove.",
-        completionSummary: "You established the starting context and reduced the chance of chasing the wrong artifact or path."
+        briefing: "Confirm context before acting.",
+        completionSummary: "Context confirmed."
       },
       practice: {
         title: "Practice",
-        briefing: "Work through the operational sequence carefully and make sure each command answers a real question instead of adding noise.",
-        completionSummary: "You completed the core workflow with usable evidence at each step."
+        briefing: "Run the next focused command.",
+        completionSummary: "Workflow completed with usable evidence."
       },
       triage: {
         title: "Triage",
-        briefing: "Collect enough evidence to understand the shape of the fault before changing anything.",
-        completionSummary: "You gathered the first solid evidence and avoided jumping straight to conclusions."
+        briefing: "Collect first evidence.",
+        completionSummary: "First evidence gathered."
       },
       investigation: {
         title: "Investigation",
-        briefing: "Narrow the cause. Avoid jumping straight to fixes before you know what layer is failing or which artifact matters.",
-        completionSummary: "You narrowed the problem space with evidence-led command output and a clearer hypothesis."
+        briefing: "Narrow the fault with evidence.",
+        completionSummary: "Fault narrowed."
       },
       resolution: {
         title: "Resolution",
-        briefing: "Apply the smallest fix that addresses the proven cause, not the broadest change you can make.",
-        completionSummary: "You applied a targeted corrective action that matched the evidence you had collected."
+        briefing: "Apply the smallest justified fix.",
+        completionSummary: "Targeted fix applied."
       },
       inspect: {
         title: "Inspect Current State",
-        briefing: "Review the current device state before you enter configuration mode. A good network operator can describe the device before changing it.",
-        completionSummary: "You confirmed the live router state before making changes to the running configuration."
+        briefing: "Check device state first.",
+        completionSummary: "Device state confirmed."
       },
       configuration: {
         title: "Apply Configuration",
-        briefing: "Move through the IOS workflow and apply the required configuration safely, with the smallest justified change set.",
-        completionSummary: "You completed the intended configuration changes and kept the workflow controlled."
+        briefing: "Make the required IOS change.",
+        completionSummary: "Configuration change completed."
       },
       verification: {
         title: "Verification",
-        briefing: "Confirm the issue is actually resolved from the user or system perspective before you close the work.",
-        completionSummary: "You verified the final state instead of assuming the task was complete."
+        briefing: "Confirm the result.",
+        completionSummary: "Final state verified."
       },
       scope: {
         title: "Scope",
-        briefing: "Establish the problem space and decide what evidence matters first. Challenge work still begins with disciplined scoping.",
-        completionSummary: "You framed the investigation and identified the right starting evidence."
+        briefing: "Define the first evidence needed.",
+        completionSummary: "Investigation scoped."
       },
       enumeration: {
         title: "Enumeration",
-        briefing: "Enumerate the environment carefully and gather the evidence needed for analysis without collecting noise just because a tool can do it.",
-        completionSummary: "You collected the important technical details without overreaching."
+        briefing: "Collect the needed technical details.",
+        completionSummary: "Key details collected."
       },
       analysis: {
         title: "Analysis",
-        briefing: "Interpret the evidence and confirm the strongest next conclusion. Separate what the data supports from what it merely suggests.",
-        completionSummary: "You translated raw evidence into a justified technical conclusion."
+        briefing: "Interpret what the evidence supports.",
+        completionSummary: "Evidence interpreted."
       },
       reporting: {
         title: "Reporting",
-        briefing: "Summarise the cause, action taken, and verification result like a real ticket note before you close the task.",
-        completionSummary: "You closed the task with a defensible summary of what the evidence showed."
+        briefing: "Write the ticket note.",
+        completionSummary: "Ticket note completed."
       }
     };
 

@@ -1412,6 +1412,11 @@ button:nth-of-type(3n)::before,
   border-color: #22d3ee;
 }
 
+.learning-path-card-ports {
+  background: linear-gradient(180deg, #312e18 0%, #111827 100%);
+  border-color: #facc15;
+}
+
 .learning-path-card-protocol {
   background: linear-gradient(180deg, #1f2d46 0%, #111827 100%);
   border-color: #94a3b8;
@@ -1429,6 +1434,13 @@ button:nth-of-type(3n)::before,
   box-shadow:
     0 0 0 2px rgba(34, 211, 238, 0.14),
     0 0 16px rgba(34, 211, 238, 0.5);
+}
+
+.learning-path-card-ports::before {
+  background: #facc15;
+  box-shadow:
+    0 0 0 2px rgba(250, 204, 21, 0.14),
+    0 0 16px rgba(250, 204, 21, 0.48);
 }
 
 .learning-path-card-cisco::before {
@@ -1463,6 +1475,10 @@ button:nth-of-type(3n)::before,
 
 .learning-path-card-web:hover {
   border-color: #67e8f9;
+}
+
+.learning-path-card-ports:hover {
+  border-color: #fde047;
 }
 
 .learning-path-card-challenge:hover {

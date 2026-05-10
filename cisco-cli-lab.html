@@ -14,7 +14,7 @@
   <script src="./stateManager.js?v=20260425cmd1" defer></script>
   <script src="./coachEngine.js?v=20260506status1" defer></script>
   <script src="./scenarioEngine.js?v=20260503helpguide1" defer></script>
-  <script src="./mascot.js?v=20260508patch1" defer></script>
+  <script src="./mascot.js?v=20260509patchgap1" defer></script>
   <script>
     window.TerminalCoachConfig = {
       mode: "lesson",
@@ -98,19 +98,19 @@
                 <span id="missionCaseType" class="scenario-mini-badge" hidden></span>
               </div>
               <div id="missionBriefingBlock" class="mission-case-block" hidden>
-                <p class="mission-case-label">Mission Briefing</p>
+                <p class="mission-case-label">Ticket</p>
                 <p id="missionBriefingText" class="mission-case-copy"></p>
               </div>
               <div id="missionObjectivesBlock" class="mission-case-block" hidden>
-                <p class="mission-case-label">Learning Objectives</p>
+                <p class="mission-case-label">Objectives</p>
                 <ul id="missionObjectivesList" class="mission-case-list"></ul>
               </div>
               <div id="missionSuccessBlock" class="mission-case-block" hidden>
-                <p class="mission-case-label">Success Criteria</p>
+                <p class="mission-case-label">Review Points</p>
                 <ul id="missionSuccessList" class="mission-case-list"></ul>
               </div>
               <div id="missionEnvironmentBlock" class="mission-case-block" hidden>
-                <p class="mission-case-label">Environment Notes</p>
+                <p class="mission-case-label">Environment</p>
                 <p id="missionEnvironmentText" class="mission-case-copy"></p>
               </div>
               <div class="mission-case-block mission-case-stage-block">
@@ -132,7 +132,7 @@
             </article>
 
             <article class="support-card">
-              <h3>Current Task</h3>
+              <h3>Active Task</h3>
               <p id="stepObjective">Enter privileged EXEC mode from the `>` prompt.</p>
             </article>
 
@@ -219,27 +219,27 @@
         <p id="missionReviewOverall" class="mission-review-overall"></p>
         <div id="missionReviewCategories" class="mission-review-grid">
           <div class="mission-review-item">
-            <p class="mission-case-label">Troubleshooting Logic</p>
+            <p class="mission-case-label">Commands Used</p>
             <p id="reviewTroubleshootingScore" class="mission-review-score"></p>
             <p id="reviewTroubleshootingFeedback" class="mission-case-copy"></p>
           </div>
           <div class="mission-review-item">
-            <p class="mission-case-label">Command Accuracy</p>
+            <p class="mission-case-label">Issue Found</p>
             <p id="reviewAccuracyScore" class="mission-review-score"></p>
             <p id="reviewAccuracyFeedback" class="mission-case-copy"></p>
           </div>
           <div class="mission-review-item">
-            <p class="mission-case-label">Efficiency</p>
+            <p class="mission-case-label">Concept</p>
             <p id="reviewEfficiencyScore" class="mission-review-score"></p>
             <p id="reviewEfficiencyFeedback" class="mission-case-copy"></p>
           </div>
           <div class="mission-review-item">
-            <p class="mission-case-label">Verification</p>
+            <p class="mission-case-label">Closure</p>
             <p id="reviewVerificationScore" class="mission-review-score"></p>
             <p id="reviewVerificationFeedback" class="mission-case-copy"></p>
           </div>
           <div class="mission-review-item">
-            <p class="mission-case-label">Risk Awareness</p>
+            <p class="mission-case-label">Risk</p>
             <p id="reviewRiskScore" class="mission-review-score"></p>
             <p id="reviewRiskFeedback" class="mission-case-copy"></p>
           </div>

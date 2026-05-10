@@ -1,0 +1,522 @@
+.ports-lab-page {
+  --ports-blue: #38bdf8;
+  --ports-green: #22c55e;
+  --ports-amber: #f59e0b;
+  --ports-red: #f43f5e;
+  --ports-violet: #a78bfa;
+  --ports-text: #e5e7eb;
+  --ports-muted: #94a3b8;
+  --ports-border: rgba(71, 85, 105, 0.64);
+  --ports-panel: linear-gradient(180deg, rgba(10, 15, 23, 0.96) 0%, rgba(5, 9, 15, 0.98) 100%);
+}
+
+.ports-lab-page .rack-room {
+  max-width: 1180px;
+}
+
+.ports-lab-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.ports-subbrand {
+  margin-top: 4px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ports-hero,
+.ports-panel {
+  border: 1px solid var(--ports-border);
+  border-radius: 18px;
+  background: var(--ports-panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 34px rgba(2, 6, 23, 0.26);
+}
+
+.ports-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 24px;
+  align-items: stretch;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 88% 16%, rgba(34, 197, 94, 0.16), transparent 28%),
+    radial-gradient(circle at 16% 92%, rgba(56, 189, 248, 0.14), transparent 30%),
+    var(--ports-panel);
+}
+
+.ports-hero-copy {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.ports-kicker {
+  margin: 0;
+  color: #93c5fd;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ports-hero h1,
+.ports-panel h2,
+.ports-panel h3,
+.ports-hero p,
+.ports-panel p {
+  margin: 0;
+}
+
+.ports-hero h1 {
+  color: #f8fafc;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.02;
+}
+
+.ports-hero p,
+.ports-panel p {
+  color: #cbd5e1;
+  line-height: 1.62;
+}
+
+.ports-hero-actions,
+.ports-quiz-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.ports-nav-link {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid rgba(71, 85, 105, 0.76);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96) 0%, rgba(7, 12, 18, 0.98) 100%);
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.ports-nav-link-strong {
+  border-color: rgba(34, 197, 94, 0.46);
+  color: #dcfce7;
+}
+
+.ports-visual {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 260px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(71, 85, 105, 0.58);
+  border-radius: 16px;
+  background:
+    linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+    rgba(2, 6, 23, 0.54);
+  background-size: 28px 28px;
+}
+
+.ports-node {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  min-height: 118px;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 14px;
+  background: rgba(8, 13, 20, 0.86);
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ports-node-icon {
+  display: grid;
+  width: 70px;
+  height: 54px;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  color: #67e8f9;
+  font-size: 18px;
+}
+
+.ports-node-server .ports-node-icon {
+  color: #86efac;
+}
+
+.ports-flow-line {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.ports-flow-line span {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--ports-blue), var(--ports-green));
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.32);
+}
+
+.ports-service-stack {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ports-service-stack span {
+  display: grid;
+  width: 48px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(125, 211, 252, 0.36);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e0f2fe;
+  font-weight: 900;
+}
+
+.ports-main {
+  display: grid;
+  gap: 18px;
+}
+
+.ports-panel {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.ports-basics-panel {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+}
+
+.ports-basics-grid,
+.ports-category-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.ports-basics-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ports-basics-grid article,
+.ports-range-track article,
+.ports-category,
+.ports-port-card,
+.ports-quiz-question {
+  border: 1px solid rgba(71, 85, 105, 0.64);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.82) 0%, rgba(8, 13, 20, 0.96) 100%);
+}
+
+.ports-basics-grid article {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+}
+
+.ports-mini-icon {
+  display: inline-grid;
+  width: 46px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #bae6fd;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.ports-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ports-section-head > p {
+  max-width: 58ch;
+  color: var(--ports-muted);
+  font-size: 14px;
+}
+
+.ports-range-track {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ports-range-track article {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-top: 4px solid var(--ports-blue);
+}
+
+.ports-range-track article:nth-child(2) {
+  border-top-color: var(--ports-amber);
+}
+
+.ports-range-track article:nth-child(3) {
+  border-top-color: var(--ports-green);
+}
+
+.ports-range-track strong {
+  color: #f8fafc;
+  font-size: 22px;
+}
+
+.ports-range-track span {
+  color: #bfdbfe;
+  font-weight: 900;
+}
+
+.ports-category {
+  padding: 14px;
+}
+
+.ports-category-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ports-category-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.13);
+  color: #bbf7d0;
+  font-weight: 900;
+}
+
+.ports-port-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ports-port-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.ports-port-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ports-port-number {
+  color: #f8fafc;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.ports-port-name {
+  color: #dbeafe;
+  font-weight: 900;
+}
+
+.ports-protocols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.ports-protocols span,
+.ports-risk {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.ports-protocols span {
+  padding: 0 9px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #bae6fd;
+}
+
+.ports-risk {
+  justify-self: start;
+  padding: 0 10px;
+  background: rgba(244, 63, 94, 0.12);
+  color: #fecdd3;
+}
+
+.ports-risk.medium {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde68a;
+}
+
+.ports-risk.low {
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+}
+
+.ports-port-card p {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.ports-port-card .ports-watch {
+  color: #f8fafc;
+}
+
+.ports-quiz-list {
+  display: grid;
+  gap: 12px;
+}
+
+.ports-score-pill {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid rgba(34, 197, 94, 0.38);
+  border-radius: 999px;
+  color: #dcfce7;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.ports-quiz-question {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.ports-quiz-prompt {
+  color: #f8fafc;
+  font-weight: 900;
+}
+
+.ports-quiz-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ports-quiz-option {
+  min-height: 48px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.ports-quiz-option.is-correct {
+  border-color: rgba(34, 197, 94, 0.62);
+  background: rgba(20, 83, 45, 0.48);
+}
+
+.ports-quiz-option.is-wrong {
+  border-color: rgba(244, 63, 94, 0.62);
+  background: rgba(127, 29, 29, 0.44);
+}
+
+.ports-quiz-feedback {
+  min-height: 22px;
+  color: var(--ports-muted);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.ports-quiz-feedback.good {
+  color: #bbf7d0;
+}
+
+.ports-quiz-feedback.bad {
+  color: #fecdd3;
+}
+
+@media (max-width: 900px) {
+  .ports-hero,
+  .ports-basics-panel,
+  .ports-range-track {
+    grid-template-columns: 1fr;
+  }
+
+  .ports-basics-grid,
+  .ports-port-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ports-lab-page {
+    padding: 12px;
+  }
+
+  .ports-hero,
+  .ports-panel {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .ports-visual {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .ports-flow-line {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .ports-service-stack {
+    position: static;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ports-service-stack span {
+    width: auto;
+  }
+
+  .ports-section-head,
+  .ports-port-top {
+    display: grid;
+  }
+
+  .ports-protocols {
+    justify-content: flex-start;
+  }
+
+  .ports-quiz-options {
+    grid-template-columns: 1fr;
+  }
+}

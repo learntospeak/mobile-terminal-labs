@@ -1797,7 +1797,8 @@
           return "";
         }
         const label = safety ? `${meaning} ${safety}`.trim() : meaning;
-        return `<button class="command-family-chip" type="button" data-command-family-chip="${escapeHtml(command)}" data-command-family-meaning="${escapeHtml(label)}">${escapeHtml(command)}</button>`;
+        const helper = meaning || commandHelperLabel(command);
+        return `<button class="command-family-chip" type="button" data-command-family-chip="${escapeHtml(command)}" data-command-family-meaning="${escapeHtml(label)}"><code>${escapeHtml(command)}</code>${helper ? `<span>${escapeHtml(helper)}</span>` : ""}</button>`;
       }).join("");
     }
 
@@ -3218,6 +3219,49 @@
     return "";
   }
 
+  function commandHelperLabel(command) {
+    const normalized = String(command || "").trim().toLowerCase();
+    if (!normalized) return "";
+    if (/^ping\b/.test(normalized)) return "Reachability";
+    if (/^(tracert|traceroute)\b/.test(normalized)) return "Path test";
+    if (/^nslookup\b/.test(normalized)) return "DNS lookup";
+    if (/^ipconfig\b/.test(normalized)) return /\/all\b/.test(normalized) ? "Local config" : "IP config";
+    if (/^route print\b|^show ip route\b/.test(normalized)) return "Routes";
+    if (/^arp\b/.test(normalized)) return "ARP cache";
+    if (/^netstat\b/.test(normalized)) return "Connections";
+    if (/^nmap\b/.test(normalized)) return "Port check";
+    if (/^nc\b|^netcat\b/.test(normalized)) return "TCP check";
+    if (/^pwd\b|^cd\b/.test(normalized)) return "Path";
+    if (/^ls\b|^dir\b|^tree\b/.test(normalized)) return "List";
+    if (/^cat\b|^type\b/.test(normalized)) return "Read file";
+    if (/^grep\b|findstr\b/.test(normalized)) return "Filter";
+    if (/^ps\b|^tasklist\b/.test(normalized)) return "Processes";
+    if (/^kill\b|^taskkill\b/.test(normalized)) return "Stop process";
+    if (/^enable\b/.test(normalized)) return "Privileged mode";
+    if (/^configure terminal\b/.test(normalized)) return "Config mode";
+    if (/^show\b/.test(normalized)) return "Inspect";
+    return "";
+  }
+
+  function activeTaskFields(step = currentStep()) {
+    const objective = String(step?.objective || "Run the next focused check.").trim();
+    return [
+      ["Objective", objective],
+      ["Try", String(step?.commandHint || suggestedCommandForStep(step) || "Use the matching command.").replace(/^Try:\s*/i, "").trim()],
+      ["Look for", step?.evidenceHint || "Evidence that answers the task."],
+      ["Next", step?.nextAction || step?.nextObjective || "Use the result to choose the next check."]
+    ].filter(([, value]) => String(value || "").trim());
+  }
+
+  function renderActiveTaskElement(element, step = currentStep()) {
+    if (!element) return;
+    const fields = activeTaskFields(step);
+    element.classList.add("active-task-fields");
+    element.innerHTML = fields
+      .map(([label, value]) => `<span><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</span>`)
+      .join("");
+  }
+
   function pushUniqueCommandChoice(choices, command) {
     const normalized = String(command || "").trim().replace(/\s+/g, " ");
     if (!normalized) {
@@ -3315,11 +3359,12 @@
     grid.className = "terminal-mobile-command-grid";
 
     mobileCommandChoices().forEach((command) => {
+      const helper = commandHelperLabel(command);
       const button = document.createElement("button");
       button.type = "button";
       button.className = "terminal-mobile-command-choice";
       button.dataset.mobileCommandChoice = command;
-      button.textContent = command;
+      button.innerHTML = `<code>${escapeHtml(command)}</code>${helper ? `<span>${escapeHtml(helper)}</span>` : ""}`;
       button.addEventListener("click", () => runMobileCommandChoice(command));
       grid.appendChild(button);
     });
@@ -3849,8 +3894,8 @@
     fillText(
       els.beginnerLabCurrentTask,
       stageInfo
-        ? `Try this: ${step.objective}`
-        : `Try this: ${step.objective}`,
+        ? `Try this: ${step.firstAction || step.objective}`
+        : `Try this: ${step.firstAction || step.objective}`,
       { hideWhenEmpty: false }
     );
     if (els.beginnerLabProgressText) {
@@ -4087,7 +4132,7 @@
       els.taskCompleteDetails.hidden = true;
     }
     if (els.taskCompleteToggleBtn) {
-      els.taskCompleteToggleBtn.textContent = "What did I prove?";
+      els.taskCompleteToggleBtn.textContent = "Result details";
       els.taskCompleteToggleBtn.setAttribute("aria-expanded", "false");
     }
     fillText(els.taskCompleteProof, "");
@@ -4102,7 +4147,7 @@
       els.taskCompleteDetails.hidden = !nextExpanded;
     }
     if (els.taskCompleteToggleBtn) {
-      els.taskCompleteToggleBtn.textContent = nextExpanded ? "Hide note" : "What did I prove?";
+      els.taskCompleteToggleBtn.textContent = nextExpanded ? "Hide note" : "Result details";
       els.taskCompleteToggleBtn.setAttribute("aria-expanded", nextExpanded ? "true" : "false");
     }
   }
@@ -4129,7 +4174,7 @@
     const compactProof = shortCoachCopy(proof || "That command moved the task forward.", "That command moved the task forward.");
     const compactWhy = shortCoachCopy(why || "This result gave you evidence for the next decision.", "This result gave you evidence for the next decision.");
     const compactNext = shortCoachCopy(next || "Continue with the current task.", "Continue with the current task.");
-    const compactSummary = shortCoachCopy(summary || `Task complete: ${compactProof}`, `Task complete: ${compactProof}`);
+    const compactSummary = shortCoachCopy(summary || compactProof, compactProof);
 
     fillText(els.taskCompleteSummary, compactSummary, { hideWhenEmpty: false });
     fillText(els.taskCompleteProof, compactProof, { hideWhenEmpty: false });
@@ -4249,6 +4294,44 @@
     return "Needs Practice";
   }
 
+  function conciseReviewIssue(scenario = currentScenario(), stats = session.reviewStats || {}) {
+    const objectives = stats.successfulStepObjectives || [];
+    const lastObjective = objectives[objectives.length - 1] || scenario?.objective || "";
+    const text = `${scenario?.title || ""} ${scenario?.objective || ""} ${lastObjective}`.toLowerCase();
+    if (/\bdns\b|\bresolve\b|\bnslookup\b/.test(text)) return "DNS/name resolution";
+    if (/\breachab|\bping\b|\btimeout\b/.test(text)) return "Reachability";
+    if (/\broute\b|\btracert\b|\btraceroute\b|\bgateway\b/.test(text)) return "Network path";
+    if (/\bport\b|\bservice\b|\bnmap\b|\bnetstat\b/.test(text)) return "Service exposure";
+    if (/\bprocess\b|\bpid\b|\bkill\b|\btaskkill\b/.test(text)) return "Process state";
+    if (/\binterface\b|\bshutdown\b|\bip address\b|\brunning-config\b/.test(text)) return "Device state";
+    if (/\blog\b|\bnote\b|\bfile\b|\bconfig\b/.test(text)) return "Evidence artifact";
+    return "Ticket evidence confirmed";
+  }
+
+  function conciseReviewConcept(scenario = currentScenario()) {
+    const text = `${scenario?.title || ""} ${scenario?.objective || ""} ${(scenario?.commandFocus || []).join(" ")}`.toLowerCase();
+    if (/\bping\b|\bnslookup\b|\bdns\b/.test(text)) return "Reachability before DNS";
+    if (/\btracert\b|\btraceroute\b|\broute\b/.test(text)) return "Path before blame";
+    if (/\bipconfig\b|\bgateway\b|\badapter\b/.test(text)) return "Local config first";
+    if (/\bnmap\b|\bport\b|\bservice\b/.test(text)) return "Targeted service checks";
+    if (/\bprocess\b|\bkill\b|\btaskkill\b/.test(text)) return "Verify before stopping";
+    if (/\bshow\b|\binterface\b|\bcisco\b/.test(text)) return "Inspect, change, verify";
+    if (/\blog\b|\bgrep\b|\bfindstr\b|\bcat\b|\btype\b/.test(text)) return "Filter for evidence";
+    return "Evidence-led troubleshooting";
+  }
+
+  function conciseReviewTakeaway(scenario = currentScenario(), verificationScore = null) {
+    const text = `${scenario?.title || ""} ${scenario?.objective || ""}`.toLowerCase();
+    if (/\bdns\b|\bnslookup\b|\bresolve\b/.test(text)) return "Prove the network path before blaming DNS.";
+    if (/\bping\b|\breachab/.test(text)) return "Reachability narrows the fault; it does not close the ticket.";
+    if (/\btracert\b|\btraceroute\b|\broute\b/.test(text)) return "Trace the path when reachability alone is not enough.";
+    if (/\binterface\b|\bcisco\b|\bconfig\b/.test(text)) return "On network gear, inspect first and verify after every change.";
+    if (/\bprocess\b|\bkill\b|\btaskkill\b/.test(text)) return "Stop only the proven process and confirm it stayed stopped.";
+    return verificationScore === 100
+      ? "Close tickets with evidence, not assumptions."
+      : "Add a final verification before calling the issue resolved.";
+  }
+
   function renderMissionReview(scenario = currentScenario()) {
     if (!els.missionReviewCard) {
       return;
@@ -4316,6 +4399,14 @@
       ? "Strong technicians do not stop at a likely fix. They confirm the result and leave a clear trail of evidence."
       : "Good support and security work is not just about finding an answer. It is about using evidence, choosing safe actions, and proving the result.";
 
+    const uniqueCommands = Array.from(new Set((stats.submittedCommands || [])
+      .map((command) => String(command || "").trim().split(/\s+/)[0])
+      .filter(Boolean)));
+    const commandsUsed = uniqueCommands.length ? uniqueCommands.join(", ") : "No commands recorded";
+    const issueFound = conciseReviewIssue(scenario, stats);
+    const conceptPracticed = conciseReviewConcept(scenario);
+    const reviewTakeaway = conciseReviewTakeaway(scenario, verificationScore);
+
     els.missionReviewCard.hidden = !session.scenarioCompleted || session.missionReviewDismissed;
     els.missionReviewCard.setAttribute("aria-hidden", els.missionReviewCard.hidden ? "true" : "false");
     if (!session.scenarioCompleted || session.missionReviewDismissed) {
@@ -4328,26 +4419,26 @@
       session.debugReviewKey = reviewKey;
     }
 
-    fillText(els.missionReviewOverall, `Overall: ${overallScore === null ? "Completed" : categorySummary(overallScore)}`, { hideWhenEmpty: false });
+    fillText(els.missionReviewOverall, `Review: ${overallScore === null ? "Completed" : categorySummary(overallScore)}`, { hideWhenEmpty: false });
 
-    fillText(els.reviewTroubleshootingScore, hasScoringData ? `${troubleshootingLogic}%` : "Completed", { hideWhenEmpty: false });
-    fillText(els.reviewTroubleshootingFeedback, hasScoringData ? (troubleshootingLogic >= 75 ? "You followed a mostly logical troubleshooting path." : "Your path reached the objective, but repeated incorrect attempts reduced the diagnostic quality.") : "You completed the assigned mission flow.");
+    fillText(els.reviewTroubleshootingScore, commandsUsed, { hideWhenEmpty: false });
+    fillText(els.reviewTroubleshootingFeedback, `${stats.totalSubmitted || 0} submitted. ${stats.incorrectCommands || 0} off-target.`);
 
-    fillText(els.reviewAccuracyScore, hasScoringData ? `${commandAccuracy}%` : "Not assessed", { hideWhenEmpty: false });
-    fillText(els.reviewAccuracyFeedback, hasScoringData ? (commandAccuracy >= 80 ? "Most submitted commands moved the task forward." : "Several submitted commands did not support the current objective.") : "Detailed command-attempt scoring was not available for this completion record.");
+    fillText(els.reviewAccuracyScore, issueFound, { hideWhenEmpty: false });
+    fillText(els.reviewAccuracyFeedback, "Use the command output as the ticket evidence.");
 
-    fillText(els.reviewEfficiencyScore, hasScoringData ? `${efficiency}%` : "Not assessed", { hideWhenEmpty: false });
-    fillText(els.reviewEfficiencyFeedback, hasScoringData ? (efficiency >= 75 ? "You completed the work with a reasonable command footprint." : "You completed the mission, but extra commands reduced efficiency.") : "Efficiency was not assessed for this completion record.");
+    fillText(els.reviewEfficiencyScore, conceptPracticed, { hideWhenEmpty: false });
+    fillText(els.reviewEfficiencyFeedback, "Practice the sequence, not command spam.");
 
     fillText(els.reviewVerificationScore, verificationScore === null ? (session.scenarioCompleted ? "Complete" : "Not assessed") : verificationScore === 100 ? "Complete" : "Needs stronger closure", { hideWhenEmpty: false });
-    fillText(els.reviewVerificationFeedback, verificationScore === null ? (session.scenarioCompleted ? "The mission reached a completed state." : "This scenario did not provide enough verification metadata to assess closure.") : verificationScore === 100 ? "You confirmed the result before closing the task." : "The mission ended without a strong verification signal.");
+    fillText(els.reviewVerificationFeedback, verificationScore === null ? "Mission reached a completed state." : verificationScore === 100 ? "Result confirmed before close." : "Add a clearer final verification.");
 
     fillText(els.reviewRiskScore, riskScore === null ? "No risky actions detected" : stats.riskyActions.length ? "Coaching needed" : "Good", { hideWhenEmpty: false });
-    fillText(els.reviewRiskFeedback, riskScore === null ? "No risky actions were detected during this mission." : stats.riskyActions.length ? stats.riskyActions.map((entry) => entry.reason).join(" ") : "No risky or destructive actions were detected.");
+    fillText(els.reviewRiskFeedback, riskScore === null ? "No risky actions detected." : stats.riskyActions.length ? stats.riskyActions.map((entry) => entry.reason).join(" ") : "No risky actions detected.");
 
     renderListItems(els.missionReviewStrengths, strengths);
     renderListItems(els.missionReviewImprovements, improvements.length ? improvements : ["Keep using evidence-led sequencing and verification discipline."]);
-    fillText(els.missionReviewTakeaway, takeaway, { hideWhenEmpty: false });
+    fillText(els.missionReviewTakeaway, reviewTakeaway, { hideWhenEmpty: false });
   }
 
   function ensureMissionReviewCloseButton() {
@@ -5161,7 +5252,7 @@
       els.beginnerLabCurrentMission.textContent = `Problem: ${scenario.title}`;
     }
     if (els.beginnerLabCurrentTask && beginnerTrack && step) {
-      els.beginnerLabCurrentTask.textContent = `Try this: ${step.objective}`;
+      els.beginnerLabCurrentTask.textContent = `Try this: ${step.firstAction || step.objective}`;
     }
   }
 
@@ -5244,9 +5335,14 @@
       els.environmentSummary.textContent = environmentSummaryText(scenario);
     }
     renderMachineContexts(scenario);
-    els.stepObjective.textContent = challengePresentation ? challengeTaskText(scenario) : step.objective;
+    if (challengePresentation) {
+      els.stepObjective.classList.remove("active-task-fields");
+      els.stepObjective.textContent = challengeTaskText(scenario);
+    } else {
+      renderActiveTaskElement(els.stepObjective, step);
+    }
     if (els.beginnerCurrentTaskText) {
-      els.beginnerCurrentTaskText.textContent = challengePresentation ? challengeTaskText(scenario) : step.objective;
+      els.beginnerCurrentTaskText.textContent = challengePresentation ? challengeTaskText(scenario) : `${step.firstAction || "Start here"} ${step.objective}`;
     }
     els.progressSummary.textContent = stageInfo
       ? beginnerTrack && level
@@ -5271,7 +5367,9 @@
       els.mobileStageBriefing.hidden = false;
       els.mobileStageBriefing.textContent = `Where you are now: ${stageInfo.stage.title}`;
     }
-    els.mobileStepObjective.textContent = challengePresentation ? challengeTaskText(scenario) : step.objective;
+    els.mobileStepObjective.textContent = challengePresentation
+      ? challengeTaskText(scenario)
+      : `${step.firstAction || "Start here"} ${step.objective}`;
     if (els.mobileMachineContext) {
       els.mobileMachineContext.textContent = primaryMachineContextText(scenario);
     }
@@ -8384,9 +8482,10 @@
       setMascotState(session.stepIndex + (evaluation.advanceBy || 1) >= totalStepsForScenario(currentScenario()) ? "excited" : "nicework", "Nice — you found it.");
       const nextStep = currentScenario().steps?.[session.stepIndex + (evaluation.advanceBy || 1)] || null;
       const proofText = String(evaluation.feedback || step.successFeedback || "Good. That command moved the investigation forward.").trim();
-      const whyText = String(step.whyThisMatters || step.completionSummary || "").trim();
+      const whyText = String(step.successMeaning || step.whyThisMatters || step.completionSummary || "").trim();
       const nextText = String(
         ((evaluation.advanceBy || 1) > 1 ? nextStep?.objective : "")
+        || step.nextAction
         || step.nextObjective
         || nextStep?.objective
         || "Continue with the current task."
@@ -8398,12 +8497,12 @@
         printCoachLine(tinyRewardText(step, execution), "success");
       } else {
         renderTaskCompleteCard({
-          summary: `Task complete: ${proofText}`,
+          summary: proofText,
           proof: proofText,
           why: [whyText, realWorldText].filter(Boolean).join(" "),
           next: nextText
         });
-        printCoachLine(`Task complete. Next: ${nextText}`, "success");
+        printCoachLine(`${proofText} Next: ${nextText}`, "success");
         if (evaluation.coach) {
           printCoachLine(evaluation.coach);
         }
@@ -8436,14 +8535,14 @@
     } else {
       printCoachLine(
         isBeginnerMode()
-          ? "That command did not answer the current task."
-          : "That did not answer the current task yet. Try using the command panel or request a hint.",
+          ? "Not quite. That does not answer this task."
+          : "Not quite. That command does not answer this task.",
         evaluation.classification === "invalid_command" ? "error" : "coach"
       );
       printCoachLine(
         isBeginnerMode()
-          ? progressiveWrongAttemptGuidance(step, session.attemptsForStep, currentScenario()).replace("Open Commands", "Open Command Help")
-          : progressiveWrongAttemptGuidance(step, session.attemptsForStep, currentScenario()),
+          ? (step.failureHint || progressiveWrongAttemptGuidance(step, session.attemptsForStep, currentScenario())).replace("Open Commands", "Open Command Help")
+          : (step.failureHint || progressiveWrongAttemptGuidance(step, session.attemptsForStep, currentScenario())),
         "dim"
       );
     }

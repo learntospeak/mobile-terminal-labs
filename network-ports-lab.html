@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Ports Lab</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./style.css?v=20260429micro1">
+  <link rel="stylesheet" href="./network-ports-lab.css?v=20260510ports1">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="./supabase-config.js?v=20260421sup1" defer></script>
+  <script src="./app-data.js?v=20260510ports1" defer></script>
+  <script src="./network-ports-lab.js?v=20260510ports1" defer></script>
+</head>
+<body class="ports-lab-page">
+  <div class="rack-room">
+    <div class="router-shell ports-lab-shell">
+      <div class="router-top">
+        <div>
+          <div class="router-brand">NET-LAB PORT WATCH PANEL</div>
+          <div class="ports-subbrand">TCP, UDP, services, and exposure risk</div>
+        </div>
+        <div class="router-leds" aria-hidden="true">
+          <span class="led led-green led-blink"></span>
+          <span class="led led-yellow led-blink-slow"></span>
+          <span class="led led-green"></span>
+          <span class="led led-red"></span>
+        </div>
+      </div>
+
+      <header class="ports-hero">
+        <div class="ports-hero-copy">
+          <p class="ports-kicker">Supporting Concepts</p>
+          <h1>Network Ports Lab</h1>
+          <p>Learn how TCP and UDP ports identify services, why listening ports matter, and which common services deserve extra care when exposed.</p>
+          <div class="ports-hero-actions">
+            <a class="ports-nav-link" href="./index.html">Home</a>
+            <a class="ports-nav-link ports-nav-link-strong" href="#portsQuiz">Take Quiz</a>
+          </div>
+        </div>
+        <div class="ports-visual" aria-label="Packet moving from a client to listening services">
+          <div class="ports-node ports-node-client">
+            <span class="ports-node-icon">PC</span>
+            <span>Client</span>
+          </div>
+          <div class="ports-flow-line">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ports-node ports-node-server">
+            <span class="ports-node-icon">SRV</span>
+            <span>Server</span>
+          </div>
+          <div class="ports-service-stack" aria-hidden="true">
+            <span>22</span>
+            <span>53</span>
+            <span>443</span>
+            <span>3389</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="ports-main">
+        <section class="ports-panel ports-basics-panel">
+          <div>
+            <p class="ports-kicker">Core Idea</p>
+            <h2>IP Finds The Host. Port Finds The App.</h2>
+            <p>A socket combines an IP address, transport protocol, and port number, such as <code>192.168.1.10:443/tcp</code>. If a service is listening, it is waiting for traffic on that port.</p>
+          </div>
+          <div class="ports-basics-grid">
+            <article>
+              <span class="ports-mini-icon">TCP</span>
+              <h3>TCP</h3>
+              <p>Connection-oriented, ordered, and reliable. Common for web, SSH, email, SMB, databases, and remote desktop.</p>
+            </article>
+            <article>
+              <span class="ports-mini-icon">UDP</span>
+              <h3>UDP</h3>
+              <p>Connectionless and lightweight. Common for DNS, DHCP, NTP, VoIP, VPNs, discovery, and streaming.</p>
+            </article>
+            <article>
+              <span class="ports-mini-icon">LST</span>
+              <h3>Listening</h3>
+              <p>A listening service accepts inbound traffic. Firewalls, access controls, and patching decide how risky that exposure is.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="ports-panel">
+          <div class="ports-section-head">
+            <div>
+              <p class="ports-kicker">Port Number Ranges</p>
+              <h2>The Three Big Buckets</h2>
+            </div>
+          </div>
+          <div class="ports-range-track">
+            <article>
+              <strong>0-1023</strong>
+              <span>Well-known ports</span>
+              <p>Standard services like SSH, DNS, HTTP, HTTPS, SMTP, and NTP. On many systems, binding these ports requires elevated privileges.</p>
+            </article>
+            <article>
+              <strong>1024-49151</strong>
+              <span>Registered ports</span>
+              <p>Common vendor and application services, including databases, admin tools, logging, and many custom apps.</p>
+            </article>
+            <article>
+              <strong>49152-65535</strong>
+              <span>Dynamic or ephemeral ports</span>
+              <p>Usually temporary client-side ports used for outbound connections, though operating systems can vary their ephemeral range.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="ports-panel">
+          <div class="ports-section-head">
+            <div>
+              <p class="ports-kicker">Reference</p>
+              <h2>Common Listening Ports</h2>
+            </div>
+            <p>Each card shows what the service is for, the transport protocol, and the kind of vulnerability pattern to watch for.</p>
+          </div>
+          <div id="portsCategoryGrid" class="ports-category-grid"></div>
+        </section>
+
+        <section id="portsQuiz" class="ports-panel ports-quiz-panel">
+          <div class="ports-section-head">
+            <div>
+              <p class="ports-kicker">Questionnaire</p>
+              <h2>Network Ports Check</h2>
+            </div>
+            <div id="portsQuizScore" class="ports-score-pill">Score 0 / 0</div>
+          </div>
+          <div id="portsQuizList" class="ports-quiz-list"></div>
+          <div class="ports-quiz-actions">
+            <button id="portsResetQuizBtn" class="ports-nav-link ports-nav-link-strong" type="button">Retry Quiz</button>
+          </div>
+        </section>
+      </main>
+
+      <div class="router-ports" aria-hidden="true">
+        <div class="port connected"><span class="cable"></span></div>
+        <div class="port active"></div>
+        <div class="port connected"><span class="cable cable-green"></span></div>
+        <div class="port"></div>
+        <div class="port connected"><span class="cable cable-yellow"></span></div>
+        <div class="port active"></div>
+        <div class="port"></div>
+        <div class="port"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

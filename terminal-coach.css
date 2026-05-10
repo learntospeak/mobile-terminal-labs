@@ -512,6 +512,21 @@
   overflow-wrap: anywhere;
 }
 
+.active-task-fields {
+  display: grid;
+  gap: 6px;
+  line-height: 1.35 !important;
+}
+
+.active-task-fields span {
+  display: block;
+}
+
+.active-task-fields strong {
+  color: #7dd3fc;
+  font-weight: 900;
+}
+
 .support-card-primary {
   border-color: rgba(56, 189, 248, 0.34);
   background: linear-gradient(180deg, rgba(10, 28, 44, 0.96) 0%, rgba(7, 17, 30, 0.99) 100%);
@@ -563,6 +578,8 @@
 }
 
 .command-family-chip {
+  display: grid;
+  gap: 2px;
   border: 1px solid rgba(51, 65, 85, 0.9);
   border-radius: 8px;
   background: rgba(7, 11, 16, 0.92);
@@ -572,6 +589,16 @@
   font-size: 12px;
   font-weight: 800;
   padding: 7px 9px;
+}
+
+.command-family-chip code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+.command-family-chip span {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .command-family-chip:hover,
@@ -3395,6 +3422,8 @@
   }
 
   .terminal-mobile-command-choice {
+    display: grid;
+    gap: 2px;
     min-height: 46px;
     margin: 0;
     padding: 10px;
@@ -3408,6 +3437,18 @@
     text-align: left;
     overflow-wrap: anywhere;
     touch-action: manipulation;
+  }
+
+  .terminal-mobile-command-choice code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+  }
+
+  .terminal-mobile-command-choice span {
+    color: #94a3b8;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 11px;
+    font-weight: 800;
   }
 
   .terminal-mobile-command-choice::before {
