@@ -27,7 +27,7 @@
       renderState({
         kicker: "Account",
         title: "Confirmation Problem",
-        copy: "The confirmation link returned an error. You can close this tab and try again from the original app.",
+        copy: "The confirmation link returned an error. Use Home to go back to the app, then try the confirmation email again.",
         badges: ["Email confirmation"],
         bannerTone: "error",
         bannerText: errorDescription
@@ -41,11 +41,11 @@
         kicker: "Account",
         title: "Email Confirmed",
         copy: signedIn && profile.email
-          ? "Your email for " + profile.email + " has been confirmed. You can close this tab and return to the app."
-          : "Your email confirmation link was accepted. You can close this tab and return to the app.",
+          ? "Your email for " + profile.email + " has been confirmed. Use Home to go back to the app."
+          : "Your email confirmation link was accepted. Use Home to go back to the app.",
         badges: signedIn && profile.email ? [profile.email, "Confirmation complete"] : ["Confirmation complete"],
         bannerTone: "success",
-        bannerText: "Confirmation finished. Go back to the original app tab and log in with your email address if needed."
+        bannerText: "Confirmation finished. Go back to the app and log in with your email address if needed."
       });
       clearHash();
       return;
@@ -54,8 +54,8 @@
     renderState({
       kicker: "Account",
       title: "Confirmation Page Ready",
-      copy: "This page is set up for Supabase email confirmation links. After confirming your email, close this tab and return to the app.",
-      badges: ["Return to App"],
+      copy: "This page is ready for email confirmation links. Use Home to return to the learning hub.",
+      badges: ["Home", "Account"],
       bannerTone: "info",
       bannerText: "If you opened this page manually, go back to the app and use the confirmation email link instead."
     });

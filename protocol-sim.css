@@ -701,12 +701,16 @@
   }
 
   .selector-grid {
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(216px, 72vw);
+    display: flex;
     overflow-x: auto;
     padding-bottom: 4px;
     -webkit-overflow-scrolling: touch;
     gap: 10px;
+  }
+
+  .scenario-selector-btn {
+    flex: 0 0 min(280px, 82vw);
+    width: min(280px, 82vw);
   }
 
   .simulation-display,

@@ -1706,16 +1706,23 @@
     const ticketId = scenario?.ticketId || `${scenarioTicketPrefix(scenario, shell)}-TBD`;
     const intro = firstSentence(scenario?.scenarioIntro || "");
     const symptom = inferReportedSymptom(scenario, shell);
-    const caution = inferDoNotAssumeNote(scenario);
-    const verification = inferProfessionalVerificationNote(scenario);
+    const objective = intro || `Objective: ${String(summary || scenario.objective || "").replace(/\.$/, "")}.`;
 
     return [
       `Ticket ${ticketId}: ${scenario.title}.`,
       symptom,
-      intro || `Objective: ${String(summary || scenario.objective || "").replace(/\.$/, "")}.`,
-      caution,
-      verification
+      shortenSentence(objective, 120)
     ].filter(Boolean).join(" ");
+  }
+
+  function shortenSentence(value, maxLength) {
+    const text = String(value || "").trim();
+    if (!text || text.length <= maxLength) {
+      return text;
+    }
+
+    const clipped = text.slice(0, maxLength).replace(/\s+\S*$/, "");
+    return `${clipped.replace(/[.,;:]+$/, "")}.`;
   }
 
   function inferLearningObjectives(scenario) {

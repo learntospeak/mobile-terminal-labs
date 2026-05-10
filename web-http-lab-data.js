@@ -1631,6 +1631,7 @@
             buttonLabel: "Next",
             targetKey: "intercept-on"
           }
+        }
         ]
       },
       {
@@ -1909,32 +1910,9 @@
           }
         ]
       }
-    ],
-    useCases: [
-      {
-        prompt: "A browser wants the /profile page from a web server. What request should it create?",
-        options: ["GET /profile", "200 OK", "POST /profile"],
-        answer: "GET /profile",
-        why: "GET is the browser asking the server to send back the page."
-      },
-      {
-        prompt: "The server found the page and handled the request successfully. What should come back?",
-        options: ["HTTP/1.1 200 OK", "GET /profile", "HTTP/1.1 404 Not Found"],
-        answer: "HTTP/1.1 200 OK",
-        why: "200 OK is the normal success response after the server handles the page request."
-      },
-      {
-        prompt: "Which version hides the request while it crosses the network?",
-        options: ["HTTPS", "HTTP", "Locked Browser Tab"],
-        answer: "HTTPS",
-        why: "HTTPS protects the request while it travels."
-      },
-      {
-        prompt: "The browser already received the page response. What should happen next?",
-        options: ["Render the page", "Repeat GET /profile", "Drop the response"],
-        answer: "Render the page",
-        why: "Once the response arrives, the browser loads the page for the user."
-      }
-    ]
+    ];
+
+  window.WebHttpLabData = {
+    lessons: lessons
   };
 })();

@@ -1479,6 +1479,10 @@
   opacity: 1;
 }
 
+.terminal-controls button {
+  font-size: 0;
+}
+
 .terminal-controls #needHelpBtn::before {
   font-size: 12px;
 }
@@ -3889,4 +3893,11 @@
 .command-card-toggle::before {
   right: 8px;
   top: 7px;
+}
+
+.terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-controls button,
+.terminal-page[data-environment-category="windows"].terminal-beginner-mode #previousScenarioBtn,
+.terminal-page[data-environment-category="windows"].terminal-beginner-mode #resetScenarioBtn,
+.terminal-page[data-environment-category="windows"].terminal-beginner-mode #nextScenarioBtn {
+  font-size: 0;
 }
