@@ -6,20 +6,17 @@
   <title>Network Ports Lab</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./style.css?v=20260429micro1">
-  <link rel="stylesheet" href="./network-ports-lab.css?v=20260510ports1">
+  <link rel="stylesheet" href="./network-ports-lab.css?v=20260510ports2">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="./supabase-config.js?v=20260421sup1" defer></script>
   <script src="./app-data.js?v=20260510ports1" defer></script>
-  <script src="./network-ports-lab.js?v=20260510ports1" defer></script>
+  <script src="./network-ports-lab.js?v=20260510ports2" defer></script>
 </head>
 <body class="ports-lab-page">
   <div class="rack-room">
     <div class="router-shell ports-lab-shell">
       <div class="router-top">
-        <div>
-          <div class="router-brand">NET-LAB PORT WATCH PANEL</div>
-          <div class="ports-subbrand">TCP, UDP, services, and exposure risk</div>
-        </div>
+        <div class="ports-top-spacer" aria-hidden="true"></div>
         <div class="router-leds" aria-hidden="true">
           <span class="led led-green led-blink"></span>
           <span class="led led-yellow led-blink-slow"></span>
@@ -35,29 +32,16 @@
           <p>Learn how TCP and UDP ports identify services, why listening ports matter, and which common services deserve extra care when exposed.</p>
           <div class="ports-hero-actions">
             <a class="ports-nav-link" href="./index.html">Home</a>
+            <a class="ports-nav-link" href="#portsReference">Ports</a>
             <a class="ports-nav-link ports-nav-link-strong" href="#portsQuiz">Take Quiz</a>
           </div>
         </div>
-        <div class="ports-visual" aria-label="Packet moving from a client to listening services">
-          <div class="ports-node ports-node-client">
-            <span class="ports-node-icon">PC</span>
-            <span>Client</span>
-          </div>
-          <div class="ports-flow-line">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="ports-node ports-node-server">
-            <span class="ports-node-icon">SRV</span>
-            <span>Server</span>
-          </div>
-          <div class="ports-service-stack" aria-hidden="true">
-            <span>22</span>
-            <span>53</span>
-            <span>443</span>
-            <span>3389</span>
-          </div>
+        <div class="ports-quick-map" aria-label="Quick port examples">
+          <span><strong>22</strong> SSH</span>
+          <span><strong>53</strong> DNS</span>
+          <span><strong>443</strong> HTTPS</span>
+          <span><strong>445</strong> SMB</span>
+          <span><strong>3389</strong> RDP</span>
         </div>
       </header>
 
@@ -113,13 +97,13 @@
           </div>
         </section>
 
-        <section class="ports-panel">
+        <section id="portsReference" class="ports-panel">
           <div class="ports-section-head">
             <div>
               <p class="ports-kicker">Reference</p>
               <h2>Common Listening Ports</h2>
             </div>
-            <p>Each card shows what the service is for, the transport protocol, and the kind of vulnerability pattern to watch for.</p>
+            <p>Choose a category to open a focused port list.</p>
           </div>
           <div id="portsCategoryGrid" class="ports-category-grid"></div>
         </section>
@@ -134,10 +118,25 @@
           </div>
           <div id="portsQuizList" class="ports-quiz-list"></div>
           <div class="ports-quiz-actions">
+            <button id="portsNextQuizBtn" class="ports-nav-link ports-nav-link-strong" type="button" hidden>Next Question</button>
             <button id="portsResetQuizBtn" class="ports-nav-link ports-nav-link-strong" type="button">Retry Quiz</button>
           </div>
         </section>
       </main>
+
+      <div id="portsModal" class="ports-modal" hidden>
+        <div class="ports-modal-backdrop" data-ports-modal-close></div>
+        <section class="ports-modal-shell" role="dialog" aria-modal="true" aria-labelledby="portsModalTitle">
+          <div class="ports-modal-head">
+            <div>
+              <p class="ports-kicker">Port Category</p>
+              <h2 id="portsModalTitle">Ports</h2>
+            </div>
+            <button id="portsModalCloseBtn" class="ports-modal-close" type="button">Close</button>
+          </div>
+          <div id="portsModalBody" class="ports-modal-body"></div>
+        </section>
+      </div>
 
       <div class="router-ports" aria-hidden="true">
         <div class="port connected"><span class="cable"></span></div>

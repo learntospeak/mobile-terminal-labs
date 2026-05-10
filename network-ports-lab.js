@@ -128,7 +128,8 @@
 
   const state = {
     answered: {},
-    correct: 0
+    correct: 0,
+    currentQuestionIndex: 0
   };
 
   function port(number, name, protocols, use, watch, risk) {
@@ -165,35 +166,72 @@
     }
 
     grid.innerHTML = categories.map(function (category) {
-      const cards = category.ports.map(function (item) {
+      return [
+        "<button class=\"ports-category-card\" type=\"button\" data-ports-category=\"" + escapeHtml(category.title) + "\">",
+        "  <span class=\"ports-category-icon\">" + escapeHtml(category.icon) + "</span>",
+        "  <span class=\"ports-category-title\">" + escapeHtml(category.title) + "</span>",
+        "  <span class=\"ports-category-count\">" + category.ports.length + " ports</span>",
+        "</button>"
+      ].join("");
+    }).join("");
+
+    grid.querySelectorAll("[data-ports-category]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        openCategoryModal(button.getAttribute("data-ports-category"));
+      });
+    });
+  }
+
+  function renderProtocols(protocols) {
+    return "<div class=\"ports-protocols\">" + protocols.map(function (protocol) {
+      return "<span>" + escapeHtml(protocol) + "</span>";
+    }).join("") + "</div>";
+  }
+
+  function openCategoryModal(title) {
+    const category = categories.find(function (item) {
+      return item.title === title;
+    });
+    const modal = document.getElementById("portsModal");
+    const modalTitle = document.getElementById("portsModalTitle");
+    const modalBody = document.getElementById("portsModalBody");
+    if (!category || !modal || !modalTitle || !modalBody) {
+      return;
+    }
+
+    modalTitle.textContent = category.title;
+    modalBody.innerHTML = [
+      "<div class=\"ports-table-head\">",
+      "  <span>Port</span>",
+      "  <span>Service</span>",
+      "  <span>Transport</span>",
+      "  <span>Used For</span>",
+      "  <span>Watch For</span>",
+      "  <span>Risk</span>",
+      "</div>",
+      category.ports.map(function (item) {
         return [
-          "<article class=\"ports-port-card\">",
-          "  <div class=\"ports-port-top\">",
-          "    <div>",
-          "      <div class=\"ports-port-number\">" + escapeHtml(item.number) + "</div>",
-          "      <div class=\"ports-port-name\">" + escapeHtml(item.name) + "</div>",
-          "    </div>",
-          "    <div class=\"ports-protocols\">" + item.protocols.map(function (protocol) {
-            return "<span>" + escapeHtml(protocol) + "</span>";
-          }).join("") + "</div>",
-          "  </div>",
+          "<article class=\"ports-port-row\">",
+          "  <div class=\"ports-port-number\">" + escapeHtml(item.number) + "</div>",
+          "  <div class=\"ports-port-name\">" + escapeHtml(item.name) + "</div>",
+          "  " + renderProtocols(item.protocols),
           "  <p>" + escapeHtml(item.use) + "</p>",
-          "  <p class=\"ports-watch\">" + escapeHtml(item.watch) + "</p>",
+          "  <p>" + escapeHtml(item.watch) + "</p>",
           "  <span class=\"ports-risk " + escapeHtml(item.risk) + "\">" + escapeHtml(riskLabel(item.risk)) + "</span>",
           "</article>"
         ].join("");
-      }).join("");
+      }).join("")
+    ].join("");
+    modal.hidden = false;
+    document.body.classList.add("ports-modal-open");
+  }
 
-      return [
-        "<section class=\"ports-category\">",
-        "  <div class=\"ports-category-head\">",
-        "    <span class=\"ports-category-icon\">" + escapeHtml(category.icon) + "</span>",
-        "    <h3>" + escapeHtml(category.title) + "</h3>",
-        "  </div>",
-        "  <div class=\"ports-port-grid\">" + cards + "</div>",
-        "</section>"
-      ].join("");
-    }).join("");
+  function closeCategoryModal() {
+    const modal = document.getElementById("portsModal");
+    if (modal) {
+      modal.hidden = true;
+    }
+    document.body.classList.remove("ports-modal-open");
   }
 
   function scoreText() {
@@ -215,7 +253,8 @@
       summaryText: scoreText(),
       state: {
         answered: state.answered,
-        correct: state.correct
+        correct: state.correct,
+        currentQuestionIndex: state.currentQuestionIndex
       }
     });
   }
@@ -270,6 +309,8 @@
         toast: false
       });
     }
+
+    updateQuizControls();
   }
 
   function renderQuiz() {
@@ -278,36 +319,95 @@
       return;
     }
 
-    list.innerHTML = quiz.map(function (item, questionIndex) {
-      const options = item.options.map(function (option, optionIndex) {
-        return "<button class=\"ports-quiz-option\" type=\"button\" data-option=\"" + optionIndex + "\">" + escapeHtml(option) + "</button>";
-      }).join("");
+    if (Object.keys(state.answered).length >= quiz.length && state.currentQuestionIndex >= quiz.length) {
+      list.innerHTML = [
+        "<article class=\"ports-quiz-finished\">",
+        "  <p class=\"ports-quiz-progress\">Complete</p>",
+        "  <h3>Final score: " + state.correct + " / " + quiz.length + "</h3>",
+        "  <p>Review any categories above, then retry the quiz when you are ready.</p>",
+        "</article>"
+      ].join("");
+      updateQuizControls();
+      return;
+    }
+
+    state.currentQuestionIndex = Math.min(Math.max(0, state.currentQuestionIndex), quiz.length - 1);
+    const item = quiz[state.currentQuestionIndex];
+    const answeredOption = state.answered[state.currentQuestionIndex];
+    const options = item.options.map(function (option, optionIndex) {
+      const classes = ["ports-quiz-option"];
+      if (answeredOption !== undefined) {
+        if (optionIndex === item.answer) {
+          classes.push("is-correct");
+        } else if (optionIndex === answeredOption) {
+          classes.push("is-wrong");
+        }
+      }
 
       return [
-        "<article class=\"ports-quiz-question\" data-ports-question=\"" + questionIndex + "\">",
-        "  <div class=\"ports-quiz-prompt\">" + (questionIndex + 1) + ". " + escapeHtml(item.prompt) + "</div>",
-        "  <div class=\"ports-quiz-options\">" + options + "</div>",
-        "  <div class=\"ports-quiz-feedback\" aria-live=\"polite\"></div>",
-        "</article>"
+        "<button class=\"" + classes.join(" ") + "\" type=\"button\" data-option=\"" + optionIndex + "\"",
+        answeredOption !== undefined ? " disabled" : "",
+        ">",
+        escapeHtml(option),
+        "</button>"
       ].join("");
     }).join("");
 
-    list.querySelectorAll(".ports-quiz-question").forEach(function (question) {
-      const questionIndex = Number(question.getAttribute("data-ports-question"));
-      question.querySelectorAll(".ports-quiz-option").forEach(function (button) {
-        button.addEventListener("click", function () {
-          handleAnswer(questionIndex, Number(button.getAttribute("data-option")));
-        });
+    const feedbackText = answeredOption === undefined
+      ? ""
+      : (answeredOption === item.answer ? "Correct. " : "Not quite. ") + item.explanation;
+    const feedbackClass = answeredOption === undefined
+      ? "ports-quiz-feedback"
+      : "ports-quiz-feedback " + (answeredOption === item.answer ? "good" : "bad");
+
+    list.innerHTML = [
+      "<article class=\"ports-quiz-question\" data-ports-question=\"" + state.currentQuestionIndex + "\">",
+      "  <div class=\"ports-quiz-progress\">Question " + (state.currentQuestionIndex + 1) + " of " + quiz.length + "</div>",
+      "  <div class=\"ports-quiz-prompt\">" + escapeHtml(item.prompt) + "</div>",
+      "  <div class=\"ports-quiz-options\">" + options + "</div>",
+      "  <div class=\"" + feedbackClass + "\" aria-live=\"polite\">" + escapeHtml(feedbackText) + "</div>",
+      "</article>"
+    ].join("");
+
+    list.querySelectorAll(".ports-quiz-option").forEach(function (button) {
+      button.addEventListener("click", function () {
+        handleAnswer(state.currentQuestionIndex, Number(button.getAttribute("data-option")));
       });
     });
+
+    updateQuizControls();
   }
 
   function resetQuiz() {
     state.answered = {};
     state.correct = 0;
+    state.currentQuestionIndex = 0;
     renderQuiz();
     updateScore();
     persistProgress();
+  }
+
+  function nextQuizQuestion() {
+    if (state.answered[state.currentQuestionIndex] === undefined) {
+      return;
+    }
+
+    state.currentQuestionIndex += 1;
+    renderQuiz();
+    updateScore();
+    persistProgress();
+  }
+
+  function updateQuizControls() {
+    const nextBtn = document.getElementById("portsNextQuizBtn");
+    if (!nextBtn) {
+      return;
+    }
+
+    const complete = state.currentQuestionIndex >= quiz.length;
+    const answeredCurrent = state.answered[state.currentQuestionIndex] !== undefined;
+    nextBtn.hidden = complete || !answeredCurrent;
+    nextBtn.textContent = state.currentQuestionIndex >= quiz.length - 1 ? "Finish Quiz" : "Next Question";
   }
 
   function restoreSavedProgress() {
@@ -324,27 +424,8 @@
 
     state.answered = savedState.answered || {};
     state.correct = Number(savedState.correct) || 0;
-    Object.keys(state.answered).forEach(function (questionIndexText) {
-      const questionIndex = Number(questionIndexText);
-      const optionIndex = Number(state.answered[questionIndexText]);
-      const item = quiz[questionIndex];
-      const question = document.querySelector("[data-ports-question=\"" + questionIndex + "\"]");
-      if (!item || !question) {
-        return;
-      }
-      question.querySelectorAll(".ports-quiz-option").forEach(function (button, index) {
-        button.disabled = true;
-        if (index === item.answer) {
-          button.classList.add("is-correct");
-        } else if (index === optionIndex) {
-          button.classList.add("is-wrong");
-        }
-      });
-      const feedback = question.querySelector(".ports-quiz-feedback");
-      const isCorrect = optionIndex === item.answer;
-      feedback.textContent = (isCorrect ? "Correct. " : "Not quite. ") + item.explanation;
-      feedback.className = "ports-quiz-feedback " + (isCorrect ? "good" : "bad");
-    });
+    state.currentQuestionIndex = Number(savedState.currentQuestionIndex) || 0;
+    renderQuiz();
     updateScore();
   }
 
@@ -357,6 +438,26 @@
     if (resetBtn) {
       resetBtn.addEventListener("click", resetQuiz);
     }
+
+    const nextBtn = document.getElementById("portsNextQuizBtn");
+    if (nextBtn) {
+      nextBtn.addEventListener("click", nextQuizQuestion);
+    }
+
+    document.querySelectorAll("[data-ports-modal-close]").forEach(function (element) {
+      element.addEventListener("click", closeCategoryModal);
+    });
+
+    const modalCloseBtn = document.getElementById("portsModalCloseBtn");
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener("click", closeCategoryModal);
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeCategoryModal();
+      }
+    });
 
     if (window.NetlabApp && typeof window.NetlabApp.whenReady === "function") {
       window.NetlabApp.whenReady().then(restoreSavedProgress).catch(function () {
