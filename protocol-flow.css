@@ -1175,3 +1175,57 @@
   padding-left: 14px;
   padding-right: 34px;
 }
+
+/* Dashboard polish */
+.flow-page .lab-panel,
+.interaction-panel,
+.explanation-panel,
+.why-card,
+.scenario-summary {
+  border-color: rgba(56, 189, 248, 0.18);
+  background-color: rgba(8, 13, 22, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 18px 38px rgba(2, 6, 23, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.flow-nav-link,
+.action-buttons button,
+.flow-controls button,
+.why-card,
+.scenario-summary {
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.why-card:hover,
+.scenario-summary:hover {
+  transform: translateY(-5px);
+  border-color: rgba(56, 189, 248, 0.54);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 44px rgba(2, 6, 23, 0.46),
+    0 0 24px rgba(56, 189, 248, 0.11);
+}
+
+.flow-nav-link:hover,
+.action-buttons button:not(:disabled):hover,
+.flow-controls button:not(:disabled):hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 14px 28px rgba(2, 6, 23, 0.36),
+    0 0 22px rgba(56, 189, 248, 0.13);
+}
+
+.flow-nav-link:active,
+.action-buttons button:not(:disabled):active,
+.flow-controls button:not(:disabled):active {
+  transform: translateY(-1px) scale(0.99);
+}

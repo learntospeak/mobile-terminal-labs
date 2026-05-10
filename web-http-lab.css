@@ -1097,3 +1097,73 @@
   padding-left: 14px;
   padding-right: 34px;
 }
+
+/* Dashboard polish */
+.http-lab-card,
+.http-visibility-card,
+.http-quiz-card,
+.http-request-body,
+.http-flow-node,
+.http-compare-card,
+.http-status-card {
+  border-color: rgba(56, 189, 248, 0.18);
+  background-color: rgba(8, 13, 22, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 18px 38px rgba(2, 6, 23, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.http-shell-link,
+.http-back-btn,
+.http-next-btn,
+.http-answer-btn,
+.http-visibility-card,
+.http-quiz-card,
+.http-flow-node,
+.http-compare-card,
+.http-status-card {
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.http-visibility-card:hover,
+.http-quiz-card:hover,
+.http-flow-node:hover,
+.http-compare-card:hover,
+.http-status-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(56, 189, 248, 0.54);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 44px rgba(2, 6, 23, 0.46),
+    0 0 24px rgba(56, 189, 248, 0.11);
+}
+
+.http-shell-link:hover,
+.http-back-btn:hover,
+.http-next-btn:hover,
+.http-answer-btn:not(:disabled):hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 14px 28px rgba(2, 6, 23, 0.36),
+    0 0 22px rgba(56, 189, 248, 0.13);
+}
+
+.http-shell-link:active,
+.http-back-btn:active,
+.http-next-btn:active,
+.http-answer-btn:not(:disabled):active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.http-answer-btn:not(:disabled):hover {
+  background: linear-gradient(180deg, rgba(14, 36, 58, 0.96), rgba(8, 13, 22, 0.98));
+  color: #f8fafc;
+}

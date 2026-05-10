@@ -3901,3 +3901,109 @@
 .terminal-page[data-environment-category="windows"].terminal-beginner-mode #nextScenarioBtn {
   font-size: 0;
 }
+
+/* Dashboard polish */
+.lab-panel,
+.scenario-card,
+.support-card,
+.beginner-level-card,
+.mission-case-file-card,
+.task-complete-card,
+.walkthrough-card,
+.ticket-briefing-card,
+.help-assistant-card,
+.roadmap-level-card,
+.command-card {
+  border-color: rgba(56, 189, 248, 0.18);
+  background-color: rgba(8, 13, 22, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 18px 38px rgba(2, 6, 23, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.terminal-nav-link,
+.environment-route-link,
+.terminal-controls button,
+.terminal-history-btn,
+.terminal-run-btn,
+.terminal-mobile-menu-link,
+.command-sheet-close,
+.command-sheet-clear,
+.command-sheet-tab,
+.command-card-copy,
+.command-card-toggle,
+.ticket-briefing-close,
+.ticket-briefing-start,
+.scenario-card,
+.support-card,
+.beginner-level-card,
+.mission-case-file-card,
+.task-complete-card,
+.walkthrough-card,
+.ticket-briefing-card,
+.help-assistant-card,
+.roadmap-level-card,
+.command-card {
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.scenario-card:hover,
+.support-card:hover,
+.beginner-level-card:hover,
+.mission-case-file-card:hover,
+.task-complete-card:hover,
+.walkthrough-card:hover,
+.ticket-briefing-card:hover,
+.help-assistant-card:hover,
+.roadmap-level-card:hover,
+.command-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(56, 189, 248, 0.54);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 44px rgba(2, 6, 23, 0.46),
+    0 0 24px rgba(56, 189, 248, 0.11);
+}
+
+.terminal-nav-link:hover,
+.environment-route-link:hover,
+.terminal-controls button:not(:disabled):hover,
+.terminal-history-btn:hover,
+.terminal-run-btn:hover,
+.terminal-mobile-menu-link:hover,
+.command-sheet-close:hover,
+.command-sheet-clear:hover,
+.command-sheet-tab:hover,
+.command-card-copy:hover,
+.command-card-toggle:hover,
+.ticket-briefing-close:hover,
+.ticket-briefing-start:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 14px 28px rgba(2, 6, 23, 0.36),
+    0 0 22px rgba(56, 189, 248, 0.13);
+}
+
+.terminal-nav-link:active,
+.environment-route-link:active,
+.terminal-controls button:not(:disabled):active,
+.terminal-history-btn:active,
+.terminal-run-btn:active,
+.terminal-mobile-menu-link:active,
+.command-sheet-close:active,
+.command-sheet-clear:active,
+.command-sheet-tab:active,
+.command-card-copy:active,
+.command-card-toggle:active,
+.ticket-briefing-close:active,
+.ticket-briefing-start:active {
+  transform: translateY(-1px) scale(0.99);
+}

@@ -4237,3 +4237,148 @@ button,
   padding-left: 14px;
   padding-right: 34px;
 }
+
+/* Professional cyber-lab polish layer */
+body:not(.terminal-page) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(14, 165, 233, 0.13), transparent 32%),
+    radial-gradient(circle at 88% 8%, rgba(34, 211, 238, 0.09), transparent 28%),
+    linear-gradient(180deg, #07111f 0%, #0b1018 46%, #070b12 100%);
+}
+
+.router-shell,
+.subnetting-lab-panel,
+#learningPathsPanel,
+.learning-hub-panel,
+.hub-section-panel,
+.hub-hero-panel,
+.subnet-reference-disclosure,
+.subnet-reference-card,
+.subnet-mode-card {
+  border-color: rgba(56, 189, 248, 0.18);
+  background-color: rgba(8, 13, 22, 0.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 18px 38px rgba(2, 6, 23, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.router-shell {
+  border-radius: 22px;
+}
+
+.hub-hero-panel {
+  border-color: rgba(56, 189, 248, 0.28);
+  background:
+    radial-gradient(circle at 92% 6%, rgba(34, 211, 238, 0.16), transparent 30%),
+    linear-gradient(135deg, rgba(10, 20, 34, 0.96), rgba(5, 9, 16, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 22px 46px rgba(2, 6, 23, 0.42),
+    0 0 0 1px rgba(56, 189, 248, 0.05);
+}
+
+.hub-hero-panel h2,
+.section-title,
+.learning-path-title,
+.subnet-reference-card-title,
+.subnet-mode-card-title {
+  letter-spacing: 0;
+}
+
+.learning-path-card,
+.subnet-reference-card,
+.subnet-mode-card,
+.hub-section-jump,
+.section-btn,
+.mode-btn,
+.exam-btn,
+button,
+.app-action-btn,
+.app-action-link,
+.protocol-link,
+.terminal-link,
+.challenge-link,
+.subnet-mobile-menu-link,
+.subnet-dashboard-page #answers button,
+.subnet-dashboard-page #actionButtons button {
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.learning-path-card,
+.subnet-reference-card,
+.subnet-mode-card {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(8, 13, 22, 0.96) 100%);
+  border-color: rgba(71, 85, 105, 0.72);
+  border-radius: 18px;
+}
+
+.learning-path-card:hover,
+.subnet-reference-card:hover,
+.subnet-mode-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(56, 189, 248, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 44px rgba(2, 6, 23, 0.46),
+    0 0 0 1px rgba(56, 189, 248, 0.14),
+    0 0 28px rgba(56, 189, 248, 0.11);
+}
+
+button:not(:disabled):hover,
+.app-action-btn:hover,
+.app-action-link:hover,
+.section-btn:hover,
+.mode-btn:hover,
+.exam-btn:hover,
+.protocol-link:hover,
+.terminal-link:hover,
+.challenge-link:hover,
+.hub-section-jump:hover,
+.subnet-mobile-menu-link:hover,
+.subnet-dashboard-page #answers button:not(:disabled):hover,
+.subnet-dashboard-page #actionButtons button:not(:disabled):hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 14px 28px rgba(2, 6, 23, 0.36),
+    0 0 22px rgba(56, 189, 248, 0.13);
+}
+
+button:not(:disabled):active,
+.app-action-btn:active,
+.app-action-link:active,
+.section-btn:active,
+.mode-btn:active,
+.exam-btn:active,
+.protocol-link:active,
+.terminal-link:active,
+.challenge-link:active,
+.hub-section-jump:active,
+.subnet-mobile-menu-link:active,
+.subnet-dashboard-page #answers button:not(:disabled):active,
+.subnet-dashboard-page #actionButtons button:not(:disabled):active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+#answers button,
+.subnet-dashboard-page #answers button {
+  cursor: pointer;
+  border-color: rgba(71, 85, 105, 0.78);
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(5, 9, 16, 0.98) 100%);
+}
+
+#answers button:not(:disabled):hover,
+.subnet-dashboard-page #answers button:not(:disabled):hover {
+  color: #f8fafc;
+  background:
+    linear-gradient(180deg, rgba(14, 36, 58, 0.96) 0%, rgba(8, 13, 22, 0.98) 100%);
+}
