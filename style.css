@@ -4661,3 +4661,133 @@ body:not(.terminal-page) .learning-path-card-protocol .learning-path-icon {
     display: none;
   }
 }
+
+/* Softer home hub buttons and status pills */
+body:not(.terminal-page) .hub-hero-actions {
+  gap: 12px;
+}
+
+body:not(.terminal-page) .app-action-btn,
+body:not(.terminal-page) .app-action-link {
+  min-height: 44px;
+  padding: 0 18px 0 42px;
+  border-radius: 999px;
+  border-color: rgba(96, 165, 250, 0.18);
+  background: rgba(15, 23, 42, 0.38);
+  color: #dbeafe;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 10px 22px rgba(2, 6, 23, 0.24);
+}
+
+body:not(.terminal-page) .app-action-btn::before,
+body:not(.terminal-page) .app-action-link::before {
+  left: 16px;
+  right: auto;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  border-radius: 0;
+  background: currentColor;
+  box-shadow: none;
+  opacity: 0.9;
+  transform: translateY(-50%);
+  animation: none;
+  clip-path: polygon(20% 12%, 84% 50%, 20% 88%);
+}
+
+body:not(.terminal-page) .hub-hero-action-primary {
+  border-color: rgba(34, 197, 94, 0.34);
+  background:
+    radial-gradient(circle at 18% 50%, rgba(34, 197, 94, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(22, 101, 52, 0.9), rgba(12, 48, 32, 0.96));
+  color: #ecfdf5;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 14px 28px rgba(2, 6, 23, 0.3),
+    0 0 22px rgba(34, 197, 94, 0.1);
+}
+
+body:not(.terminal-page) .app-action-link::before {
+  clip-path: polygon(16% 44%, 66% 44%, 46% 24%, 58% 12%, 96% 50%, 58% 88%, 46% 76%, 66% 56%, 16% 56%);
+}
+
+body:not(.terminal-page) .app-action-btn-muted {
+  border-color: rgba(148, 163, 184, 0.16);
+  background: rgba(15, 23, 42, 0.24);
+  color: #cbd5e1;
+}
+
+body:not(.terminal-page) .app-action-btn-muted::before {
+  clip-path: polygon(20% 10%, 50% 40%, 80% 10%, 90% 20%, 60% 50%, 90% 80%, 80% 90%, 50% 60%, 20% 90%, 10% 80%, 40% 50%, 10% 20%);
+}
+
+body:not(.terminal-page) .app-action-btn:hover,
+body:not(.terminal-page) .app-action-link:hover {
+  border-color: rgba(56, 189, 248, 0.42);
+  background:
+    radial-gradient(circle at 16% 50%, rgba(56, 189, 248, 0.14), transparent 34%),
+    rgba(15, 23, 42, 0.46);
+  color: #f8fafc;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 30px rgba(2, 6, 23, 0.34),
+    0 0 24px rgba(56, 189, 248, 0.12);
+}
+
+body:not(.terminal-page) .hub-hero-action-primary:hover {
+  border-color: rgba(74, 222, 128, 0.54);
+  background:
+    radial-gradient(circle at 18% 50%, rgba(74, 222, 128, 0.24), transparent 34%),
+    linear-gradient(180deg, rgba(22, 120, 62, 0.94), rgba(10, 58, 38, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 18px 34px rgba(2, 6, 23, 0.38),
+    0 0 28px rgba(34, 197, 94, 0.16);
+}
+
+body:not(.terminal-page) .learning-path-status {
+  min-height: 26px;
+  padding: 0 9px;
+  border-color: rgba(147, 197, 253, 0.14);
+  background: rgba(15, 23, 42, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+body:not(.terminal-page) .learning-path-card:hover .learning-path-status {
+  border-color: rgba(147, 197, 253, 0.28);
+  background: rgba(15, 23, 42, 0.62);
+  color: #bfdbfe;
+}
+
+body:not(.terminal-page) .hub-resume-modal-close {
+  width: auto;
+  min-height: 34px;
+  padding: 0 12px 0 30px;
+  margin: 0;
+  border-radius: 999px;
+  border-color: rgba(148, 163, 184, 0.16);
+  background: rgba(15, 23, 42, 0.28);
+  box-shadow: none;
+}
+
+body:not(.terminal-page) .hub-resume-modal-close::before {
+  left: 11px;
+  right: auto;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+  background: currentColor;
+  box-shadow: none;
+  opacity: 0.78;
+  transform: translateY(-50%);
+  animation: none;
+  clip-path: polygon(20% 10%, 50% 40%, 80% 10%, 90% 20%, 60% 50%, 90% 80%, 80% 90%, 50% 60%, 20% 90%, 10% 80%, 40% 50%, 10% 20%);
+}
+
+body:not(.terminal-page) .hub-resume-modal-close:hover {
+  border-color: rgba(248, 113, 113, 0.34);
+  background: rgba(127, 29, 29, 0.18);
+  color: #fecaca;
+}
