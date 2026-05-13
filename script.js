@@ -1308,7 +1308,7 @@ function renderSectionShell() {
   const lastItem = record?.currentItemLabel || (state.currentMode ? formatModeLabel(state.currentMode) : "Not started");
   const accountHref = typeof NetlabApp.buildHubUrl === "function"
     ? (profile.isGuest ? NetlabApp.buildHubUrl({ auth: "login" }) : NetlabApp.buildHubUrl())
-    : "./index.html#hubAccountPanel";
+    : "./beginner-roadmap.html#hubAccountPanel";
   const accountLabel = profile.isGuest ? "Sign In to Sync" : "Manage Account";
 
   els.appSectionShell.innerHTML = [

@@ -22,6 +22,11 @@
     return;
   }
 
+  document.body.classList.remove("command-sheet-open");
+  els.overlay.hidden = true;
+  els.panel.setAttribute("aria-hidden", "true");
+  els.openButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+
   const availableCategories = Array.isArray(pageConfig.commandSheetCategories) && pageConfig.commandSheetCategories.length
     ? pageConfig.commandSheetCategories.filter((category) => CommandsData.categories.includes(category))
     : CommandsData.categories.slice();

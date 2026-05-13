@@ -278,3 +278,18 @@
 .challenge-control-link:active {
   transform: translateY(-1px) scale(0.99);
 }
+
+@media (min-width: 769px) {
+  .terminal-controls.challenge-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .terminal-controls.challenge-controls .challenge-control-link {
+    width: 100%;
+    min-width: 0;
+    border-radius: 999px;
+  }
+}

@@ -4007,3 +4007,187 @@
 .ticket-briefing-start:active {
   transform: translateY(-1px) scale(0.99);
 }
+
+/* Desktop cleanup */
+.terminal-page .router-top {
+  margin-bottom: 0;
+}
+
+.terminal-header {
+  margin-top: 0;
+  padding: 14px 0 0;
+}
+
+body:not(.command-sheet-open) .command-sheet {
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(calc(100% + 24px));
+}
+
+body.command-sheet-open .command-sheet {
+  visibility: visible;
+}
+
+.command-sheet-overlay[hidden] {
+  display: none;
+}
+
+.roadmap-page .terminal-page-shell {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+  margin-inline: auto;
+}
+
+.roadmap-page .terminal-layout {
+  display: block;
+  width: 100%;
+}
+
+.roadmap-page .terminal-hero {
+  position: relative;
+  width: 100%;
+  padding-top: 50px;
+}
+
+.roadmap-page .roadmap-top-home-link {
+  top: 18px;
+  transform: none;
+}
+
+.roadmap-page .roadmap-top-home-link:hover {
+  transform: translateY(-2px);
+}
+
+.roadmap-page .roadmap-levels-shell {
+  width: 100%;
+}
+
+.roadmap-page .roadmap-level-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.roadmap-page .roadmap-summary-panel,
+.roadmap-page .roadmap-account-panel {
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .terminal-panel > .terminal-mobile-dock .terminal-controls,
+  .terminal-panel .terminal-controls,
+  .terminal-controls.challenge-controls,
+  .terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100%;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .terminal-controls button,
+  .terminal-controls .challenge-control-link,
+  .terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-controls button {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 48px;
+    padding: 0 16px 0 34px;
+    border-radius: 999px;
+    border: 1px solid #334155;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(7, 11, 16, 0.98) 100%);
+    color: #e2e8f0;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+      0 8px 16px rgba(0, 0, 0, 0.32);
+  }
+
+  .terminal-controls button::before,
+  .terminal-controls .challenge-control-link::before,
+  .terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-controls button::before {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    transform: translateY(-50%);
+    background: #64748b !important;
+    box-shadow:
+      0 0 0 2px rgba(100, 116, 139, 0.12),
+      0 0 12px rgba(148, 163, 184, 0.3) !important;
+    color: transparent;
+    font-size: 0;
+  }
+
+  .terminal-controls button:hover,
+  .terminal-controls .challenge-control-link:hover {
+    border-color: rgba(56, 189, 248, 0.68);
+    color: #f8fafc;
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      0 14px 28px rgba(2, 6, 23, 0.36),
+      0 0 22px rgba(56, 189, 248, 0.13);
+  }
+
+  .terminal-controls button:active,
+  .terminal-controls .challenge-control-link:active {
+    transform: translateY(-1px) scale(0.99);
+  }
+}
+
+@media (min-width: 700px), (hover: hover) and (pointer: fine) {
+  .terminal-inline-input-slot .terminal-controls {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)) !important;
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100%;
+    gap: 10px;
+    margin: 8px 0 2px;
+  }
+
+  .terminal-inline-input-slot .terminal-controls button,
+  .terminal-inline-input-slot .terminal-controls .challenge-control-link,
+  .terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-inline-input-slot .terminal-controls button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 48px !important;
+    padding: 0 16px 0 34px !important;
+    border-radius: 999px;
+    font-size: 12px !important;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    white-space: normal;
+  }
+
+  .terminal-inline-input-slot .terminal-controls button::before,
+  .terminal-inline-input-slot .terminal-controls .challenge-control-link::before,
+  .terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-inline-input-slot .terminal-controls button::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    transform: translateY(-50%);
+    background: #64748b !important;
+    box-shadow:
+      0 0 0 2px rgba(100, 116, 139, 0.12),
+      0 0 12px rgba(148, 163, 184, 0.3) !important;
+  }
+}

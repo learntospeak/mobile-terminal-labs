@@ -29,7 +29,7 @@
       href: "./cisco-cli-lab.html"
     },
     "web-http-lab": {
-      label: "HTTP Reference Lab",
+      label: "HTTP Lab",
       href: "./web-http-lab.html"
     },
     "cyber-challenge": {
@@ -37,7 +37,7 @@
       href: "./challenge-mode.html"
     },
     "protocol-lab": {
-      label: "ARP Reference",
+      label: "ARP Flow",
       href: "./protocol-merge.html"
     }
   };
@@ -1121,7 +1121,7 @@
   }
 
   function buildHubUrl(options) {
-    const url = new URL("./index.html", window.location.href);
+    const url = new URL("./beginner-roadmap.html", window.location.href);
     const authMode = String(options?.auth || "").toLowerCase();
 
     url.searchParams.delete("auth");

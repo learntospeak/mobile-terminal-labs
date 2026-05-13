@@ -4382,3 +4382,78 @@ button:not(:disabled):active,
   background:
     linear-gradient(180deg, rgba(14, 36, 58, 0.96) 0%, rgba(8, 13, 22, 0.98) 100%);
 }
+
+/* Header cleanup and persistent home control */
+.router-top {
+  position: relative;
+  margin-bottom: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.router-shell > h1,
+.subnet-dashboard-header,
+.protocol-header,
+.flow-header,
+.ports-hero,
+.http-stage-shell {
+  margin-top: 0;
+}
+
+.router-shell > h1 {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.top-home-link {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  z-index: 3;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(5, 9, 16, 0.98));
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 18px rgba(2, 6, 23, 0.28);
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.top-home-link:hover {
+  transform: translateY(calc(-50% - 2px));
+  border-color: rgba(56, 189, 248, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 14px 26px rgba(2, 6, 23, 0.36),
+    0 0 18px rgba(56, 189, 248, 0.14);
+}
+
+.top-home-link:active {
+  transform: translateY(-50%) scale(0.99);
+}
+
+@media (max-width: 640px) {
+  .top-home-link {
+    position: static;
+    transform: none;
+    min-height: 32px;
+    justify-self: flex-start;
+  }
+
+  .top-home-link:hover,
+  .top-home-link:active {
+    transform: none;
+  }
+}
