@@ -32,9 +32,9 @@
           <div class="hub-hero-content">
             <div class="hub-hero-copy-block">
               <h2>Practise terminal troubleshooting in your browser.</h2>
-              <p class="hub-hero-copy">Start with guided Windows CMD tickets, then move into Linux, Cisco CLI, and cyber investigation labs when you are ready.</p>
+              <p class="hub-hero-copy">Guided terminal labs for Windows, Linux, Cisco, cyber, and networking basics.</p>
               <div class="hub-hero-actions">
-                <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner">Start Beginner Terminal Lab</a>
+                <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Start Beginner Terminal Lab" aria-label="Start Beginner Terminal Lab">Start</a>
                 <div id="hubResumeActions" class="hub-resume-actions" hidden></div>
               </div>
             </div>
@@ -68,44 +68,48 @@
         <section id="learningPathsPanel" class="learning-paths-panel learning-hub-panel">
           <div class="learning-paths-head">
             <h3>Terminal Labs</h3>
-            <p>Start with the beginner path, then branch into Linux, Cisco, or cyber investigation practice.</p>
+            <p>Choose a lab. Hover any card for details.</p>
           </div>
 
           <div class="learning-path-grid learning-path-grid-terminal">
-            <a class="learning-path-card learning-path-card-featured learning-path-card-windows" data-section-id="windows-terminal" href="./terminal-coach.html?track=windows&amp;mode=beginner">
-              <span class="learning-path-kicker">Recommended Entry</span>
-              <span class="learning-path-title">Beginner Terminal Lab</span>
-              <span class="learning-path-copy">Start here. Learn terminal basics through guided tickets, walkthroughs, and practical tasks.</span>
-              <span class="learning-path-note">Starts with Windows CMD basics, then builds toward real troubleshooting. Includes level roadmap and guided walkthroughs.</span>
+            <a class="learning-path-card learning-path-card-featured learning-path-card-windows" data-section-id="windows-terminal" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Beginner Lab: guided Windows CMD tickets, walkthroughs, and practical tasks." aria-label="Beginner Lab">
+              <span class="learning-path-icon" aria-hidden="true">CLI</span>
+              <span class="learning-path-kicker">Recommended</span>
+              <span class="learning-path-title">Beginner Lab</span>
               <span class="learning-path-status" data-progress-slot="windows-terminal">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">Guided Windows CMD tickets, walkthroughs, and practical tasks.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-windows" href="./beginner-roadmap.html">
+            <a class="learning-path-card learning-path-card-windows" href="./beginner-roadmap.html" title="Roadmap: view levels, saved progress, and your next beginner task." aria-label="Roadmap">
+              <span class="learning-path-icon" aria-hidden="true">MAP</span>
               <span class="learning-path-kicker">Roadmap</span>
-              <span class="learning-path-title">View Beginner Roadmap</span>
-              <span class="learning-path-copy">See levels, saved progress, and your next beginner task.</span>
-              <span class="learning-path-status">Open Roadmap</span>
+              <span class="learning-path-title">Roadmap</span>
+              <span class="learning-path-status">Open</span>
+              <span class="learning-path-tooltip" role="tooltip">View levels, saved progress, and your next beginner task.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-linux" data-section-id="linux-terminal" href="./terminal-coach.html?track=linux">
+            <a class="learning-path-card learning-path-card-linux" data-section-id="linux-terminal" href="./terminal-coach.html?track=linux" title="Linux Lab: practise commands, files, logs, and service checks." aria-label="Linux Lab">
+              <span class="learning-path-icon" aria-hidden="true">LX</span>
               <span class="learning-path-kicker">Linux</span>
-              <span class="learning-path-title">Linux Terminal Lab</span>
-              <span class="learning-path-copy">Practise Linux commands, files, logs, and service checks.</span>
+              <span class="learning-path-title">Linux Lab</span>
               <span class="learning-path-status" data-progress-slot="linux-terminal">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">Practise commands, files, logs, and service checks.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-cisco" data-section-id="cisco-cli" href="./cisco-cli-lab.html">
+            <a class="learning-path-card learning-path-card-cisco" data-section-id="cisco-cli" href="./cisco-cli-lab.html" title="Cisco Lab: practise router CLI basics, verification, and recovery workflows." aria-label="Cisco Lab">
+              <span class="learning-path-icon" aria-hidden="true">IOS</span>
               <span class="learning-path-kicker">Cisco</span>
-              <span class="learning-path-title">Cisco CLI Lab</span>
-              <span class="learning-path-copy">Practise router CLI basics, verification, and simple recovery workflows.</span>
+              <span class="learning-path-title">Cisco Lab</span>
               <span class="learning-path-status" data-progress-slot="cisco-cli">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">Practise router CLI basics, verification, and recovery workflows.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-challenge" data-section-id="cyber-challenge" href="./challenge-mode.html">
+            <a class="learning-path-card learning-path-card-challenge" data-section-id="cyber-challenge" href="./challenge-mode.html" title="Cyber Mode: investigate evidence, users, processes, and suspicious activity." aria-label="Cyber Mode">
+              <span class="learning-path-icon" aria-hidden="true">SOC</span>
               <span class="learning-path-kicker">Cyber</span>
-              <span class="learning-path-title">Cyber Challenge Mode</span>
-              <span class="learning-path-copy">Investigate evidence, users, processes, and suspicious activity.</span>
+              <span class="learning-path-title">Cyber Mode</span>
               <span class="learning-path-status" data-progress-slot="cyber-challenge">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">Investigate evidence, users, processes, and suspicious activity.</span>
             </a>
           </div>
         </section>
@@ -113,36 +117,40 @@
         <section class="learning-paths-panel learning-hub-panel reference-labs-panel">
           <div class="learning-paths-head">
             <h3>Supporting Concepts</h3>
-            <p>Reference labs for subnetting, HTTP, and ARP when you need extra context.</p>
+            <p>Quick reference labs for networking concepts.</p>
           </div>
 
           <div class="learning-path-grid learning-path-grid-reference">
-            <a class="learning-path-card learning-path-card-reference learning-path-card-subnetting" data-section-id="subnetting-lab" href="./subnetting-lab.html">
-              <span class="learning-path-kicker">Reference Lab</span>
-              <span class="learning-path-title">Subnetting Lab</span>
-              <span class="learning-path-copy">CIDR, masks, ranges, and subnet drills for quick reference.</span>
+            <a class="learning-path-card learning-path-card-reference learning-path-card-subnetting" data-section-id="subnetting-lab" href="./subnetting-lab.html" title="Subnetting Lab: CIDR, masks, ranges, and subnet drills." aria-label="Subnetting Lab">
+              <span class="learning-path-icon" aria-hidden="true">CIDR</span>
+              <span class="learning-path-kicker">Reference</span>
+              <span class="learning-path-title">Subnetting</span>
               <span class="learning-path-status" data-progress-slot="subnetting-lab">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">CIDR, masks, ranges, and subnet drills.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-reference learning-path-card-ports" data-section-id="network-ports-lab" href="./network-ports-lab.html">
-              <span class="learning-path-kicker">Port Reference</span>
-              <span class="learning-path-title">Network Ports Lab</span>
-              <span class="learning-path-copy">TCP, UDP, listening services, port ranges, and exposure risks.</span>
+            <a class="learning-path-card learning-path-card-reference learning-path-card-ports" data-section-id="network-ports-lab" href="./network-ports-lab.html" title="Ports Lab: TCP, UDP, listening services, ranges, and exposure risks." aria-label="Network Ports Lab">
+              <span class="learning-path-icon" aria-hidden="true">TCP</span>
+              <span class="learning-path-kicker">Ports</span>
+              <span class="learning-path-title">Ports</span>
               <span class="learning-path-status" data-progress-slot="network-ports-lab">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">TCP, UDP, services, ranges, and exposure risks.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-reference learning-path-card-web" data-section-id="web-http-lab" href="./web-http-lab.html">
-              <span class="learning-path-kicker">Web Basics</span>
-              <span class="learning-path-title">HTTP Reference Lab</span>
-              <span class="learning-path-copy">Request, response, session, and proxy basics for extra context.</span>
+            <a class="learning-path-card learning-path-card-reference learning-path-card-web" data-section-id="web-http-lab" href="./web-http-lab.html" title="HTTP Lab: requests, responses, sessions, and proxy basics." aria-label="HTTP Reference Lab">
+              <span class="learning-path-icon" aria-hidden="true">HTTP</span>
+              <span class="learning-path-kicker">Web</span>
+              <span class="learning-path-title">HTTP</span>
               <span class="learning-path-status" data-progress-slot="web-http-lab">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">Requests, responses, sessions, and proxy basics.</span>
             </a>
 
-            <a class="learning-path-card learning-path-card-reference learning-path-card-protocol" data-section-id="protocol-lab" href="./protocol-merge.html">
-              <span class="learning-path-kicker">Protocol Flow</span>
-              <span class="learning-path-title">ARP Reference</span>
-              <span class="learning-path-copy">ARP and protocol flow reference for visual reinforcement.</span>
+            <a class="learning-path-card learning-path-card-reference learning-path-card-protocol" data-section-id="protocol-lab" href="./protocol-merge.html" title="ARP Lab: ARP and protocol flow reference." aria-label="ARP Reference Lab">
+              <span class="learning-path-icon" aria-hidden="true">ARP</span>
+              <span class="learning-path-kicker">Protocol</span>
+              <span class="learning-path-title">ARP</span>
               <span class="learning-path-status" data-progress-slot="protocol-lab">Not Started</span>
+              <span class="learning-path-tooltip" role="tooltip">ARP and protocol flow reference.</span>
             </a>
           </div>
         </section>
