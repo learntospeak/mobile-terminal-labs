@@ -44,9 +44,10 @@
   align-items: center;
 }
 
-.terminal-page .router-top > div:first-child {
+.terminal-page .router-top > :not(.top-home-link):not(.router-leds):first-of-type {
   grid-column: 2;
   text-align: center;
+  justify-self: center;
 }
 
 .terminal-page .router-top .router-leds {
@@ -4146,11 +4147,11 @@ body.command-sheet-open .command-sheet {
 @media (min-width: 700px), (hover: hover) and (pointer: fine) {
   .terminal-inline-input-slot .terminal-controls {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)) !important;
+    grid-template-columns: repeat(var(--terminal-control-count, 8), minmax(0, 1fr)) !important;
     align-items: stretch;
     justify-content: stretch;
     width: 100%;
-    gap: 10px;
+    gap: 6px;
     margin: 8px 0 2px;
   }
 
@@ -4163,15 +4164,15 @@ body.command-sheet-open .command-sheet {
     width: 100% !important;
     min-width: 0 !important;
     height: auto !important;
-    min-height: 48px !important;
-    padding: 0 16px 0 34px !important;
+    min-height: 44px !important;
+    padding: 0 10px 0 24px !important;
     border-radius: 999px;
-    font-size: 12px !important;
+    font-size: clamp(10px, 0.82vw, 12px) !important;
     font-weight: 800;
     letter-spacing: 0.03em;
     line-height: 1.15;
     text-transform: uppercase;
-    white-space: normal;
+    white-space: nowrap;
   }
 
   .terminal-inline-input-slot .terminal-controls button::before,
@@ -4179,7 +4180,7 @@ body.command-sheet-open .command-sheet {
   .terminal-page[data-environment-category="windows"].terminal-beginner-mode .terminal-inline-input-slot .terminal-controls button::before {
     content: "";
     position: absolute;
-    left: 13px;
+    left: 9px;
     top: 50%;
     width: 8px;
     height: 8px;
@@ -4189,5 +4190,9 @@ body.command-sheet-open .command-sheet {
     box-shadow:
       0 0 0 2px rgba(100, 116, 139, 0.12),
       0 0 12px rgba(148, 163, 184, 0.3) !important;
+  }
+
+  .terminal-inline-input-slot .terminal-controls:has(#exitChallengeBtn) {
+    --terminal-control-count: 6;
   }
 }

@@ -4391,6 +4391,15 @@ button:not(:disabled):active,
   border-bottom-left-radius: 0;
 }
 
+.router-top > :not(.router-leds):not(.top-home-link) {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.router-top .router-leds {
+  margin-left: auto;
+}
+
 .router-shell > h1,
 .subnet-dashboard-header,
 .protocol-header,
