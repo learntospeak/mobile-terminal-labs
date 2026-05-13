@@ -687,11 +687,15 @@
   }
 
   function mappedShareMatch(drive, unc, extras = {}) {
+    const normalizeSharePath = (value) => String(value || "")
+      .replace(/[\\/]+/g, "\\")
+      .toLowerCase();
+
     return {
       ...extras,
       postCheck: (_, state) => Array.isArray(state.mappedShares)
         && state.mappedShares.some((share) => String(share.drive).toUpperCase() === String(drive).toUpperCase()
-          && String(share.unc).toLowerCase() === String(unc).toLowerCase())
+          && normalizeSharePath(share.unc) === normalizeSharePath(unc))
     };
   }
 
@@ -6707,7 +6711,7 @@
           hints: ["Use NET USE with a drive letter and UNC path.", "The remote share is \\\\fileserver\\Tools.", "Try `net use Z: \\\\fileserver\\Tools`."],
           explanation: "Mapping a share makes later file work easier and reinforces UNC path awareness.",
           successFeedback: "You mapped the remote Tools share.",
-          accepts: [mappedShareMatch("Z:", "\\\\fileserver\\Tools", { raw: /^net\s+use\s+Z:\s+\\\\fileserver\\Tools$/i })]
+          accepts: [mappedShareMatch("Z:", "\\\\fileserver\\Tools", { raw: /^net\s+use\s+z:\s+[\\/]+fileserver[\\/]+Tools$/i })]
         }),
         step({
           objective: "Display the current mapping table so you can verify Z: is present.",
@@ -6851,8 +6855,8 @@
               whyThisMatters: "Support investigations should end with a concrete recovery action, not only with observations.",
               successFeedback: "You mapped the remote Tools share.",
               accepts: [
-                rawMatch(/^net\s+use\s+Z:\s+\\+fileserver\\+Tools$/i),
-                mappedShareMatch("Z:", "\\\\fileserver\\Tools", { raw: /^net\s+use\s+Z:\s+\\+fileserver\\+Tools$/i })
+                rawMatch(/^net\s+use\s+z:\s+[\\/]+fileserver[\\/]+Tools$/i),
+                mappedShareMatch("Z:", "\\\\fileserver\\Tools", { raw: /^net\s+use\s+z:\s+[\\/]+fileserver[\\/]+Tools$/i })
               ],
               partials: [
                 {
@@ -6885,7 +6889,7 @@
               accepts: [rawMatch(/^net\s+use$/i)],
               partials: [
                 {
-                  match: mappedShareMatch("Z:", "\\\\fileserver\\Tools", { raw: /^net\s+use\s+Z:\s+\\+fileserver\\+Tools$/i }),
+                  match: mappedShareMatch("Z:", "\\\\fileserver\\Tools", { raw: /^net\s+use\s+z:\s+[\\/]+fileserver[\\/]+Tools$/i }),
                   classification: "inefficient",
                   feedback: "The mapping already exists. This final step is to verify it, not recreate it."
                 }
