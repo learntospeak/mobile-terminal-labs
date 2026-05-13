@@ -4896,3 +4896,96 @@ body:not(.terminal-page) .learning-path-card:hover .learning-path-status {
   border-color: transparent;
   background: rgba(15, 23, 42, 0.42);
 }
+
+/* Calmer home hub visual pass */
+body:not(.terminal-page) {
+  background: #07111f;
+}
+
+body:not(.terminal-page) .router-shell,
+body:not(.terminal-page) .hub-hero-panel,
+body:not(.terminal-page) .learning-hub-panel,
+body:not(.terminal-page) .hub-resume-modal-shell {
+  background: rgba(8, 13, 22, 0.9);
+  border-color: rgba(56, 189, 248, 0.16);
+  box-shadow: 0 18px 38px rgba(2, 6, 23, 0.28);
+}
+
+body:not(.terminal-page) .hub-hero-panel,
+body:not(.terminal-page) .reference-labs-panel {
+  background: rgba(8, 13, 22, 0.86);
+}
+
+body:not(.terminal-page) .learning-path-card {
+  background: rgba(10, 15, 24, 0.68);
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.22);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+body:not(.terminal-page) .learning-path-card::before {
+  display: none;
+}
+
+body:not(.terminal-page) .learning-path-card:hover {
+  background: rgba(12, 18, 29, 0.82);
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.28);
+}
+
+body:not(.terminal-page) .learning-path-icon,
+body:not(.terminal-page) .learning-path-card:hover .learning-path-icon {
+  background: rgba(15, 23, 42, 0.48);
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: none;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+body:not(.terminal-page) .learning-path-card:hover .learning-path-icon {
+  background: rgba(15, 23, 42, 0.62);
+  border-color: rgba(56, 189, 248, 0.24);
+}
+
+body:not(.terminal-page) .learning-path-status,
+body:not(.terminal-page) .learning-path-card:hover .learning-path-status {
+  background: rgba(15, 23, 42, 0.36);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body:not(.terminal-page) .app-action-btn,
+body:not(.terminal-page) .app-action-link,
+body:not(.terminal-page) .hub-resume-modal-close {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+body:not(.terminal-page) .app-action-btn::before,
+body:not(.terminal-page) .app-action-link::before,
+body:not(.terminal-page) .hub-resume-modal-close::before {
+  animation: none;
+}
+
+body:not(.terminal-page) button::before,
+body:not(.terminal-page) .section-btn::before,
+body:not(.terminal-page) .mode-btn::before,
+body:not(.terminal-page) .exam-btn::before,
+body:not(.terminal-page) .protocol-link::before,
+body:not(.terminal-page) .terminal-link::before,
+body:not(.terminal-page) .challenge-link::before,
+body:not(.terminal-page) .subnet-mobile-menu-link::before {
+  animation: none;
+  box-shadow: none;
+}
