@@ -10,7 +10,6 @@
   <script src="./supabase-config.js?v=20260421sup1" defer></script>
   <script src="./app-data.js?v=20260510ports1" defer></script>
   <script src="./mascot.js?v=20260509patchgap1" defer></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <script src="./index.js?v=20260506hub2" defer></script>
 </head>
 <body>
@@ -69,11 +68,12 @@
         <section id="learningPathsPanel" class="learning-paths-panel learning-hub-panel">
           <div class="learning-paths-head">
             <h3>Terminal Labs</h3>
+            <p>Choose a lab. Hover any card for details.</p>
           </div>
 
           <div class="learning-path-grid learning-path-grid-terminal">
             <a class="learning-path-card learning-path-card-featured learning-path-card-windows" data-section-id="windows-terminal" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Beginner Lab: guided Windows CMD tickets, walkthroughs, and practical tasks." aria-label="Beginner Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="terminal"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">CLI</span>
               <span class="learning-path-kicker">Recommended</span>
               <span class="learning-path-title">Beginner Lab</span>
               <span class="learning-path-status" data-progress-slot="windows-terminal">Not Started</span>
@@ -81,7 +81,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-windows" href="./beginner-roadmap.html" title="Roadmap: view levels, saved progress, and your next beginner task." aria-label="Roadmap">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="map"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">MAP</span>
               <span class="learning-path-kicker">Roadmap</span>
               <span class="learning-path-title">Roadmap</span>
               <span class="learning-path-status">Open</span>
@@ -89,7 +89,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-linux" data-section-id="linux-terminal" href="./terminal-coach.html?track=linux" title="Linux Lab: practise commands, files, logs, and service checks." aria-label="Linux Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="server"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">LX</span>
               <span class="learning-path-kicker">Linux</span>
               <span class="learning-path-title">Linux Lab</span>
               <span class="learning-path-status" data-progress-slot="linux-terminal">Not Started</span>
@@ -97,7 +97,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-cisco" data-section-id="cisco-cli" href="./cisco-cli-lab.html" title="Cisco Lab: practise router CLI basics, verification, and recovery workflows." aria-label="Cisco Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="router"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">IOS</span>
               <span class="learning-path-kicker">Cisco</span>
               <span class="learning-path-title">Cisco Lab</span>
               <span class="learning-path-status" data-progress-slot="cisco-cli">Not Started</span>
@@ -105,7 +105,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-challenge" data-section-id="cyber-challenge" href="./challenge-mode.html" title="Cyber Mode: investigate evidence, users, processes, and suspicious activity." aria-label="Cyber Mode">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="shield-alert"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">SOC</span>
               <span class="learning-path-kicker">Cyber</span>
               <span class="learning-path-title">Cyber Mode</span>
               <span class="learning-path-status" data-progress-slot="cyber-challenge">Not Started</span>
@@ -122,7 +122,7 @@
 
           <div class="learning-path-grid learning-path-grid-reference">
             <a class="learning-path-card learning-path-card-reference learning-path-card-subnetting" data-section-id="subnetting-lab" href="./subnetting-lab.html" title="Subnetting Lab: CIDR, masks, ranges, and subnet drills." aria-label="Subnetting Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="binary"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">CIDR</span>
               <span class="learning-path-kicker">Reference</span>
               <span class="learning-path-title">Subnetting</span>
               <span class="learning-path-status" data-progress-slot="subnetting-lab">Not Started</span>
@@ -130,7 +130,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-reference learning-path-card-ports" data-section-id="network-ports-lab" href="./network-ports-lab.html" title="Ports Lab: TCP, UDP, listening services, ranges, and exposure risks." aria-label="Network Ports Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="cable"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">TCP</span>
               <span class="learning-path-kicker">Ports</span>
               <span class="learning-path-title">Ports</span>
               <span class="learning-path-status" data-progress-slot="network-ports-lab">Not Started</span>
@@ -138,7 +138,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-reference learning-path-card-web" data-section-id="web-http-lab" href="./web-http-lab.html" title="HTTP Lab: requests, responses, sessions, and proxy basics." aria-label="HTTP Reference Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="globe"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">HTTP</span>
               <span class="learning-path-kicker">Web</span>
               <span class="learning-path-title">HTTP</span>
               <span class="learning-path-status" data-progress-slot="web-http-lab">Not Started</span>
@@ -146,7 +146,7 @@
             </a>
 
             <a class="learning-path-card learning-path-card-reference learning-path-card-protocol" data-section-id="protocol-lab" href="./protocol-merge.html" title="ARP Lab: ARP and protocol flow reference." aria-label="ARP Reference Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="route"></i></span>
+              <span class="learning-path-icon" aria-hidden="true">ARP</span>
               <span class="learning-path-kicker">Protocol</span>
               <span class="learning-path-title">ARP</span>
               <span class="learning-path-status" data-progress-slot="protocol-lab">Not Started</span>
@@ -168,12 +168,5 @@
       </div>
     </div>
   </div>
-  <script>
-    window.addEventListener("DOMContentLoaded", function () {
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
-    });
-  </script>
 </body>
 </html>
