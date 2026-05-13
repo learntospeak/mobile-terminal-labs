@@ -5222,7 +5222,7 @@
     setElementText(els.missionProgressLabel, "Progress");
     setElementText(els.ticketBriefingKicker, beginnerTicket ? "Problem" : "Assigned Ticket");
     setElementText(els.beginnerGuideBtn, beginnerTicket ? "Help" : "Help / Beginner Guide");
-    setElementText(els.watchWalkthroughBtn, beginnerTicket ? "Walkthrough" : "Watch Walkthrough");
+    setElementText(els.watchWalkthroughBtn, "Guide");
     if (els.ticketBriefingStartBtn) {
       els.ticketBriefingStartBtn.textContent = beginnerTicket ? "Start" : "Start Investigation";
     }
