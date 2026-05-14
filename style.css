@@ -2590,6 +2590,20 @@ body {
   text-transform: uppercase;
 }
 
+.router-top h1 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.router-top.router-title-bar {
+  margin-bottom: 18px;
+  border-radius: 16px;
+}
+
 .router-leds {
   display: flex;
   align-items: center;
