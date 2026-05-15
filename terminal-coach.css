@@ -1092,6 +1092,11 @@
   gap: 12px;
 }
 
+.mission-case-beginner-block[hidden],
+.beginner-ticket-briefing[hidden] {
+  display: none !important;
+}
+
 .mission-case-beginner-section,
 .beginner-ticket-section {
   display: grid;

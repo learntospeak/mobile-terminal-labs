@@ -1499,8 +1499,9 @@
 
   function inferScenarioSummary(scenario) {
     if (scenario?.summary) return scenario.summary;
+    if (scenario?.scenarioIntro) return firstSentence(scenario.scenarioIntro);
     if (scenario?.successCondition) return firstSentence(scenario.successCondition);
-    return firstSentence(scenario?.objective || scenario?.scenarioIntro || "");
+    return firstSentence(scenario?.objective || "");
   }
 
   function inferTicketTitle(scenario) {
@@ -1525,7 +1526,7 @@
     if (scenario?.mode === "challenge") return "Controlled training target";
     if (shell === "cisco") return "Branch router";
     if (shell === "cmd") return "Windows workstation";
-    return contextMeta?.environmentLabel === "Linux Terminal Learning" ? "Linux host" : (contextMeta?.environmentLabel || "Training system");
+    return contextMeta?.environmentLabel === "Linux Terminal Learning" ? "Linux training host and assigned target context" : (contextMeta?.environmentLabel || "Training system");
   }
 
   function inferSymptomsList(scenario, shell) {

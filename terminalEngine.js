@@ -3998,6 +3998,13 @@
     const tags = Array.isArray(scenario.tags)
       ? scenario.tags.map((item) => String(item || "").trim()).filter(Boolean)
       : [];
+    const summary = scenario.summary || scenario.missionBriefing || scenario.scenarioIntro || scenarioObjectiveText(scenario);
+    const objective = scenario.objective || scenarioObjectiveText(scenario);
+    const userReport = scenario.userReport || "";
+    const affectedSystem = scenario.affectedSystem || scenario.environmentLabel || scenarioEnvironmentLabel(scenario);
+    const normalizedSummary = normalizedScenarioText(summary, "").toLowerCase();
+    const normalizedObjective = normalizedScenarioText(objective, "").toLowerCase();
+    const normalizedUserReport = normalizedScenarioText(userReport, "").toLowerCase();
 
     return {
       title: scenario.ticketTitle || scenario.title || "Assigned Mission",
@@ -4007,12 +4014,12 @@
       reportedTime: scenario.reportedTime || "",
       role: scenario.role || "",
       estimatedTime: scenario.estimatedTime || "",
-      affectedSystem: scenario.affectedSystem || scenario.environmentLabel || scenarioEnvironmentLabel(scenario),
-      summary: scenario.summary || scenario.missionBriefing || scenario.scenarioIntro || scenarioObjectiveText(scenario),
-      userReport: scenario.userReport || "",
+      affectedSystem,
+      summary,
+      userReport: normalizedUserReport && normalizedUserReport === normalizedSummary ? "" : userReport,
       symptoms: Array.isArray(scenario.symptoms) ? scenario.symptoms : [],
       knownFacts: Array.isArray(scenario.knownFacts) ? scenario.knownFacts : [],
-      objective: scenario.objective || scenarioObjectiveText(scenario),
+      objective: normalizedObjective && normalizedObjective === normalizedSummary ? "" : objective,
       constraints: Array.isArray(scenario.constraints) ? scenario.constraints : [],
       tags,
       escalationNote: scenario.escalationNote || "",
