@@ -9158,6 +9158,15 @@
   window.TerminalEngine = {
     getScenarios: () => session.scenarios.slice(),
     getCurrentScenario: () => currentScenario(),
+    getRuntimeSnapshot: () => ({
+      scenarioId: currentScenario()?.id || "",
+      scenarioTitle: currentScenario()?.title || "",
+      scenarioStarted: session.scenarioStarted,
+      scenarioCompleted: session.scenarioCompleted,
+      stepIndex: session.stepIndex,
+      stepCount: totalStepsForScenario(currentScenario()),
+      currentObjective: currentStep()?.objective || ""
+    }),
     loadScenario,
     loadScenarioById,
     previewScenario,

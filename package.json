@@ -4,7 +4,9 @@
   "scripts": {
     "test:smoke": "playwright test --config=playwright.config.js",
     "test:functional": "playwright test --config=playwright.config.js",
-    "test:functional:headed": "playwright test --config=playwright.config.js --headed"
+    "test:functional:headed": "playwright test --config=playwright.config.js --headed",
+    "test:terminal-journey": "playwright test tests/functional/terminal-journey-comprehensive.spec.js --config=playwright.config.js",
+    "test:terminal-journey:full": "node tests/functional/run-terminal-journey-full.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.0"

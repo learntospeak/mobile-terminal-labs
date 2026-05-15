@@ -233,10 +233,18 @@ async function runTerminalCommand(page, command, options = {}) {
     };
   }
 
-  const input = page.locator("#terminalInput");
-  await input.click();
-  await input.fill(command);
-  await input.press("Enter");
+  await page.locator("#terminalInput").evaluate((node, value) => {
+    node.value = value;
+    node.dispatchEvent(new Event("input", { bubbles: true }));
+    node.focus();
+  }, command);
+  await page.locator("#terminalForm").evaluate((form) => {
+    if (typeof form.requestSubmit === "function") {
+      form.requestSubmit();
+    } else {
+      form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    }
+  });
   await waitForTerminalMutation(page, before.lineCount, command);
   const after = await getTerminalSnapshot(page);
   const delta = after.lines.slice(before.lineCount);
