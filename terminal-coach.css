@@ -3363,14 +3363,48 @@
 
   .terminal-mascot-card--mobile {
     display: flex;
-    margin: 0 0 10px;
-    padding: 8px 10px;
-    border-radius: 8px;
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 70px);
+    right: 10px;
+    z-index: 80;
+    width: 46px;
+    height: 46px;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 4px;
+    border-radius: 999px;
+    border-color: rgba(56, 189, 248, 0.34);
+    background: rgba(8, 13, 22, 0.82);
+    box-shadow:
+      0 10px 24px rgba(2, 6, 23, 0.38),
+      0 0 18px rgba(56, 189, 248, 0.08);
+    backdrop-filter: blur(10px);
+  }
+
+  .terminal-mascot-card--mobile .mascot {
+    width: 34px;
   }
 
   .terminal-mascot-card--mobile .mascot-message {
-    font-size: 12px;
-    line-height: 1.35;
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 8px);
+    display: none;
+    width: min(220px, calc(100vw - 28px));
+    padding: 8px 10px;
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    border-radius: 10px;
+    background: rgba(8, 13, 22, 0.96);
+    color: #dbeafe;
+    font-size: 11px;
+    line-height: 1.3;
+    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.34);
+  }
+
+  .terminal-mascot-card--mobile:focus-within .mascot-message,
+  .terminal-mascot-card--mobile:hover .mascot-message {
+    display: block;
   }
 
   .mission-review-page {
@@ -3503,8 +3537,8 @@
 
   .terminal-mobile-command-panel {
     display: grid;
-    gap: 8px;
-    padding: 12px;
+    gap: 6px;
+    padding: 8px;
     border: 1px solid rgba(71, 85, 105, 0.78);
     border-radius: 8px;
     background: #02070d;
@@ -3515,29 +3549,29 @@
     margin: 0;
     color: #67e8f9;
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-    font-size: 13px;
+    font-size: 11px;
     overflow-wrap: anywhere;
   }
 
   .terminal-mobile-command-label {
     margin: 0;
     color: #cbd5e1;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
   }
 
   .terminal-mobile-command-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 6px;
   }
 
   .terminal-mobile-command-choice {
     display: grid;
-    gap: 2px;
-    min-height: 46px;
+    gap: 1px;
+    min-height: 38px;
     margin: 0;
-    padding: 10px;
+    padding: 7px 8px;
     border: 1px solid rgba(34, 211, 238, 0.34);
     border-radius: 8px;
     background: rgba(15, 23, 42, 0.94);
@@ -3552,14 +3586,17 @@
 
   .terminal-mobile-command-choice code {
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-    font-size: 13px;
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 700;
   }
 
   .terminal-mobile-command-choice span {
-    color: #94a3b8;
+    color: #7dd3fc;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 900;
+    letter-spacing: 0;
   }
 
   .terminal-mobile-command-choice::before {

@@ -3243,6 +3243,48 @@
     return "";
   }
 
+  function mobileCommandIntentLabel(command) {
+    const normalized = String(command || "").trim().toLowerCase();
+    if (!normalized) return "Try";
+    if (/^(dir|ls)\b/.test(normalized)) return "Look around";
+    if (/^cd\s+\.\./.test(normalized)) return "Go back";
+    if (/^cd\b/.test(normalized)) return "Move folder";
+    if (/^(type|cat|more)\b/.test(normalized)) return "Read evidence";
+    if (/^(findstr|grep)\b/.test(normalized)) return "Filter text";
+    if (/^tree\b/.test(normalized)) return "Map folders";
+    if (/^ipconfig\b|^getmac\b/.test(normalized)) return "Check network";
+    if (/^(ping|tracert|pathping|traceroute)\b/.test(normalized)) return "Test connection";
+    if (/^(nslookup|route|netstat|arp)\b/.test(normalized)) return "Inspect network";
+    if (/^(sc|tasklist|ps|kill|taskkill)\b/.test(normalized)) return "Check process";
+    if (/^(net share|net use)\b/.test(normalized)) return "Check access";
+    if (/^(enable|disable|configure|interface|show|copy|write|hostname|description|shutdown|no shutdown|end|exit|ip route|ip address)\b/.test(normalized)) return "Router move";
+    return "Try option";
+  }
+
+  function stableChoiceScore(value, seed) {
+    const text = `${seed}:${value}`;
+    let hash = 0;
+    for (let index = 0; index < text.length; index += 1) {
+      hash = ((hash << 5) - hash + text.charCodeAt(index)) | 0;
+    }
+    return Math.abs(hash);
+  }
+
+  function orderMobileCommandChoices(choices, suggested, seed) {
+    const ordered = choices
+      .slice()
+      .sort((left, right) => stableChoiceScore(left, seed) - stableChoiceScore(right, seed));
+
+    if (ordered.length > 1 && ordered[0] === suggested) {
+      const swapIndex = ordered.findIndex((choice, index) => index > 0 && choice !== suggested);
+      if (swapIndex > 0) {
+        [ordered[0], ordered[swapIndex]] = [ordered[swapIndex], ordered[0]];
+      }
+    }
+
+    return ordered;
+  }
+
   function activeTaskFields(step = currentStep()) {
     const objective = String(step?.objective || "Run the next focused check.").trim();
     return [
@@ -3309,8 +3351,8 @@
     const step = currentStep();
     const choices = [];
     const shell = scenario?.shell || (StateManager.isWindowsState(session.state) ? "cmd" : StateManager.isCiscoState(session.state) ? "cisco" : "linux");
+    const suggested = suggestedCommandForStep(step);
 
-    pushUniqueCommandChoice(choices, suggestedCommandForStep(step));
     commandChoicesFromHints(step).forEach((command) => pushUniqueCommandChoice(choices, command));
 
     if (shell === "cmd") {
@@ -3321,11 +3363,17 @@
       ["pwd", "ls", ...currentDirectoryChoiceCommands(), "cd .."].forEach((command) => pushUniqueCommandChoice(choices, command));
     }
 
+    pushUniqueCommandChoice(choices, suggested);
+
     if (choices.length < 3) {
       pushUniqueCommandChoice(choices, "help");
     }
 
-    return choices.slice(0, 5);
+    return orderMobileCommandChoices(
+      choices,
+      suggested,
+      `${scenario?.id || "scenario"}:${session.stepIndex}:${session.attemptsForStep}`
+    ).slice(0, 4);
   }
 
   function renderMobileCommandChoices() {
@@ -3359,12 +3407,12 @@
     grid.className = "terminal-mobile-command-grid";
 
     mobileCommandChoices().forEach((command) => {
-      const helper = commandHelperLabel(command);
+      const intent = mobileCommandIntentLabel(command);
       const button = document.createElement("button");
       button.type = "button";
       button.className = "terminal-mobile-command-choice";
       button.dataset.mobileCommandChoice = command;
-      button.innerHTML = `<code>${escapeHtml(command)}</code>${helper ? `<span>${escapeHtml(helper)}</span>` : ""}`;
+      button.innerHTML = `<span>${escapeHtml(intent)}</span><code>${escapeHtml(command)}</code>`;
       button.addEventListener("click", () => runMobileCommandChoice(command));
       grid.appendChild(button);
     });
