@@ -43,7 +43,9 @@
   }
 
   window.addEventListener("message", (event) => {
-    if (event.origin !== window.location.origin) return;
+    const frame = document.getElementById("terminalIntroFrame");
+    const fromIntroFrame = frame?.contentWindow && event.source === frame.contentWindow;
+    if (event.origin !== window.location.origin && !fromIntroFrame) return;
     if (event.data?.type === "netlab:intro-complete") {
       closeIntro();
     }

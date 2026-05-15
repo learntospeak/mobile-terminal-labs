@@ -4326,6 +4326,13 @@
       return;
     }
 
+    if (els.ticketBriefingOverlay && els.ticketBriefingOverlay.parentElement !== document.body) {
+      document.body.appendChild(els.ticketBriefingOverlay);
+    }
+    if (els.ticketBriefingCard.parentElement !== document.body) {
+      document.body.appendChild(els.ticketBriefingCard);
+    }
+
     renderTicketBriefing(scenario);
     session.ticketBriefingSeen = true;
     session.ticketBriefingOpen = true;
