@@ -4,7 +4,12 @@
   --terminal-visual-keyboard-offset: 0px;
 }
 
+.terminal-intro-root-open,
 .terminal-intro-open {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -14,12 +19,13 @@
   z-index: 9000;
   display: grid;
   place-items: center;
-  padding: clamp(12px, 3vw, 28px);
+  padding: 0;
   background:
     radial-gradient(circle at 14% 8%, rgba(126, 65, 255, 0.32), transparent 30%),
     radial-gradient(circle at 82% 12%, rgba(66, 245, 255, 0.24), transparent 26%),
     rgba(4, 6, 18, 0.94);
   backdrop-filter: blur(10px);
+  overflow: hidden;
 }
 
 .terminal-intro-overlay[hidden] {
@@ -27,41 +33,27 @@
 }
 
 .terminal-intro-shell {
-  width: min(1180px, 100%);
-  max-height: min(900px, calc(100vh - 32px));
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  border: 2px solid rgba(66, 245, 255, 0.62);
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: block;
+  border: 0;
   background: #070817;
-  box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.58),
-    0 0 34px rgba(66, 245, 255, 0.14);
+  box-shadow: none;
+  overflow: hidden;
 }
 
 .terminal-intro-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 14px;
-  border-bottom: 2px solid rgba(66, 245, 255, 0.24);
-  background: rgba(9, 12, 30, 0.96);
+  position: absolute;
+  top: 92px;
+  right: 12px;
+  z-index: 2;
 }
 
-.terminal-intro-kicker {
-  margin: 0 0 4px;
-  color: #42f5ff;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
+.terminal-intro-kicker,
 .terminal-intro-bar h2 {
-  margin: 0;
-  color: #f4f8ff;
-  font-size: clamp(1.15rem, 2.4vw, 1.8rem);
-  letter-spacing: 0;
+  display: none;
 }
 
 .terminal-intro-skip {
@@ -85,33 +77,36 @@
 
 .terminal-intro-frame {
   width: 100%;
-  height: min(760px, calc(100vh - 130px));
+  height: 100vh;
+  height: 100dvh;
   border: 0;
   background: #070817;
 }
 
 @media (max-width: 760px) {
   .terminal-intro-overlay {
-    align-items: start;
-    padding: 8px;
-    overflow-y: auto;
+    padding: 0;
+    overflow: hidden;
   }
 
   .terminal-intro-shell {
-    max-height: none;
-  }
-
-  .terminal-intro-bar {
-    align-items: stretch;
-    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
   }
 
   .terminal-intro-skip {
-    width: 100%;
+    min-height: 38px;
+    padding-inline: 12px;
+    font-size: 0.86rem;
+  }
+
+  .terminal-intro-bar {
+    top: 16px;
   }
 
   .terminal-intro-frame {
-    height: 720px;
+    height: 100vh;
+    height: 100dvh;
   }
 }
 

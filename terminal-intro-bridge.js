@@ -31,6 +31,7 @@
 
     if (!overlay) return;
     overlay.hidden = true;
+    document.documentElement.classList.remove("terminal-intro-root-open");
     document.body.classList.remove("terminal-intro-open");
     if (frame) frame.src = "about:blank";
     if (remember) markIntroSeen();
@@ -48,8 +49,12 @@
 
     if (!overlay || !frame) return;
 
+    if (overlay.parentElement !== document.body) {
+      document.body.appendChild(overlay);
+    }
     frame.src = "./side-scroller-intro/index.html?embed=terminal";
     overlay.hidden = false;
+    document.documentElement.classList.add("terminal-intro-root-open");
     document.body.classList.add("terminal-intro-open");
     skipButton?.focus?.({ preventScroll: true });
   }
