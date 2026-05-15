@@ -1,6 +1,4 @@
 (() => {
-  const INTRO_STORAGE_KEY = "netlab:beginner-terminal-intro:v1";
-
   function shouldShowIntro() {
     const config = window.TerminalCoachConfig || {};
     const params = new URLSearchParams(window.location.search);
@@ -8,24 +6,10 @@
     const skipped = params.get("skipIntro") === "1";
 
     if (skipped) return false;
-    if (!forced && !config.isBeginnerMode) return false;
-
-    try {
-      return forced || window.localStorage?.getItem(INTRO_STORAGE_KEY) !== "seen";
-    } catch (error) {
-      return forced;
-    }
+    return forced || Boolean(config.isBeginnerMode);
   }
 
-  function markIntroSeen() {
-    try {
-      window.localStorage?.setItem(INTRO_STORAGE_KEY, "seen");
-    } catch (error) {
-      // The intro can still close if storage is unavailable.
-    }
-  }
-
-  function closeIntro({ remember = true } = {}) {
+  function closeIntro() {
     const overlay = document.getElementById("terminalIntroOverlay");
     const frame = document.getElementById("terminalIntroFrame");
 
@@ -34,7 +18,6 @@
     document.documentElement.classList.remove("terminal-intro-root-open");
     document.body.classList.remove("terminal-intro-open");
     if (frame) frame.src = "about:blank";
-    if (remember) markIntroSeen();
 
     const startButton = document.getElementById("beginnerOnboardingStartBtn")
       || document.getElementById("startScenarioBtn")
