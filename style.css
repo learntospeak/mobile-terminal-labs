@@ -4806,6 +4806,102 @@ body:not(.terminal-page) .hub-resume-modal-close:hover {
   color: #fecaca;
 }
 
+/* Supporting concept labs: carry the calmer home-card treatment onto lab pages */
+.subnet-dashboard-page .subnet-dashboard-header,
+.ports-lab-page .ports-hero,
+.flow-page .flow-header,
+.http-flow-page .http-screen,
+.ports-lab-page .ports-panel,
+.flow-page .flow-panel,
+.subnet-dashboard-page .subnet-dashboard-panel,
+.subnet-dashboard-page .subnet-practice-panel,
+.subnet-dashboard-page .subnet-reference-panel,
+.subnet-dashboard-page .subnet-reference-disclosure {
+  border-color: rgba(56, 189, 248, 0.16);
+  background:
+    radial-gradient(circle at 92% 0%, rgba(56, 189, 248, 0.08), transparent 32%),
+    rgba(8, 13, 22, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 14px 30px rgba(2, 6, 23, 0.26);
+  backdrop-filter: blur(14px);
+}
+
+.ports-lab-page .ports-panel,
+.flow-page .flow-panel,
+.subnet-dashboard-page .subnet-dashboard-panel,
+.subnet-dashboard-page .subnet-practice-panel,
+.subnet-dashboard-page .subnet-reference-panel {
+  border-radius: 18px;
+}
+
+.subnet-dashboard-page .subnet-dashboard-header,
+.ports-lab-page .ports-hero,
+.flow-page .flow-header,
+.http-flow-page .http-screen {
+  border-radius: 20px;
+}
+
+.ports-lab-page .ports-quick-map span,
+.ports-lab-page .ports-category-card,
+.ports-lab-page .ports-range-track article,
+.ports-lab-page .ports-basics-grid article,
+.flow-page .scenario-tab,
+.flow-page .action-buttons button,
+.subnet-dashboard-page .subnet-reference-card,
+.subnet-dashboard-page .subnet-mode-card,
+.http-flow-page .http-answer-btn {
+  border-color: rgba(148, 163, 184, 0.16);
+  background: rgba(10, 15, 24, 0.68);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.2);
+}
+
+.ports-lab-page .ports-category-card:hover,
+.ports-lab-page .ports-range-track article:hover,
+.ports-lab-page .ports-basics-grid article:hover,
+.flow-page .scenario-tab:hover,
+.flow-page .action-buttons button:not(:disabled):hover,
+.subnet-dashboard-page .subnet-reference-card:hover,
+.subnet-dashboard-page .subnet-mode-card:hover,
+.http-flow-page .http-answer-btn:not(:disabled):hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.3);
+  background: rgba(12, 18, 29, 0.82);
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.28);
+}
+
+.ports-lab-page .ports-nav-link,
+.ports-lab-page .ports-modal-close,
+.flow-page .flow-nav-link,
+.flow-page .flow-controls button,
+.http-flow-page .http-shell-link,
+.http-flow-page .http-back-btn,
+.http-flow-page .http-next-btn {
+  border-radius: 999px;
+  border-color: rgba(96, 165, 250, 0.18);
+  background: rgba(15, 23, 42, 0.38);
+  color: #dbeafe;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 10px 22px rgba(2, 6, 23, 0.22);
+}
+
+.ports-lab-page .ports-nav-link:hover,
+.ports-lab-page .ports-modal-close:hover,
+.flow-page .flow-nav-link:hover,
+.flow-page .flow-controls button:not(:disabled):hover,
+.http-flow-page .http-shell-link:hover,
+.http-flow-page .http-back-btn:not(:disabled):hover,
+.http-flow-page .http-next-btn:not(:disabled):hover {
+  border-color: rgba(56, 189, 248, 0.42);
+  background: rgba(15, 23, 42, 0.52);
+  color: #f8fafc;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 30px rgba(2, 6, 23, 0.3),
+    0 0 24px rgba(56, 189, 248, 0.1);
+}
+
 /* Softer lab and concept cards only */
 body:not(.terminal-page) .learning-path-card {
   border-color: rgba(148, 163, 184, 0.18);
