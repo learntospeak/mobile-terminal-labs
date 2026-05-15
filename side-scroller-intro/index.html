@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Lab Intro Prototype</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./intro.js" defer></script>
+</head>
+<body>
+  <main class="intro-shell" aria-label="Terminal lab animated intro prototype">
+    <header class="prototype-toolbar">
+      <div>
+        <p class="eyebrow">Freestanding prototype</p>
+        <h1>Cyber Ops Intro Scene</h1>
+      </div>
+      <div class="toolbar-actions">
+        <button id="soundBtn" class="pixel-button" type="button" aria-pressed="false">Enable Sound</button>
+        <button id="playBtn" class="pixel-button" type="button">Play</button>
+        <button id="pauseBtn" class="pixel-button" type="button">Pause</button>
+        <button id="replayBtn" class="pixel-button" type="button">Replay</button>
+      </div>
+    </header>
+
+    <section id="stage" class="stage" aria-live="polite">
+      <div class="scanlines" aria-hidden="true"></div>
+      <div id="camera" class="camera">
+        <div class="skyline" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="office-backdrop" aria-hidden="true">
+          <div class="wall-grid"></div>
+          <div class="neon-sign">
+            <span class="sign-main">CYBER OPS</span>
+            <span class="sign-sub">Security Operations Centre</span>
+          </div>
+          <div class="server-rack rack-left">
+            <b>CORE-01</b>
+            <i><span></span><span></span><span></span></i>
+            <i><span></span><span></span><span></span></i>
+            <i><span></span><span></span><span></span></i>
+            <i><span></span><span></span><span></span></i>
+            <div class="cable-bundle cable-bundle-a"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="cable-bundle cable-bundle-b"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="server-rack rack-right">
+            <b>EDGE-02</b>
+            <i><span></span><span></span><span></span></i>
+            <i><span></span><span></span><span></span></i>
+            <i><span></span><span></span><span></span></i>
+            <i><span></span><span></span><span></span></i>
+            <div class="cable-bundle cable-bundle-a"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="cable-bundle cable-bundle-b"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="cable-tray cable-tray-left"></div>
+          <div class="cable-tray cable-tray-right"></div>
+          <div class="router-bank">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="ops-board">
+            <div class="ops-board-head">
+              <b>SOC LIVE</b>
+              <em>03:17</em>
+            </div>
+            <div class="ops-board-grid">
+              <div class="ops-map">
+                <span class="map-node node-user"></span>
+                <span class="map-node node-dns"></span>
+                <span class="map-node node-app"></span>
+                <span class="map-line line-user-dns"></span>
+                <span class="map-line line-dns-app"></span>
+              </div>
+              <ul class="ops-list" aria-hidden="true">
+                <li><b>DNS</b><span>WARN</span></li>
+                <li><b>VPN</b><span>OK</span></li>
+                <li><b>AUTH</b><span>OK</span></li>
+              </ul>
+            </div>
+            <p class="ops-easter">coffee.exe: critical</p>
+          </div>
+          <div class="coffee-station" aria-hidden="true">
+            <span class="coffee-label">JAVA</span>
+            <span class="coffee-screen"></span>
+            <span class="coffee-cup"></span>
+            <span class="coffee-slot"></span>
+          </div>
+        </div>
+
+        <div class="desktop-detail" aria-hidden="true">
+          <div class="ceiling-tray">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="overhead-light light-left"></div>
+          <div class="overhead-light light-right"></div>
+          <div class="wall-panel panel-left">
+            <b>RUNBOOK</b>
+            <span>DNS</span>
+            <span>VPN</span>
+            <span>AUTH</span>
+          </div>
+          <div class="wall-panel panel-right">
+            <b>NOTES</b>
+            <span>Layer 8?</span>
+            <span>Patch me</span>
+          </div>
+          <div class="tiny-log">
+            <span>tail -f dns.log</span>
+            <span>NXDOMAIN spike</span>
+            <span>cache miss x42</span>
+          </div>
+          <div class="sticky-note sticky-one">DNS did it?</div>
+          <div class="sticky-note sticky-two">check cable</div>
+          <div class="floor-reflection"></div>
+        </div>
+
+        <div class="door-frame" aria-hidden="true">
+          <div class="door-panel"></div>
+        </div>
+
+        <div class="manager-zone">
+          <div class="desk manager-desk"></div>
+          <div id="manager" class="pixel-person manager" aria-label="Cyber operations manager">
+            <span class="head"></span>
+            <span class="hair"></span>
+            <span class="face eye eye-left"></span>
+            <span class="face eye eye-right"></span>
+            <span class="face nose"></span>
+            <span class="face mouth"></span>
+            <span class="headset"></span>
+            <span class="body"></span>
+            <span class="shirt"></span>
+            <span class="lanyard"></span>
+            <span class="arm arm-left"></span>
+            <span class="arm arm-right"></span>
+            <span class="leg leg-left"></span>
+            <span class="leg leg-right"></span>
+            <span class="shoe shoe-left"></span>
+            <span class="shoe shoe-right"></span>
+          </div>
+        </div>
+
+        <div class="workstation" aria-label="Computer workstation">
+          <div id="monitor" class="monitor">
+            <div class="monitor-screen">
+              <span class="terminal-line">ticket-init</span>
+              <span class="terminal-line">awaiting tech...</span>
+            </div>
+          </div>
+          <div class="keyboard"></div>
+          <div class="chair"></div>
+          <div class="work-desk"></div>
+        </div>
+
+        <div id="student" class="pixel-person student is-walking" aria-label="Cyber security student walking into the office">
+          <span class="head"></span>
+          <span class="cap"></span>
+          <span class="hair"></span>
+          <span class="face eye eye-left"></span>
+          <span class="face eye eye-right"></span>
+          <span class="face nose"></span>
+          <span class="face mouth"></span>
+          <span class="headset"></span>
+          <span class="body"></span>
+          <span class="hoodie"></span>
+          <span class="badge"></span>
+          <span class="satchel"></span>
+          <span class="arm arm-left"></span>
+          <span class="arm arm-right"></span>
+          <span class="leg leg-left"></span>
+          <span class="leg leg-right"></span>
+          <span class="shoe shoe-left"></span>
+          <span class="shoe shoe-right"></span>
+        </div>
+
+        <div class="floor" aria-hidden="true"></div>
+      </div>
+
+      <div id="ticket" class="ticket-popup" role="status">
+        <p class="ticket-kicker">Support Ticket</p>
+        <h2>Internal web app cannot reach DNS</h2>
+        <p>Check network configuration, confirm name resolution, and report the likely cause.</p>
+      </div>
+
+      <div id="speech" class="speech-bubble">
+        <p id="speechText">New ticket just came in. Can you investigate?</p>
+      </div>
+
+      <div id="crtTransition" class="crt-transition" aria-hidden="true">
+        <div class="crt-frame">
+          <div class="crt-glass">
+            <p class="crt-prompt">C:\Training\Lab&gt; loading terminal session...</p>
+            <p class="crt-note">Prototype stops here. Real lab link is not wired yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p id="sceneStatus" class="scene-status">Student entering cyber operations office...</p>
+  </main>
+</body>
+</html>
