@@ -6,6 +6,9 @@ Summary: 106 passed, 0 failed, 106 total terminal exercise steps.
 This report compares each terminal exercise task with the guide/walkthrough command shown for that task.
 PASS means the guide command matches the task command. FAIL means the guide is missing, generic, or points at a different command.
 
+Rendered UI Checks
+- PASS win-ping-fileserver: command="C:\Users\student> ping fileserver" output="Pinging fileserver [192.168.56.20] with 32 bytes of data: Reply from 192.168.56.20: bytes=32 time<1ms TTL=128 Reply from"
+
 ## Windows Log Review (windows-log-review)
 Shell: cmd | Level: Beginner
 

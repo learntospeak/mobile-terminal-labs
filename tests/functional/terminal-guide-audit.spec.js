@@ -32,6 +32,14 @@ function writeGuideAuditReport(audit) {
     ""
   ];
 
+  if (Array.isArray(audit.renderedChecks) && audit.renderedChecks.length) {
+    lines.push("Rendered UI Checks");
+    audit.renderedChecks.forEach((check) => {
+      lines.push(`- ${check.ok ? "PASS" : "FAIL"} ${check.scenarioId}: ${check.details}`);
+    });
+    lines.push("");
+  }
+
   audit.scenarios.forEach((scenario) => {
     lines.push(`## ${scenario.title} (${scenario.id})`);
     lines.push(`Shell: ${scenario.shell || "unknown"} | Level: ${scenario.level || scenario.difficulty || "unknown"}`);
@@ -188,26 +196,58 @@ test("Terminal guide audit: walkthrough instructions match each exercise", async
       total: flatSteps.length,
       passed: flatSteps.filter((step) => step.ok).length,
       failed: flatSteps.filter((step) => !step.ok).length,
+      renderedChecks: [],
       scenarios
     };
   });
 
-  writeGuideAuditReport(audit);
+  await page.evaluate(() => localStorage.setItem("networkingGame.explainerSeen.ping", "1"));
+  await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("win-ping-fileserver"));
+  await page.waitForTimeout(250);
+  if (await page.locator("#ticketBriefingStartBtn").isVisible().catch(() => false)) {
+    await page.locator("#ticketBriefingStartBtn").click();
+    await page.waitForTimeout(150);
+  }
+  if (await page.locator("#commandExplainerDoneBtn").isVisible().catch(() => false)) {
+    await page.locator("#commandExplainerDoneBtn").click();
+    await page.waitForTimeout(150);
+  }
+  await page.locator("#watchWalkthroughBtn").click();
+  await expect(page.locator("#walkthroughCard")).toBeVisible();
+  const renderedCommand = ((await page.locator("#walkthroughCommand").textContent()) || "").trim();
+  const renderedOutput = ((await page.locator("#walkthroughOutput").textContent()) || "").trim();
+  const renderedOk = /ping\s+(?:fileserver|192\.168\.56\.20)/i.test(renderedCommand)
+    && /Reply from 192\.168\.56\.20/i.test(renderedOutput)
+    && !/^C:\\Users\\student>$/.test(renderedCommand)
+    && !/No output shown/i.test(renderedOutput);
+  audit.renderedChecks.push({
+    scenarioId: "win-ping-fileserver",
+    ok: renderedOk,
+    details: `command="${renderedCommand}" output="${renderedOutput.replace(/\s+/g, " ").slice(0, 120)}"`
+  });
+  await page.locator("#walkthroughCloseBtn").click();
+  await expect(page.locator("#walkthroughCard")).toBeHidden();
 
   const failures = audit.scenarios.flatMap((scenario) => (
     scenario.steps
       .filter((step) => !step.ok)
       .map((step) => `${scenario.id} step ${step.index + 1}: ${step.reason}`)
   ));
+  const renderedFailures = audit.renderedChecks
+    .filter((check) => !check.ok)
+    .map((check) => `${check.scenarioId}: rendered guide did not show the expected command/output (${check.details})`);
+  const allFailures = failures.concat(renderedFailures);
+
+  writeGuideAuditReport(audit);
 
   addLabHealth(report, {
     pagesTested: ["terminal guide audit"],
     acceptedVariations: [`${audit.passed}/${audit.total} guide instructions matched`],
-    rejectedReasonableAlternatives: failures.slice(0, 25)
+    rejectedReasonableAlternatives: allFailures.slice(0, 25)
   });
   pushCheck(report, "terminal guide audit report written", fs.existsSync(REPORT_PATH), REPORT_PATH);
-  pushCheck(report, "all terminal guide commands match exercise commands", failures.length === 0, failures.slice(0, 20).join(" | "));
-  failures.slice(0, 25).forEach((failure) => pushWarning(report, failure));
+  pushCheck(report, "all terminal guide commands match exercise commands", allFailures.length === 0, allFailures.slice(0, 20).join(" | "));
+  allFailures.slice(0, 25).forEach((failure) => pushWarning(report, failure));
 
   await testInfo.attach("terminal-guide-audit.txt", {
     path: REPORT_PATH,
@@ -215,5 +255,5 @@ test("Terminal guide audit: walkthrough instructions match each exercise", async
   });
   await attachSmokeData(testInfo, report);
 
-  expect(failures, failures.slice(0, 20).join("\n")).toEqual([]);
+  expect(allFailures, allFailures.slice(0, 20).join("\n")).toEqual([]);
 });

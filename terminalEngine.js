@@ -3718,11 +3718,17 @@
     );
     if (els.walkthroughCommand) {
       const prompt = walkthroughPrompt(entry);
-      const commandText = entry.command ? `${prompt} ${entry.command}` : prompt;
+      const command = String(entry.command || suggestedCommandForStep(currentStep()) || "").trim();
+      const commandText = command ? `${prompt} ${command}` : prompt;
       els.walkthroughCommand.textContent = commandText;
     }
     if (els.walkthroughOutput) {
-      const outputText = normalizeDemoOutput(entry.output).join("\n") || "No output shown for this step.";
+      const command = String(entry.command || suggestedCommandForStep(currentStep()) || "").trim();
+      const outputLines = normalizeDemoOutput(entry.output);
+      const fallbackOutput = command ? fallbackDemoOutput(command) : [];
+      const outputText = outputLines.length
+        ? outputLines.join("\n")
+        : (fallbackOutput.length ? fallbackOutput.join("\n") : "No output shown for this step.");
       els.walkthroughOutput.textContent = outputText;
     }
     fillText(
