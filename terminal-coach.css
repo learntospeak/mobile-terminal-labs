@@ -785,10 +785,10 @@
 
 .command-explainer-card {
   position: fixed;
-  inset: 18px;
+  inset: max(12px, env(safe-area-inset-top)) 18px max(12px, env(safe-area-inset-bottom));
   z-index: 9201;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   pointer-events: none;
 }
@@ -799,12 +799,13 @@
 }
 
 .command-explainer-shell {
-  width: min(760px, 100%);
-  max-height: calc(100vh - 36px);
+  width: min(720px, 100%);
+  max-height: min(calc(100vh - 24px), 720px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   display: grid;
-  gap: 14px;
-  padding: 18px;
+  gap: 12px;
+  padding: 16px;
   border-radius: 20px;
   border: 1px solid rgba(56, 189, 248, 0.28);
   background: linear-gradient(180deg, rgba(7, 12, 20, 0.98) 0%, rgba(4, 8, 14, 0.995) 100%);
@@ -839,7 +840,7 @@
 .command-explainer-stage {
   position: relative;
   overflow: hidden;
-  min-height: 310px;
+  min-height: 270px;
   border-radius: 14px;
   border: 2px solid #263057;
   background:
@@ -863,8 +864,8 @@
   grid-template-columns: minmax(160px, 1fr) minmax(130px, 0.8fr);
   align-items: center;
   gap: 120px;
-  min-height: 238px;
-  padding: 28px 34px 18px;
+  min-height: 204px;
+  padding: 24px 30px 12px;
 }
 
 .command-explainer-device {
@@ -1099,13 +1100,13 @@
   }
 
   .command-explainer-stage {
-    min-height: 284px;
+    min-height: 260px;
   }
 
   .command-explainer-scene {
     grid-template-columns: 1fr 92px;
     gap: 46px;
-    min-height: 210px;
+    min-height: 190px;
     padding: 18px 14px 8px;
   }
 
@@ -2032,8 +2033,8 @@
 .terminal-panel {
   display: flex;
   flex-direction: column;
-  height: clamp(620px, 72vh, 860px);
-  min-height: 760px;
+  height: clamp(500px, 62vh, 700px);
+  min-height: 520px;
   min-width: 0;
   padding: 0;
   overflow: hidden;
@@ -3348,8 +3349,8 @@
   }
 
   .terminal-panel {
-    height: clamp(560px, 66vh, 760px);
-    min-height: 640px;
+    height: clamp(500px, 60vh, 680px);
+    min-height: 520px;
   }
 }
 
@@ -3581,13 +3582,16 @@
 
 @media (min-width: 1181px) {
   .terminal-layout {
-    align-items: stretch;
+    align-items: start;
   }
 
-  .terminal-layout > .scenario-panel,
-  .terminal-layout > .terminal-panel {
+  .terminal-layout > .scenario-panel {
     height: auto;
     min-height: 100%;
+  }
+
+  .terminal-layout > .terminal-panel {
+    align-self: start;
   }
 }
 

@@ -228,6 +228,7 @@ test("Terminal comprehensive journey smoke: scenario data and full command paths
     const page = await browser.newPage({ viewport: { width: 1280, height: 860 } });
     observePage(page, report);
     await gotoAndStabilize(page, track.url);
+    await page.evaluate(() => localStorage.setItem("networkingGame.explainerSeen.ping", "1"));
 
     const scenarios = await scenarioInventory(page, Boolean(track.beginnerOnly));
     auditScenarioData(report, track, scenarios);

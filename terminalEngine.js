@@ -4413,6 +4413,7 @@
 
     els.commandExplainerCard.hidden = false;
     els.commandExplainerCard.setAttribute("aria-hidden", "false");
+    els.commandExplainerCard.querySelector(".command-explainer-shell")?.scrollTo({ top: 0 });
     if (els.commandExplainerOverlay) {
       els.commandExplainerOverlay.hidden = false;
     }

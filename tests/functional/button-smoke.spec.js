@@ -101,6 +101,10 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
 
   await expect(page.locator("#commandExplainerCard")).toBeVisible();
   await expect(page.locator("#commandExplainerTitle")).toContainText(/ping/i);
+  const explainerBox = await page.locator(".command-explainer-shell").boundingBox();
+  const viewport = page.viewportSize() || { height: 720 };
+  expect(explainerBox?.y ?? -1).toBeGreaterThanOrEqual(0);
+  expect((explainerBox?.y ?? 0) + (explainerBox?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
   await page.locator("#commandExplainerStartBtn").click();
   await expect.poll(() => page.locator("#commandExplainerStage").getAttribute("data-step")).not.toBe("0");
   await expect(page.locator("#commandExplainerStepText")).toContainText(/packet|reply|reach|test message/i);

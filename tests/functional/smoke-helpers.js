@@ -116,6 +116,14 @@ async function dismissTaskCompleteIfPresent(page) {
   }
 }
 
+async function dismissCommandExplainerIfPresent(page) {
+  const doneButton = page.locator("#commandExplainerDoneBtn");
+  if (await doneButton.isVisible().catch(() => false)) {
+    await doneButton.click();
+    await page.waitForTimeout(150);
+  }
+}
+
 async function checkNoHorizontalOverflow(page) {
   return page.evaluate(() => {
     const root = document.documentElement;
@@ -211,6 +219,7 @@ async function runTerminalCommand(page, command, options = {}) {
 
   await dismissTicketBriefingIfPresent(page);
   await dismissTaskCompleteIfPresent(page);
+  await dismissCommandExplainerIfPresent(page);
 
   const before = await getTerminalSnapshot(page);
   const mobileChoice = page.locator(`[data-mobile-command-choice="${command}"]`).first();
@@ -273,6 +282,7 @@ async function runWalkthroughDemo(page, options = {}) {
 
   await dismissTicketBriefingIfPresent(page);
   await dismissTaskCompleteIfPresent(page);
+  await dismissCommandExplainerIfPresent(page);
 
   const before = await getTerminalSnapshot(page);
   const walkthroughButton = page.locator("#watchWalkthroughBtn");
