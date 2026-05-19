@@ -232,7 +232,11 @@
     commandExplainerMascot: document.getElementById("commandExplainerMascot"),
     commandExplainerStepText: document.getElementById("commandExplainerStepText"),
     commandExplainerSummary: document.getElementById("commandExplainerSummary"),
+    commandExplainerPrevStepBtn: document.getElementById("commandExplainerPrevStepBtn"),
+    commandExplainerStepCounter: document.getElementById("commandExplainerStepCounter"),
+    commandExplainerNextStepBtn: document.getElementById("commandExplainerNextStepBtn"),
     commandExplainerStartBtn: document.getElementById("commandExplainerStartBtn"),
+    commandExplainerReadBtn: document.getElementById("commandExplainerReadBtn"),
     commandExplainerReplayBtn: document.getElementById("commandExplainerReplayBtn"),
     commandExplainerDoneBtn: document.getElementById("commandExplainerDoneBtn"),
     commandSheetBtn: document.getElementById("commandSheetBtn"),
@@ -287,6 +291,7 @@
     commandExplainerStepIndex: 0,
     commandExplainerTimer: 0,
     commandExplainerAutoShownKey: "",
+    commandExplainerReading: false,
     taskCompleteOpen: false,
     taskCompleteExpanded: false,
     walkthroughActive: false,
@@ -4318,6 +4323,90 @@
     session.commandExplainerTimer = cancelScheduledTimeout(session.commandExplainerTimer);
   }
 
+  function supportsCommandExplainerSpeech() {
+    return typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+  }
+
+  function stopCommandExplainerSpeech() {
+    if (supportsCommandExplainerSpeech()) {
+      window.speechSynthesis.cancel();
+    }
+    session.commandExplainerReading = false;
+    if (els.commandExplainerReadBtn) {
+      els.commandExplainerReadBtn.textContent = supportsCommandExplainerSpeech() ? "Read aloud" : "Read unavailable";
+      els.commandExplainerReadBtn.setAttribute("aria-pressed", "false");
+    }
+  }
+
+  function commandExplainerSpeechText() {
+    const command = session.commandExplainerCommand;
+    const config = COMMAND_EXPLAINERS[command];
+    const step = config?.steps?.[session.commandExplainerStepIndex];
+    return [step?.text, step?.terminal ? `Terminal shows: ${step.terminal}` : ""]
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  function readCommandExplainerStep() {
+    if (!supportsCommandExplainerSpeech()) {
+      return;
+    }
+
+    if (session.commandExplainerReading) {
+      stopCommandExplainerSpeech();
+      return;
+    }
+
+    const text = commandExplainerSpeechText();
+    if (!text) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.94;
+    utterance.pitch = 1;
+    utterance.onend = () => {
+      session.commandExplainerReading = false;
+      if (els.commandExplainerReadBtn) {
+        els.commandExplainerReadBtn.textContent = "Read aloud";
+        els.commandExplainerReadBtn.setAttribute("aria-pressed", "false");
+      }
+    };
+    utterance.onerror = utterance.onend;
+    session.commandExplainerReading = true;
+    if (els.commandExplainerReadBtn) {
+      els.commandExplainerReadBtn.textContent = "Stop reading";
+      els.commandExplainerReadBtn.setAttribute("aria-pressed", "true");
+    }
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function updateCommandExplainerControls() {
+    const command = session.commandExplainerCommand;
+    const config = COMMAND_EXPLAINERS[command];
+    const steps = config?.steps || [];
+    const index = Math.max(0, Math.min(session.commandExplainerStepIndex, Math.max(0, steps.length - 1)));
+
+    if (els.commandExplainerStepCounter) {
+      els.commandExplainerStepCounter.textContent = steps.length ? `Step ${index + 1} of ${steps.length}` : "";
+    }
+    if (els.commandExplainerPrevStepBtn) {
+      els.commandExplainerPrevStepBtn.disabled = index <= 0;
+    }
+    if (els.commandExplainerNextStepBtn) {
+      els.commandExplainerNextStepBtn.disabled = index >= steps.length - 1;
+    }
+    if (els.commandExplainerReadBtn) {
+      const supported = supportsCommandExplainerSpeech();
+      els.commandExplainerReadBtn.disabled = !supported;
+      if (!session.commandExplainerReading) {
+        els.commandExplainerReadBtn.textContent = supported ? "Read aloud" : "Read unavailable";
+        els.commandExplainerReadBtn.setAttribute("aria-pressed", "false");
+      }
+    }
+  }
+
   function renderCommandExplainerStep() {
     const command = session.commandExplainerCommand;
     const config = COMMAND_EXPLAINERS[command];
@@ -4331,6 +4420,23 @@
     els.commandExplainerStage.dataset.step = String(index);
     fillText(els.commandExplainerStepText, step.text || config.summary, { hideWhenEmpty: false });
     fillText(els.commandExplainerTerminal, step.terminal || config.commandExample, { hideWhenEmpty: false });
+    updateCommandExplainerControls();
+  }
+
+  function setCommandExplainerStep(index, { stopPlayback = true } = {}) {
+    const command = session.commandExplainerCommand;
+    const config = COMMAND_EXPLAINERS[command];
+    const maxIndex = Math.max(0, (config?.steps || []).length - 1);
+    if (stopPlayback) {
+      clearCommandExplainerTimer();
+    }
+    stopCommandExplainerSpeech();
+    session.commandExplainerStepIndex = Math.max(0, Math.min(Number(index) || 0, maxIndex));
+    renderCommandExplainerStep();
+  }
+
+  function moveCommandExplainerStep(delta) {
+    setCommandExplainerStep(session.commandExplainerStepIndex + delta);
   }
 
   function playCommandExplainer() {
@@ -4341,6 +4447,7 @@
     }
 
     clearCommandExplainerTimer();
+    stopCommandExplainerSpeech();
     session.commandExplainerStepIndex = 0;
     renderCommandExplainerStep();
 
@@ -4375,6 +4482,7 @@
     }
 
     clearCommandExplainerTimer();
+    stopCommandExplainerSpeech();
     session.commandExplainerOpen = false;
     els.commandExplainerCard.hidden = true;
     els.commandExplainerCard.setAttribute("aria-hidden", "true");
@@ -4393,6 +4501,13 @@
     const config = COMMAND_EXPLAINERS[key];
     if (!config || !els.commandExplainerCard) {
       return false;
+    }
+
+    if (els.commandExplainerOverlay && els.commandExplainerOverlay.parentElement !== document.body) {
+      document.body.appendChild(els.commandExplainerOverlay);
+    }
+    if (els.commandExplainerCard.parentElement !== document.body) {
+      document.body.appendChild(els.commandExplainerCard);
     }
 
     session.commandExplainerCommand = key;
@@ -9168,6 +9283,15 @@
     }
     if (els.commandExplainerStartBtn) {
       els.commandExplainerStartBtn.addEventListener("click", playCommandExplainer);
+    }
+    if (els.commandExplainerPrevStepBtn) {
+      els.commandExplainerPrevStepBtn.addEventListener("click", () => moveCommandExplainerStep(-1));
+    }
+    if (els.commandExplainerNextStepBtn) {
+      els.commandExplainerNextStepBtn.addEventListener("click", () => moveCommandExplainerStep(1));
+    }
+    if (els.commandExplainerReadBtn) {
+      els.commandExplainerReadBtn.addEventListener("click", readCommandExplainerStep);
     }
     if (els.commandExplainerReplayBtn) {
       els.commandExplainerReplayBtn.addEventListener("click", playCommandExplainer);

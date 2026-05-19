@@ -91,6 +91,17 @@ test("Terminal major buttons trigger visible behavior", async ({ page }) => {
 });
 
 test("Ping explainer opens once and can be replayed", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.SpeechSynthesisUtterance = window.SpeechSynthesisUtterance || function SpeechSynthesisUtterance(text) {
+      this.text = text;
+    };
+    window.speechSynthesis = window.speechSynthesis || {
+      cancel() {},
+      speak(utterance) {
+        window.setTimeout(() => utterance.onend?.(), 0);
+      }
+    };
+  });
   await gotoAndStabilize(page, "/terminal-coach.html?track=windows&mode=standard&start=1");
   await page.evaluate(() => localStorage.removeItem("networkingGame.explainerSeen.ping"));
   await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("win-ping-fileserver"));
@@ -105,6 +116,15 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
   const viewport = page.viewportSize() || { height: 720 };
   expect(explainerBox?.y ?? -1).toBeGreaterThanOrEqual(0);
   expect((explainerBox?.y ?? 0) + (explainerBox?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+
+  await expect(page.locator("#commandExplainerStepCounter")).toHaveText(/Step 1 of 7/);
+  await page.locator("#commandExplainerNextStepBtn").click();
+  await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "1");
+  await page.locator("#commandExplainerPrevStepBtn").click();
+  await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "0");
+  await expect(page.locator("#commandExplainerReadBtn")).toBeVisible();
+  await page.locator("#commandExplainerReadBtn").click();
+
   await page.locator("#commandExplainerStartBtn").click();
   await expect.poll(() => page.locator("#commandExplainerStage").getAttribute("data-step")).not.toBe("0");
   await expect(page.locator("#commandExplainerStepText")).toContainText(/packet|reply|reach|test message/i);
