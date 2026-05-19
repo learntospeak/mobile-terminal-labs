@@ -47,8 +47,24 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || "application/octet-stream";
     res.writeHead(200, { "Content-Type": contentType });
-    fs.createReadStream(filePath).pipe(res);
+    const stream = fs.createReadStream(filePath);
+    stream.on("error", () => {
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
+      }
+      res.end("Unable to read file");
+    });
+    res.on("error", () => {
+      stream.destroy();
+    });
+    stream.pipe(res);
   });
+});
+
+server.on("clientError", (_error, socket) => {
+  if (socket.writable) {
+    socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
+  }
 });
 
 server.listen(PORT, HOST, () => {

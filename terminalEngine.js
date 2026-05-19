@@ -94,6 +94,7 @@
     commandFamilyIntroCard: document.getElementById("commandFamilyIntroCard"),
     commandFamilyIntroTitle: document.getElementById("commandFamilyIntroTitle"),
     commandFamilyIntroUse: document.getElementById("commandFamilyIntroUse"),
+    commandExplainerReplayInlineBtn: document.getElementById("commandExplainerReplayInlineBtn"),
     commandFamilyChipList: document.getElementById("commandFamilyChipList"),
     commandFamilyChipNote: document.getElementById("commandFamilyChipNote"),
     commandFamilyExamples: document.getElementById("commandFamilyExamples"),
@@ -221,6 +222,19 @@
     reportProblemBtn: document.getElementById("reportProblemBtn"),
     copyHelpReportBtn: document.getElementById("copyHelpReportBtn"),
     helpReportOutput: document.getElementById("helpReportOutput"),
+    commandExplainerOverlay: document.getElementById("commandExplainerOverlay"),
+    commandExplainerCard: document.getElementById("commandExplainerCard"),
+    commandExplainerKicker: document.getElementById("commandExplainerKicker"),
+    commandExplainerTitle: document.getElementById("commandExplainerTitle"),
+    commandExplainerSkipBtn: document.getElementById("commandExplainerSkipBtn"),
+    commandExplainerStage: document.getElementById("commandExplainerStage"),
+    commandExplainerTerminal: document.getElementById("commandExplainerTerminal"),
+    commandExplainerMascot: document.getElementById("commandExplainerMascot"),
+    commandExplainerStepText: document.getElementById("commandExplainerStepText"),
+    commandExplainerSummary: document.getElementById("commandExplainerSummary"),
+    commandExplainerStartBtn: document.getElementById("commandExplainerStartBtn"),
+    commandExplainerReplayBtn: document.getElementById("commandExplainerReplayBtn"),
+    commandExplainerDoneBtn: document.getElementById("commandExplainerDoneBtn"),
     commandSheetBtn: document.getElementById("commandSheetBtn"),
     startScenarioBtn: document.getElementById("startScenarioBtn"),
     previousScenarioBtn: document.getElementById("previousScenarioBtn"),
@@ -268,6 +282,11 @@
     ticketBriefingOpen: false,
     beginnerGuideSeen: false,
     beginnerGuideOpen: false,
+    commandExplainerOpen: false,
+    commandExplainerCommand: "",
+    commandExplainerStepIndex: 0,
+    commandExplainerTimer: 0,
+    commandExplainerAutoShownKey: "",
     taskCompleteOpen: false,
     taskCompleteExpanded: false,
     walkthroughActive: false,
@@ -347,6 +366,48 @@
   function beginnerGuideStorageKey() {
     return pageConfig.beginnerGuideStorageKey || `netlab:beginner-guide:${currentSectionId()}`;
   }
+
+  const COMMAND_EXPLAINERS = {
+    ping: {
+      title: "What does ping do?",
+      kicker: "Ping Explainer",
+      storageKey: "networkingGame.explainerSeen.ping",
+      mascot: "./assets/mascot/patch-ping.png",
+      fallbackMascot: "./assets/mascot/patch-main.png",
+      commandExample: "ping 8.8.8.8",
+      summary: "Ping sends a small test message from your computer to another device and waits for a reply. If the reply comes back, it means your computer can reach that device.",
+      steps: [
+        {
+          text: "Let's test if another device can reply.",
+          terminal: "C:\\Lab>"
+        },
+        {
+          text: "Ping sends a small test message.",
+          terminal: "C:\\Lab> ping 8.8.8.8"
+        },
+        {
+          text: "A packet travels from your computer to the other device.",
+          terminal: "C:\\Lab> ping 8.8.8.8"
+        },
+        {
+          text: "The other device receives the message.",
+          terminal: "C:\\Lab> ping 8.8.8.8"
+        },
+        {
+          text: "A reply packet travels back to your computer.",
+          terminal: "C:\\Lab> ping 8.8.8.8"
+        },
+        {
+          text: "A reply means your computer can reach it. The time value is the response time.",
+          terminal: "C:\\Lab> ping 8.8.8.8\nReply from 8.8.8.8: bytes=32 time=24ms TTL=117"
+        },
+        {
+          text: "Nice - ping helped prove the connection works.",
+          terminal: "C:\\Lab> ping 8.8.8.8\nReply from 8.8.8.8: time=24ms\nPackets: Sent = 1, Received = 1, Lost = 0"
+        }
+      ]
+    }
+  };
 
   function readLocalFlag(key) {
     try {
@@ -1771,10 +1832,14 @@
 
     els.commandFamilyIntroCard.hidden = !show;
     if (!show) {
+      if (els.commandExplainerReplayInlineBtn) {
+        els.commandExplainerReplayInlineBtn.hidden = true;
+      }
       return;
     }
 
     const family = String(intro.family || intro.base || "").trim();
+    const normalizedFamily = family.toLowerCase();
     const base = String(intro.base || family).trim();
     const variations = Array.isArray(intro.variations) ? intro.variations : [];
     const examples = Array.isArray(intro.examples) && intro.examples.length ? intro.examples : variations.slice(0, 4);
@@ -1788,6 +1853,13 @@
       { hideWhenEmpty: false }
     );
     fillText(els.commandFamilyChipNote, `First try: ${intro.firstTry || base}`, { hideWhenEmpty: false });
+
+    if (els.commandExplainerReplayInlineBtn) {
+      const hasExplainer = Boolean(COMMAND_EXPLAINERS[normalizedFamily]);
+      els.commandExplainerReplayInlineBtn.hidden = !hasExplainer;
+      els.commandExplainerReplayInlineBtn.textContent = hasExplainer ? `Watch ${normalizedFamily} explainer` : "";
+      els.commandExplainerReplayInlineBtn.dataset.commandExplainerReplay = hasExplainer ? normalizedFamily : "";
+    }
 
     if (els.commandFamilyChipList) {
       els.commandFamilyChipList.innerHTML = variations.map((item) => {
@@ -4221,6 +4293,160 @@
     }
   }
 
+  function currentIntroducedExplainerCommand(scenario = currentScenario(), step = currentStep()) {
+    const intro = currentCommandFamilyIntro(scenario, step);
+    const family = String(intro?.family || intro?.base || step?.commandFamily || "").trim().toLowerCase();
+    if (COMMAND_EXPLAINERS[family]) {
+      return family;
+    }
+    return "";
+  }
+
+  function hasSeenCommandExplainer(command) {
+    const config = COMMAND_EXPLAINERS[String(command || "").trim().toLowerCase()];
+    return config ? readLocalFlag(config.storageKey) : true;
+  }
+
+  function markCommandExplainerSeen(command) {
+    const config = COMMAND_EXPLAINERS[String(command || "").trim().toLowerCase()];
+    if (config) {
+      writeLocalFlag(config.storageKey, true);
+    }
+  }
+
+  function clearCommandExplainerTimer() {
+    session.commandExplainerTimer = cancelScheduledTimeout(session.commandExplainerTimer);
+  }
+
+  function renderCommandExplainerStep() {
+    const command = session.commandExplainerCommand;
+    const config = COMMAND_EXPLAINERS[command];
+    if (!config || !els.commandExplainerStage) {
+      return;
+    }
+
+    const steps = config.steps || [];
+    const index = Math.max(0, Math.min(session.commandExplainerStepIndex, steps.length - 1));
+    const step = steps[index] || steps[0] || {};
+    els.commandExplainerStage.dataset.step = String(index);
+    fillText(els.commandExplainerStepText, step.text || config.summary, { hideWhenEmpty: false });
+    fillText(els.commandExplainerTerminal, step.terminal || config.commandExample, { hideWhenEmpty: false });
+  }
+
+  function playCommandExplainer() {
+    const command = session.commandExplainerCommand;
+    const config = COMMAND_EXPLAINERS[command];
+    if (!config) {
+      return;
+    }
+
+    clearCommandExplainerTimer();
+    session.commandExplainerStepIndex = 0;
+    renderCommandExplainerStep();
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      session.commandExplainerStepIndex = Math.max(0, (config.steps || []).length - 1);
+      renderCommandExplainerStep();
+      return;
+    }
+
+    const advance = () => {
+      const maxIndex = Math.max(0, (config.steps || []).length - 1);
+      if (!session.commandExplainerOpen || session.commandExplainerStepIndex >= maxIndex) {
+        clearCommandExplainerTimer();
+        return;
+      }
+      session.commandExplainerStepIndex += 1;
+      renderCommandExplainerStep();
+      session.commandExplainerTimer = window.setTimeout(advance, 1900);
+    };
+
+    session.commandExplainerTimer = window.setTimeout(advance, 1400);
+  }
+
+  function closeCommandExplainer({ markSeen = false, restoreFocus = true } = {}) {
+    if (!els.commandExplainerCard) {
+      return;
+    }
+
+    if (markSeen && session.commandExplainerCommand) {
+      markCommandExplainerSeen(session.commandExplainerCommand);
+    }
+
+    clearCommandExplainerTimer();
+    session.commandExplainerOpen = false;
+    els.commandExplainerCard.hidden = true;
+    els.commandExplainerCard.setAttribute("aria-hidden", "true");
+    if (els.commandExplainerOverlay) {
+      els.commandExplainerOverlay.hidden = true;
+    }
+    document.body.classList.remove("command-explainer-open");
+
+    if (restoreFocus && !session.ticketBriefingOpen && !session.beginnerGuideOpen) {
+      focusTerminalInputAtEnd();
+    }
+  }
+
+  function showCommandExplainer(command, options = {}) {
+    const key = String(command || "").trim().toLowerCase();
+    const config = COMMAND_EXPLAINERS[key];
+    if (!config || !els.commandExplainerCard) {
+      return false;
+    }
+
+    session.commandExplainerCommand = key;
+    session.commandExplainerOpen = true;
+    session.commandExplainerStepIndex = 0;
+    fillText(els.commandExplainerKicker, config.kicker || "Command Explainer", { hideWhenEmpty: false });
+    fillText(els.commandExplainerTitle, config.title, { hideWhenEmpty: false });
+    fillText(els.commandExplainerSummary, config.summary, { hideWhenEmpty: false });
+    if (els.commandExplainerMascot) {
+      els.commandExplainerMascot.src = config.mascot;
+      els.commandExplainerMascot.onerror = () => {
+        if (els.commandExplainerMascot.src !== config.fallbackMascot) {
+          els.commandExplainerMascot.src = config.fallbackMascot;
+        }
+      };
+    }
+    renderCommandExplainerStep();
+
+    els.commandExplainerCard.hidden = false;
+    els.commandExplainerCard.setAttribute("aria-hidden", "false");
+    if (els.commandExplainerOverlay) {
+      els.commandExplainerOverlay.hidden = false;
+    }
+    document.body.classList.add("command-explainer-open");
+
+    window.setTimeout(() => {
+      els.commandExplainerStartBtn?.focus({ preventScroll: true });
+    }, 0);
+
+    if (options.autoplay) {
+      playCommandExplainer();
+    }
+    return true;
+  }
+
+  function replayCommandExplainer(command = "ping") {
+    return showCommandExplainer(command, { autoplay: true });
+  }
+
+  function maybeAutoShowCommandExplainer() {
+    const command = currentIntroducedExplainerCommand();
+    if (!command || hasSeenCommandExplainer(command) || session.commandExplainerOpen) {
+      return;
+    }
+
+    const autoKey = `${currentScenario()?.id || ""}:${session.stepIndex}:${command}`;
+    if (session.commandExplainerAutoShownKey === autoKey || session.ticketBriefingOpen || session.beginnerGuideOpen) {
+      return;
+    }
+
+    session.commandExplainerAutoShownKey = autoKey;
+    showCommandExplainer(command);
+  }
+
   function scrollTaskInfoToTop() {
     window.requestAnimationFrame(() => {
       if (isMobileTerminalLayout() && els.mobileInfoScroll) {
@@ -4308,6 +4534,7 @@
     if (restoreFocus && !session.ticketBriefingOpen) {
       focusTerminalInputAtEnd();
     }
+    window.setTimeout(maybeAutoShowCommandExplainer, 80);
   }
 
   function openBeginnerGuide(options = {}) {
@@ -4354,6 +4581,7 @@
     if (restoreFocus) {
       focusTerminalInputAtEnd();
     }
+    window.setTimeout(maybeAutoShowCommandExplainer, 80);
   }
 
   function openTicketBriefing(scenario = currentScenario()) {
@@ -5527,6 +5755,7 @@
     renderHintLadder();
     updatePrompt();
     renderSectionShell();
+    window.setTimeout(maybeAutoShowCommandExplainer, 120);
     if (document.activeElement === els.terminalInput) {
       scheduleMobileTerminalReveal(0);
     }
@@ -5865,6 +6094,7 @@
   function resetScenarioState() {
     closeTicketBriefing({ restoreFocus: false });
     closeBeginnerGuide({ restoreFocus: false });
+    closeCommandExplainer({ restoreFocus: false });
     session.state = StateManager.createState(currentScenario().environment);
     setCurrentLayer(currentScenario().layer || "application");
     session.stepIndex = 0;
@@ -8929,6 +9159,27 @@
       }
       fillText(els.commandFamilyChipNote, meaning, { hideWhenEmpty: false });
     });
+    if (els.commandExplainerReplayInlineBtn) {
+      els.commandExplainerReplayInlineBtn.addEventListener("click", () => {
+        const command = els.commandExplainerReplayInlineBtn.dataset.commandExplainerReplay || currentIntroducedExplainerCommand() || "ping";
+        replayCommandExplainer(command);
+      });
+    }
+    if (els.commandExplainerStartBtn) {
+      els.commandExplainerStartBtn.addEventListener("click", playCommandExplainer);
+    }
+    if (els.commandExplainerReplayBtn) {
+      els.commandExplainerReplayBtn.addEventListener("click", playCommandExplainer);
+    }
+    if (els.commandExplainerDoneBtn) {
+      els.commandExplainerDoneBtn.addEventListener("click", () => closeCommandExplainer({ markSeen: true }));
+    }
+    if (els.commandExplainerSkipBtn) {
+      els.commandExplainerSkipBtn.addEventListener("click", () => closeCommandExplainer({ markSeen: true }));
+    }
+    if (els.commandExplainerOverlay) {
+      els.commandExplainerOverlay.addEventListener("click", () => closeCommandExplainer({ markSeen: true }));
+    }
     if (els.helpUserNote) {
       els.helpUserNote.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
@@ -9156,6 +9407,11 @@
         return;
       }
 
+      if (session.commandExplainerOpen) {
+        closeCommandExplainer({ markSeen: true });
+        return;
+      }
+
       if (session.taskCompleteOpen) {
         closeTaskCompleteCard();
         return;
@@ -9274,6 +9530,9 @@
     previewScenarioById,
     resetScenario,
     runMobileCommandChoice,
+    showCommandExplainer,
+    replayCommandExplainer,
+    hasSeenCommandExplainer,
     nextScenario,
     previousScenario
   };

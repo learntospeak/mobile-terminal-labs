@@ -544,6 +544,17 @@
   }
 
   const WINDOWS_COMMAND_FAMILIES = {
+    ping: {
+      family: "ping",
+      base: "ping",
+      use: "Use it to test whether another device sends a reply.",
+      firstTry: "ping fileserver",
+      variations: [
+        { command: "ping fileserver", meaning: "test by device name" },
+        { command: "ping 192.168.56.20", meaning: "test by IP address" },
+        { command: "ping 8.8.8.8", meaning: "test a known internet device" }
+      ]
+    },
     ipconfig: {
       family: "ipconfig",
       base: "ipconfig",
@@ -6112,6 +6123,7 @@
       objective: "Test basic reachability to the file server before you troubleshoot anything deeper.",
       scenarioIntro: "Ping is still useful when the learner needs a first yes-or-no answer about host reachability. Keep it focused on the Windows file server so the shell context and target context remain simple.",
       commandFocus: ["ping"],
+      commandFamilyIntro: WINDOWS_COMMAND_FAMILIES.ping,
       acceptedCommands: ["ping fileserver", "ping 192.168.56.20"],
       simulatedOutput: ["Reply from 192.168.56.20: bytes=32 time<1ms TTL=128"],
       successCondition: "Send an ICMP reachability check to fileserver.",

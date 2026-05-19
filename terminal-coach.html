@@ -121,6 +121,44 @@
         </div>
       </section>
 
+      <div id="commandExplainerOverlay" class="command-explainer-overlay" hidden></div>
+      <aside id="commandExplainerCard" class="command-explainer-card" aria-hidden="true" aria-labelledby="commandExplainerTitle" hidden>
+        <div class="command-explainer-shell">
+          <div class="command-explainer-head">
+            <div>
+              <p id="commandExplainerKicker" class="command-explainer-kicker">Command Explainer</p>
+              <h2 id="commandExplainerTitle">What does ping do?</h2>
+            </div>
+            <button id="commandExplainerSkipBtn" class="command-explainer-secondary" type="button">Skip</button>
+          </div>
+          <div id="commandExplainerStage" class="command-explainer-stage" data-step="0" aria-live="polite">
+            <div class="command-explainer-scanlines" aria-hidden="true"></div>
+            <div class="command-explainer-scene">
+              <div class="command-explainer-device command-explainer-computer">
+                <span class="command-explainer-device-label">Your computer</span>
+                <pre id="commandExplainerTerminal" class="command-explainer-terminal">C:\Lab&gt;</pre>
+              </div>
+              <img id="commandExplainerMascot" class="command-explainer-mascot" src="./assets/mascot/patch-ping.png" alt="Patch, the beginner IT guide">
+              <div class="command-explainer-link" aria-hidden="true">
+                <span class="command-explainer-packet command-explainer-request">request</span>
+                <span class="command-explainer-packet command-explainer-reply">reply</span>
+              </div>
+              <div class="command-explainer-device command-explainer-server">
+                <span class="command-explainer-device-label">Server</span>
+                <span class="command-explainer-server-light"></span>
+              </div>
+            </div>
+            <p id="commandExplainerStepText" class="command-explainer-step-text">Let's test if another device can reply.</p>
+          </div>
+          <p id="commandExplainerSummary" class="command-explainer-summary">Ping sends a small test message from your computer to another device and waits for a reply. If the reply comes back, it means your computer can reach that device.</p>
+          <div class="command-explainer-actions">
+            <button id="commandExplainerStartBtn" class="command-explainer-primary" type="button">Start / Watch</button>
+            <button id="commandExplainerReplayBtn" class="command-explainer-secondary" type="button">Replay</button>
+            <button id="commandExplainerDoneBtn" class="command-explainer-primary" type="button">Got it</button>
+          </div>
+        </div>
+      </aside>
+
       <div class="terminal-layout">
         <aside class="lab-panel scenario-panel">
           <div class="scenario-card">
@@ -214,6 +252,7 @@
                 <p id="commandFamilyIntroTitle" class="command-family-title">Command family: ipconfig</p>
                 <p id="commandFamilyIntroUse" class="command-family-use">Use it to check this computer's network settings.</p>
               </div>
+              <button id="commandExplainerReplayInlineBtn" class="command-family-explainer-btn" type="button" hidden>Watch ping explainer</button>
               <div id="commandFamilyChipList" class="command-family-chip-list" aria-label="Command variations"></div>
               <p id="commandFamilyChipNote" class="command-family-chip-note">Pick a version to fill the terminal input.</p>
               <details id="commandFamilyExamples" class="command-family-examples">

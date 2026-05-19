@@ -90,6 +90,43 @@ test("Terminal major buttons trigger visible behavior", async ({ page }) => {
   await expect.poll(() => page.locator("#terminalOutput .terminal-line").count()).toBeGreaterThan(0);
 });
 
+test("Ping explainer opens once and can be replayed", async ({ page }) => {
+  await gotoAndStabilize(page, "/terminal-coach.html?track=windows&mode=standard&start=1");
+  await page.evaluate(() => localStorage.removeItem("networkingGame.explainerSeen.ping"));
+  await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("win-ping-fileserver"));
+
+  if (await page.locator("#ticketBriefingStartBtn").isVisible().catch(() => false)) {
+    await page.locator("#ticketBriefingStartBtn").click();
+  }
+
+  await expect(page.locator("#commandExplainerCard")).toBeVisible();
+  await expect(page.locator("#commandExplainerTitle")).toContainText(/ping/i);
+  await page.locator("#commandExplainerStartBtn").click();
+  await expect.poll(() => page.locator("#commandExplainerStage").getAttribute("data-step")).not.toBe("0");
+  await expect(page.locator("#commandExplainerStepText")).toContainText(/packet|reply|reach|test message/i);
+
+  await page.locator("#commandExplainerDoneBtn").click();
+  await expect(page.locator("#commandExplainerCard")).toBeHidden();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("networkingGame.explainerSeen.ping"))).toBe("1");
+
+  await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("win-ping-fileserver"));
+  if (await page.locator("#ticketBriefingStartBtn").isVisible().catch(() => false)) {
+    await page.locator("#ticketBriefingStartBtn").click();
+  }
+  await page.waitForTimeout(400);
+  await expect(page.locator("#commandExplainerCard")).toBeHidden();
+
+  await expect(page.locator("#commandExplainerReplayInlineBtn")).toBeVisible();
+  await page.locator("#commandExplainerReplayInlineBtn").click();
+  await expect(page.locator("#commandExplainerCard")).toBeVisible();
+  await page.locator("#commandExplainerSkipBtn").click();
+  await expect(page.locator("#commandExplainerCard")).toBeHidden();
+
+  await page.locator("#terminalInput").fill("ping fileserver");
+  await page.locator("#terminalForm button[type='submit']").click();
+  await expect(page.locator("#terminalOutput")).toContainText(/Reply from 192\.168\.56\.20/i);
+});
+
 test("Mobile terminal command-choice and popup controls remain usable", async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
