@@ -90,6 +90,19 @@ test("Terminal major buttons trigger visible behavior", async ({ page }) => {
   await expect.poll(() => page.locator("#terminalOutput .terminal-line").count()).toBeGreaterThan(0);
 });
 
+test("Intro sound starts enabled and can be muted", async ({ page }) => {
+  await gotoAndStabilize(page, "/side-scroller-intro/index.html?embed=terminal");
+
+  const soundToggle = page.locator("#soundBtn");
+  await expect(soundToggle).toBeVisible();
+  await expect(soundToggle).toHaveText(/Sound on/i);
+  await expect(soundToggle).toHaveAttribute("aria-pressed", "true");
+
+  await soundToggle.click();
+  await expect(soundToggle).toHaveText(/Sound off/i);
+  await expect(soundToggle).toHaveAttribute("aria-pressed", "false");
+});
+
 test("Ping explainer opens once and can be replayed", async ({ page }) => {
   await page.addInitScript(() => {
     window.SpeechSynthesisUtterance = window.SpeechSynthesisUtterance || function SpeechSynthesisUtterance(text) {
@@ -100,6 +113,7 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
       value: {
       cancel() {},
       speak(utterance) {
+        window.__spokenCount = (window.__spokenCount || 0) + 1;
         window.__lastSpokenText = utterance.text;
         window.setTimeout(() => utterance.onend?.(), 0);
       }
@@ -127,9 +141,19 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
   await page.locator("#commandExplainerPrevStepBtn").click();
   await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "0");
   await expect(page.locator("#commandExplainerReadBtn")).toBeVisible();
-  await page.locator("#commandExplainerReadBtn").click();
+  await expect(page.locator("#commandExplainerReadBtn")).toHaveText(/Sound on/i);
   await expect.poll(() => page.evaluate(() => window.__lastSpokenText || "")).toMatch(/test if another device can reply/i);
   expect(await page.evaluate(() => window.__lastSpokenText || "")).not.toMatch(/Terminal shows/i);
+
+  await page.locator("#commandExplainerReadBtn").click();
+  await expect(page.locator("#commandExplainerReadBtn")).toHaveText(/Sound off/i);
+  const spokenWhileMuted = await page.evaluate(() => window.__spokenCount || 0);
+  await page.locator("#commandExplainerNextStepBtn").click();
+  await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "1");
+  await page.waitForTimeout(150);
+  expect(await page.evaluate(() => window.__spokenCount || 0)).toBe(spokenWhileMuted);
+  await page.locator("#commandExplainerPrevStepBtn").click();
+  await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "0");
 
   await page.locator("#commandExplainerStartBtn").click();
   await page.waitForTimeout(500);

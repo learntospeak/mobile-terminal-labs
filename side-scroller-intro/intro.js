@@ -13,7 +13,7 @@ let masterGain = null;
 let ambienceGain = null;
 let rackGain = null;
 let ambienceNodes = [];
-let soundEnabled = false;
+let soundEnabled = true;
 let stepLoop = null;
 let coffeeTimer = null;
 let currentStep = 0;
@@ -30,24 +30,28 @@ function configureEmbeddedMode() {
 }
 
 async function ensureAudio() {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    masterGain = audioContext.createGain();
-    masterGain.gain.value = 0.34;
-    masterGain.connect(audioContext.destination);
-    ambienceGain = audioContext.createGain();
-    rackGain = audioContext.createGain();
-    ambienceGain.gain.value = 0;
-    rackGain.gain.value = 0;
-    ambienceGain.connect(masterGain);
-    rackGain.connect(masterGain);
-  }
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioContext.createGain();
+      masterGain.gain.value = 0.34;
+      masterGain.connect(audioContext.destination);
+      ambienceGain = audioContext.createGain();
+      rackGain = audioContext.createGain();
+      ambienceGain.gain.value = 0;
+      rackGain.gain.value = 0;
+      ambienceGain.connect(masterGain);
+      rackGain.connect(masterGain);
+    }
 
-  if (audioContext.state === "suspended") {
-    await audioContext.resume();
-  }
+    if (audioContext.state === "suspended") {
+      await audioContext.resume();
+    }
 
-  return audioContext.state === "running";
+    return audioContext.state === "running";
+  } catch {
+    return false;
+  }
 }
 
 function createNoiseBuffer(seconds = 1.5) {
@@ -430,7 +434,7 @@ function resumeScene() {
 
 soundBtn.addEventListener("click", async () => {
   soundEnabled = !soundEnabled;
-  soundBtn.textContent = soundEnabled ? "Sound Enabled" : "Enable Sound";
+  soundBtn.textContent = soundEnabled ? "Sound on" : "Sound off";
   soundBtn.setAttribute("aria-pressed", String(soundEnabled));
 
   if (soundEnabled) {
@@ -457,4 +461,13 @@ pauseBtn.addEventListener("click", pauseScene);
 playBtn.addEventListener("click", resumeScene);
 
 configureEmbeddedMode();
+soundBtn.textContent = soundEnabled ? "Sound on" : "Sound off";
+soundBtn.setAttribute("aria-pressed", String(soundEnabled));
+if (soundEnabled) {
+  ensureAudio().then((audioReady) => {
+    if (audioReady && soundEnabled) {
+      startSoundscape();
+    }
+  });
+}
 playScene();

@@ -292,6 +292,7 @@
     commandExplainerTimer: 0,
     commandExplainerAutoShownKey: "",
     commandExplainerReading: false,
+    commandExplainerSoundEnabled: true,
     taskCompleteOpen: false,
     taskCompleteExpanded: false,
     walkthroughActive: false,
@@ -4332,9 +4333,17 @@
       window.speechSynthesis.cancel();
     }
     session.commandExplainerReading = false;
+    syncCommandExplainerSoundButton();
+  }
+
+  function syncCommandExplainerSoundButton() {
     if (els.commandExplainerReadBtn) {
-      els.commandExplainerReadBtn.textContent = supportsCommandExplainerSpeech() ? "Read aloud" : "Read unavailable";
-      els.commandExplainerReadBtn.setAttribute("aria-pressed", "false");
+      const supported = supportsCommandExplainerSpeech();
+      els.commandExplainerReadBtn.disabled = !supported;
+      els.commandExplainerReadBtn.textContent = supported
+        ? (session.commandExplainerSoundEnabled ? "Sound on" : "Sound off")
+        : "Sound unavailable";
+      els.commandExplainerReadBtn.setAttribute("aria-pressed", String(Boolean(supported && session.commandExplainerSoundEnabled)));
     }
   }
 
@@ -4345,13 +4354,8 @@
     return step?.text || "";
   }
 
-  function readCommandExplainerStep() {
-    if (!supportsCommandExplainerSpeech()) {
-      return;
-    }
-
-    if (session.commandExplainerReading) {
-      stopCommandExplainerSpeech();
+  function speakCommandExplainerStep() {
+    if (!session.commandExplainerSoundEnabled || !supportsCommandExplainerSpeech()) {
       return;
     }
 
@@ -4366,18 +4370,26 @@
     utterance.pitch = 1;
     utterance.onend = () => {
       session.commandExplainerReading = false;
-      if (els.commandExplainerReadBtn) {
-        els.commandExplainerReadBtn.textContent = "Read aloud";
-        els.commandExplainerReadBtn.setAttribute("aria-pressed", "false");
-      }
+      syncCommandExplainerSoundButton();
     };
     utterance.onerror = utterance.onend;
     session.commandExplainerReading = true;
-    if (els.commandExplainerReadBtn) {
-      els.commandExplainerReadBtn.textContent = "Stop reading";
-      els.commandExplainerReadBtn.setAttribute("aria-pressed", "true");
-    }
+    syncCommandExplainerSoundButton();
     window.speechSynthesis.speak(utterance);
+  }
+
+  function toggleCommandExplainerSound() {
+    if (!supportsCommandExplainerSpeech()) {
+      syncCommandExplainerSoundButton();
+      return;
+    }
+
+    session.commandExplainerSoundEnabled = !session.commandExplainerSoundEnabled;
+    stopCommandExplainerSpeech();
+    syncCommandExplainerSoundButton();
+    if (session.commandExplainerSoundEnabled) {
+      speakCommandExplainerStep();
+    }
   }
 
   function updateCommandExplainerControls() {
@@ -4396,12 +4408,7 @@
       els.commandExplainerNextStepBtn.disabled = index >= steps.length - 1;
     }
     if (els.commandExplainerReadBtn) {
-      const supported = supportsCommandExplainerSpeech();
-      els.commandExplainerReadBtn.disabled = !supported;
-      if (!session.commandExplainerReading) {
-        els.commandExplainerReadBtn.textContent = supported ? "Read aloud" : "Read unavailable";
-        els.commandExplainerReadBtn.setAttribute("aria-pressed", "false");
-      }
+      syncCommandExplainerSoundButton();
     }
   }
 
@@ -4419,6 +4426,9 @@
     fillText(els.commandExplainerStepText, step.text || config.summary, { hideWhenEmpty: false });
     fillText(els.commandExplainerTerminal, step.terminal || config.commandExample, { hideWhenEmpty: false });
     updateCommandExplainerControls();
+    if (session.commandExplainerOpen && session.commandExplainerSoundEnabled) {
+      window.setTimeout(speakCommandExplainerStep, 0);
+    }
   }
 
   function setCommandExplainerStep(index, { stopPlayback = true } = {}) {
@@ -9269,7 +9279,7 @@
       els.commandExplainerNextStepBtn.addEventListener("click", () => moveCommandExplainerStep(1));
     }
     if (els.commandExplainerReadBtn) {
-      els.commandExplainerReadBtn.addEventListener("click", readCommandExplainerStep);
+      els.commandExplainerReadBtn.addEventListener("click", toggleCommandExplainerSound);
     }
     if (els.commandExplainerReplayBtn) {
       els.commandExplainerReplayBtn.addEventListener("click", restartCommandExplainer);
