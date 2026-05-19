@@ -1519,6 +1519,7 @@
   margin-top: 12px;
 }
 
+.task-complete-next,
 .task-complete-toggle,
 .task-complete-close {
   min-height: 34px;
@@ -1533,12 +1534,20 @@
   cursor: pointer;
 }
 
+.task-complete-next {
+  border-color: rgba(34, 197, 94, 0.58);
+  background: rgba(20, 83, 45, 0.86);
+  color: #dcfce7;
+}
+
+.task-complete-next:hover,
 .task-complete-toggle:hover,
 .task-complete-close:hover {
   border-color: #7b8796;
   background: rgba(15, 23, 42, 0.95);
 }
 
+.task-complete-next:focus-visible,
 .task-complete-toggle:focus-visible,
 .task-complete-close:focus-visible {
   outline: 2px solid rgba(56, 189, 248, 0.36);
@@ -3479,6 +3488,7 @@
     width: 100%;
   }
 
+  .task-complete-next,
   .task-complete-toggle,
   .task-complete-close {
     flex: 1 1 0;
@@ -3863,11 +3873,23 @@
   .beginner-onboarding-shell {
     padding: 18px 16px;
     border-radius: 18px;
+    max-height: calc(var(--terminal-mobile-viewport-height) - 20px);
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .beginner-onboarding-shell h2 {
+    font-size: 22px;
+    line-height: 1.15;
   }
 
   .ticket-briefing-shell {
     width: 100%;
-    max-height: none;
+    max-height: calc(var(--terminal-mobile-viewport-height) - 20px);
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    -webkit-overflow-scrolling: touch;
     border-radius: 18px;
   }
 

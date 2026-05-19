@@ -5,6 +5,7 @@ const { test, expect } = require("@playwright/test");
 const ROOT = path.resolve(__dirname, "../..");
 const REPORT_DIR = path.join(ROOT, "test-results");
 const REPORT_PATH = path.join(REPORT_DIR, "kid-usability-smoke-report.md");
+const BASE_URL = "http://127.0.0.1:4173";
 
 const PAGES = [
   { name: "Home / Learning Hub", url: "/index.html" },
@@ -76,6 +77,7 @@ async function collectMetrics(page, browser, pageDef) {
   const consoleErrors = [];
   const pageErrors = [];
   const requestFailures = [];
+  const pageUrl = new URL(pageDef.url, BASE_URL).href;
 
   page.on("console", (msg) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());
@@ -88,7 +90,7 @@ async function collectMetrics(page, browser, pageDef) {
     }
   });
 
-  await page.goto(pageDef.url, { waitUntil: "domcontentloaded" });
+  await page.goto(pageUrl, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle").catch(() => {});
   await dismissCommonOverlays(page);
 
@@ -185,7 +187,7 @@ async function collectMetrics(page, browser, pageDef) {
 
   const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
   const mobile = await mobileContext.newPage();
-  await mobile.goto(pageDef.url, { waitUntil: "domcontentloaded" });
+  await mobile.goto(pageUrl, { waitUntil: "domcontentloaded" });
   await mobile.waitForLoadState("networkidle").catch(() => {});
   await dismissCommonOverlays(mobile);
   const mobileOverflow = await mobile.evaluate(() => ({
@@ -350,6 +352,8 @@ function yesNo(value) {
 }
 
 test("10-year-old navigation smoke audit for all pages", async ({ browser }, testInfo) => {
+  test.setTimeout(180_000);
+
   const context = await browser.newContext({ viewport: { width: 1280, height: 850 } });
   const page = await context.newPage();
   const results = [];

@@ -347,10 +347,19 @@
     }
 
     const lastProgress = NetlabApp.getLastActiveProgress();
+    const beginnerHref = NetlabApp.buildSectionUrl("windows-terminal", "start");
 
     if (!lastProgress) {
-      els.resumeActions.hidden = true;
-      els.resumeActions.innerHTML = "";
+      els.resumeActions.hidden = false;
+      els.resumeActions.innerHTML = [
+        "<a id=\"resumeLastBtn\" class=\"app-action-link\" href=\"" + escapeHtml(beginnerHref) + "\">Resume Beginner Lab</a>"
+      ].join("");
+      if (els.resumeModalCopy) {
+        els.resumeModalCopy.textContent = "No saved progress yet. Resume will open the beginner terminal lab.";
+      }
+      if (els.resumeContinue) {
+        els.resumeContinue.href = beginnerHref;
+      }
       closeResumeModal();
       return;
     }

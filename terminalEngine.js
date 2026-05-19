@@ -169,6 +169,7 @@
     taskCompleteOverlay: document.getElementById("taskCompleteOverlay"),
     taskCompleteSummary: document.getElementById("taskCompleteSummary"),
     taskCompleteDetails: document.getElementById("taskCompleteDetails"),
+    taskCompleteNextBtn: document.getElementById("taskCompleteNextBtn"),
     taskCompleteToggleBtn: document.getElementById("taskCompleteToggleBtn"),
     taskCompleteCloseBtn: document.getElementById("taskCompleteCloseBtn"),
     taskCompleteProof: document.getElementById("taskCompleteProof"),
@@ -4218,6 +4219,40 @@
     if (restoreFocus && !session.ticketBriefingOpen && !session.beginnerGuideOpen) {
       focusTerminalInputAtEnd();
     }
+  }
+
+  function scrollTaskInfoToTop() {
+    window.requestAnimationFrame(() => {
+      if (isMobileTerminalLayout() && els.mobileInfoScroll) {
+        els.mobileInfoScroll.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      if (!els.scenarioPanel) {
+        return;
+      }
+
+      if (els.scenarioPanel.scrollHeight > els.scenarioPanel.clientHeight) {
+        els.scenarioPanel.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        els.scenarioPanel.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+    });
+  }
+
+  function goToNextTaskFromCompletion() {
+    if (session.scenarioCompleted) {
+      closeTaskCompleteCard({ restoreFocus: false });
+      nextScenario();
+      scrollTaskInfoToTop();
+      return;
+    }
+
+    closeTaskCompleteCard({ restoreFocus: false });
+    renderPanel();
+    persistSectionProgress();
+    scrollTaskInfoToTop();
+    focusTerminalInputAtEnd();
   }
 
   function renderTaskCompleteCard({ proof = "", why = "", next = "", summary = "" } = {}, options = {}) {
@@ -9004,6 +9039,10 @@
       els.taskCompleteCloseBtn.addEventListener("click", () => {
         closeTaskCompleteCard();
       });
+    }
+
+    if (els.taskCompleteNextBtn) {
+      els.taskCompleteNextBtn.addEventListener("click", goToNextTaskFromCompletion);
     }
 
     if (els.taskCompleteToggleBtn) {
