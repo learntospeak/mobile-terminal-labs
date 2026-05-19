@@ -640,6 +640,20 @@
     }
   };
 
+  const LINUX_COMMAND_FAMILIES = {
+    ping: {
+      family: "ping",
+      base: "ping",
+      use: "Use it to test whether another device sends a reply.",
+      firstTry: "ping metasploitable2",
+      variations: [
+        { command: "ping metasploitable2", meaning: "test by device name" },
+        { command: "ping 192.168.56.102", meaning: "test by IP address" },
+        { command: "ping target", meaning: "test the current lab target alias" }
+      ]
+    }
+  };
+
   function cwdMatch(target, extras = {}) {
     return {
       command: "cd",
@@ -2567,6 +2581,8 @@
       level: "Intermediate",
       shell: "linux",
       objective: "Confirm that metasploitable2 (192.168.56.102) is reachable, check its web port, and identify the web service version.",
+      commandFocus: ["ping", "nmap"],
+      commandFamilyIntro: LINUX_COMMAND_FAMILIES.ping,
       allowedFlexibility: "Stay on the named target host and move from basic connectivity into targeted scan evidence. You can use either the hostname or the IP.",
       environment: linuxEnv({
         cwd: "/home/student",
@@ -4388,6 +4404,8 @@
       category: "Netcat workflows",
       level: "Advanced",
       objective: "Treat the bind shell on metasploitable2 (192.168.56.102) as a remote listener and connect to it directly rather than preparing a callback receiver.",
+      commandFocus: ["ping", "nc"],
+      commandFamilyIntro: LINUX_COMMAND_FAMILIES.ping,
       environment: {
         cwd: "/home/student",
         targets: [{

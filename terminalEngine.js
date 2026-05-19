@@ -1829,7 +1829,10 @@
 
   function renderCommandFamilyIntro(scenario = currentScenario(), step = currentStep()) {
     const intro = currentCommandFamilyIntro(scenario, step);
-    const show = Boolean(intro && (isBeginnerMode() || /beginner|intermediate/i.test(`${scenario?.level || ""} ${scenario?.difficulty || ""}`)));
+    const family = String(intro?.family || intro?.base || "").trim();
+    const normalizedFamily = family.toLowerCase();
+    const hasExplainer = Boolean(COMMAND_EXPLAINERS[normalizedFamily]);
+    const show = Boolean(intro && (hasExplainer || isBeginnerMode() || /beginner|intermediate/i.test(`${scenario?.level || ""} ${scenario?.difficulty || ""}`)));
 
     if (!els.commandFamilyIntroCard) {
       return;
@@ -1843,8 +1846,6 @@
       return;
     }
 
-    const family = String(intro.family || intro.base || "").trim();
-    const normalizedFamily = family.toLowerCase();
     const base = String(intro.base || family).trim();
     const variations = Array.isArray(intro.variations) ? intro.variations : [];
     const examples = Array.isArray(intro.examples) && intro.examples.length ? intro.examples : variations.slice(0, 4);
@@ -1860,7 +1861,6 @@
     fillText(els.commandFamilyChipNote, `First try: ${intro.firstTry || base}`, { hideWhenEmpty: false });
 
     if (els.commandExplainerReplayInlineBtn) {
-      const hasExplainer = Boolean(COMMAND_EXPLAINERS[normalizedFamily]);
       els.commandExplainerReplayInlineBtn.hidden = !hasExplainer;
       els.commandExplainerReplayInlineBtn.textContent = hasExplainer ? `Watch ${normalizedFamily} explainer` : "";
       els.commandExplainerReplayInlineBtn.dataset.commandExplainerReplay = hasExplainer ? normalizedFamily : "";
@@ -4342,9 +4342,7 @@
     const command = session.commandExplainerCommand;
     const config = COMMAND_EXPLAINERS[command];
     const step = config?.steps?.[session.commandExplainerStepIndex];
-    return [step?.text, step?.terminal ? `Terminal shows: ${step.terminal}` : ""]
-      .filter(Boolean)
-      .join(" ");
+    return step?.text || "";
   }
 
   function readCommandExplainerStep() {
@@ -4439,7 +4437,7 @@
     setCommandExplainerStep(session.commandExplainerStepIndex + delta);
   }
 
-  function playCommandExplainer() {
+  function restartCommandExplainer() {
     const command = session.commandExplainerCommand;
     const config = COMMAND_EXPLAINERS[command];
     if (!config) {
@@ -4450,26 +4448,6 @@
     stopCommandExplainerSpeech();
     session.commandExplainerStepIndex = 0;
     renderCommandExplainerStep();
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      session.commandExplainerStepIndex = Math.max(0, (config.steps || []).length - 1);
-      renderCommandExplainerStep();
-      return;
-    }
-
-    const advance = () => {
-      const maxIndex = Math.max(0, (config.steps || []).length - 1);
-      if (!session.commandExplainerOpen || session.commandExplainerStepIndex >= maxIndex) {
-        clearCommandExplainerTimer();
-        return;
-      }
-      session.commandExplainerStepIndex += 1;
-      renderCommandExplainerStep();
-      session.commandExplainerTimer = window.setTimeout(advance, 1900);
-    };
-
-    session.commandExplainerTimer = window.setTimeout(advance, 1400);
   }
 
   function closeCommandExplainer({ markSeen = false, restoreFocus = true } = {}) {
@@ -4539,7 +4517,7 @@
     }, 0);
 
     if (options.autoplay) {
-      playCommandExplainer();
+      restartCommandExplainer();
     }
     return true;
   }
@@ -9282,7 +9260,7 @@
       });
     }
     if (els.commandExplainerStartBtn) {
-      els.commandExplainerStartBtn.addEventListener("click", playCommandExplainer);
+      els.commandExplainerStartBtn.addEventListener("click", restartCommandExplainer);
     }
     if (els.commandExplainerPrevStepBtn) {
       els.commandExplainerPrevStepBtn.addEventListener("click", () => moveCommandExplainerStep(-1));
@@ -9294,7 +9272,7 @@
       els.commandExplainerReadBtn.addEventListener("click", readCommandExplainerStep);
     }
     if (els.commandExplainerReplayBtn) {
-      els.commandExplainerReplayBtn.addEventListener("click", playCommandExplainer);
+      els.commandExplainerReplayBtn.addEventListener("click", restartCommandExplainer);
     }
     if (els.commandExplainerDoneBtn) {
       els.commandExplainerDoneBtn.addEventListener("click", () => closeCommandExplainer({ markSeen: true }));

@@ -95,12 +95,16 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
     window.SpeechSynthesisUtterance = window.SpeechSynthesisUtterance || function SpeechSynthesisUtterance(text) {
       this.text = text;
     };
-    window.speechSynthesis = window.speechSynthesis || {
+    Object.defineProperty(window, "speechSynthesis", {
+      configurable: true,
+      value: {
       cancel() {},
       speak(utterance) {
+        window.__lastSpokenText = utterance.text;
         window.setTimeout(() => utterance.onend?.(), 0);
       }
-    };
+      }
+    });
   });
   await gotoAndStabilize(page, "/terminal-coach.html?track=windows&mode=standard&start=1");
   await page.evaluate(() => localStorage.removeItem("networkingGame.explainerSeen.ping"));
@@ -124,9 +128,13 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
   await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "0");
   await expect(page.locator("#commandExplainerReadBtn")).toBeVisible();
   await page.locator("#commandExplainerReadBtn").click();
+  await expect.poll(() => page.evaluate(() => window.__lastSpokenText || "")).toMatch(/test if another device can reply/i);
+  expect(await page.evaluate(() => window.__lastSpokenText || "")).not.toMatch(/Terminal shows/i);
 
   await page.locator("#commandExplainerStartBtn").click();
-  await expect.poll(() => page.locator("#commandExplainerStage").getAttribute("data-step")).not.toBe("0");
+  await page.waitForTimeout(500);
+  await expect(page.locator("#commandExplainerStage")).toHaveAttribute("data-step", "0");
+  await page.locator("#commandExplainerNextStepBtn").click();
   await expect(page.locator("#commandExplainerStepText")).toContainText(/packet|reply|reach|test message/i);
 
   await page.locator("#commandExplainerDoneBtn").click();
@@ -149,6 +157,11 @@ test("Ping explainer opens once and can be replayed", async ({ page }) => {
   await page.locator("#terminalInput").fill("ping fileserver");
   await page.locator("#terminalForm button[type='submit']").click();
   await expect(page.locator("#terminalOutput")).toContainText(/Reply from 192\.168\.56\.20/i);
+
+  await gotoAndStabilize(page, "/terminal-coach.html?track=linux&skipIntro=1");
+  await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("reachability-and-port-check"));
+  await expect(page.locator("#commandExplainerReplayInlineBtn")).toBeVisible();
+  await expect(page.locator("#commandExplainerReplayInlineBtn")).toContainText(/ping explainer/i);
 });
 
 test("Mobile terminal command-choice and popup controls remain usable", async ({ browser }) => {
