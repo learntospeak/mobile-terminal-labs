@@ -1268,6 +1268,17 @@ h1 {
   transform: translateX(18px);
 }
 
+@media (min-width: 761px) {
+  .student.at-workstation {
+    left: 73%;
+  }
+
+  .student.at-terminal {
+    left: 73%;
+    transform: translateX(12px);
+  }
+}
+
 .student.at-terminal .face,
 .student.at-terminal .badge,
 .student.at-terminal .satchel {
