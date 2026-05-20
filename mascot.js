@@ -55,6 +55,7 @@
     window.setTimeout(() => {
       import("./terminal-recovery-patterns.js?v=20260520recovery1").catch(() => {});
       import("./incident-folder-gold.js?v=20260520gold1").catch(() => {});
+      import("./windows-notes-upgrade.js?v=20260521notes1").catch(() => {});
     }, 0);
   }
 
