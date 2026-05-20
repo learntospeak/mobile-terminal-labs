@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Flow Report</title>
+  <link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
+  <style>
+    body.home-dashboard{padding:16px}.shell{width:min(1280px,100%);margin:0 auto;display:grid;gap:16px}.card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.copy{color:#cbd5e1;line-height:1.6}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.btn{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,rgba(15,23,42,.94),rgba(8,13,24,.98));color:#f8fafc;font-weight:900;cursor:pointer}.btn.primary{background:linear-gradient(180deg,#22c55e,#15803d);border-color:rgba(74,222,128,.52)}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.stat{padding:16px;border:1px solid rgba(96,165,250,.2);border-radius:14px;background:rgba(15,23,42,.54)}.stat strong{display:block;font-size:28px;color:#f8fafc}.stat span{color:#cbd5e1}.table-wrap{overflow:auto;border:1px solid rgba(96,165,250,.18);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:10px;border-bottom:1px solid rgba(96,165,250,.12);text-align:left;vertical-align:top;color:#dbeafe}th{position:sticky;top:0;background:#020617;color:#93c5fd}tr.bad td{color:#fecaca}.flow-list{display:grid;gap:12px}.flow-item{border:1px solid rgba(96,165,250,.18);border-radius:14px;padding:14px;background:rgba(2,6,23,.44)}.flow-item h3{margin:0 0 8px}.step{padding:8px 0;border-top:1px solid rgba(96,165,250,.1);color:#dbeafe}.step code{color:#86efac}.search{width:100%;min-height:44px;border-radius:10px;border:1px solid rgba(96,165,250,.28);background:#020617;color:#f8fafc;padding:0 12px}@media(max-width:760px){.stats{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%}}
+  </style>
+  <script src="./stateManager.js?v=20260425cmd1" defer></script>
+  <script src="./scenarioEngine.js?v=20260503helpguide1" defer></script>
+  <script src="./lab-engagement-smoke.js?v=20260520engage1" defer></script>
+</head>
+<body class="home-dashboard">
+  <main class="shell">
+    <section class="card">
+      <a class="dashboard-secondary-btn" href="./index.html">← Back Home</a>
+      <h1>Lab Flow + Engagement Report</h1>
+      <p class="copy">Shows every terminal lab, its steps, likely commands, estimated length, and whether it looks too short or under-engaging.</p>
+      <div class="actions">
+        <button id="generateBtn" class="btn primary" type="button">Generate Report</button>
+        <button id="downloadJsonBtn" class="btn" type="button">Download JSON</button>
+        <button id="downloadCsvBtn" class="btn" type="button">Download CSV</button>
+      </div>
+    </section>
+    <section class="stats">
+      <article class="stat"><strong id="scenarioCount">0</strong><span>Labs</span></article>
+      <article class="stat"><strong id="weakCount">0</strong><span>Weak / too short</span></article>
+      <article class="stat"><strong id="averageScore">0</strong><span>Average score</span></article>
+    </section>
+    <section class="card">
+      <h2>Engagement Smoke Table</h2>
+      <p class="copy">Rows flagged as weak usually need more discovery, verification, recovery handling, or extra follow-up tasks.</p>
+      <input id="filterInput" class="search" placeholder="Filter by title, platform, category, or flag...">
+      <div class="table-wrap"><table><thead><tr><th>Score</th><th>Lab</th><th>Platform</th><th>Category</th><th>Steps</th><th>Est. min</th><th>Commands</th><th>Flags</th></tr></thead><tbody id="engagementBody"></tbody></table></div>
+    </section>
+    <section class="card">
+      <h2>Full Lab Flow Cheat Sheet</h2>
+      <div id="flowList" class="flow-list"></div>
+    </section>
+  </main>
+  <script>
+    let report=null;
+    function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+    function generate(){if(!window.NetlabLabEngagementSmoke){alert('Report helper did not load.');return}report=window.NetlabLabEngagementSmoke.run();render()}
+    function render(){if(!report)return;document.getElementById('scenarioCount').textContent=report.summary.scenarioCount;document.getElementById('weakCount').textContent=report.summary.weakCount;document.getElementById('averageScore').textContent=report.summary.averageScore;renderTable();renderFlows()}
+    function filteredRows(){const q=document.getElementById('filterInput').value.toLowerCase();return (report?.rows||[]).filter(r=>!q||[r.title,r.platform,r.category,r.flags,r.commandFamilies].join(' ').toLowerCase().includes(q))}
+    function renderTable(){const body=document.getElementById('engagementBody');body.innerHTML=filteredRows().map(r=>'<tr class="'+(r.flags==='ok'?'':'bad')+'"><td>'+esc(r.score)+'</td><td>'+esc(r.title)+'<br><small>'+esc(r.scenarioId)+'</small></td><td>'+esc(r.platform)+'</td><td>'+esc(r.category)+'</td><td>'+esc(r.stepCount)+'</td><td>'+esc(r.estimatedMinutes)+'</td><td>'+esc(r.commandFamilies)+'</td><td>'+esc(r.flags)+'</td></tr>').join('')}
+    function renderFlows(){const list=document.getElementById('flowList');const q=document.getElementById('filterInput').value.toLowerCase();const flows=window.NetlabLabEngagementSmoke.flowRows().filter(f=>!q||[f.title,f.platform,f.category,f.objective].join(' ').toLowerCase().includes(q));list.innerHTML=flows.map(f=>'<article class="flow-item"><h3>'+esc(f.title)+'</h3><p class="copy">'+esc(f.platform)+' · '+esc(f.category)+' · '+esc(f.level)+'</p><p class="copy">'+esc(f.objective)+'</p>'+f.steps.map(s=>'<div class="step"><strong>Step '+s.step+':</strong> '+esc(s.objective)+'<br><code>'+esc(s.commands||'No command listed')+'</code></div>').join('')+'</article>').join('')}
+    function download(name,payload,type='application/json'){const blob=new Blob([payload],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+    function csv(){const rows=report?.rows||[];const cols=['score','title','scenarioId','platform','category','level','stepCount','estimatedMinutes','commandFamilies','flags'];return [cols.join(','),...rows.map(r=>cols.map(c=>'"'+String(r[c]??'').replace(/"/g,'""')+'"').join(','))].join('\n')}
+    document.getElementById('generateBtn').onclick=generate;document.getElementById('downloadJsonBtn').onclick=()=>{if(!report)generate();download('netlab-lab-flow-report.json',JSON.stringify({generatedAt:new Date().toISOString(),engagement:report,flows:window.NetlabLabEngagementSmoke.flowRows()},null,2))};document.getElementById('downloadCsvBtn').onclick=()=>{if(!report)generate();download('netlab-engagement-smoke.csv',csv(),'text/csv')};document.getElementById('filterInput').oninput=()=>{if(report){renderTable();renderFlows()}};window.addEventListener('DOMContentLoaded',generate);
+  </script>
+</body>
+</html>
