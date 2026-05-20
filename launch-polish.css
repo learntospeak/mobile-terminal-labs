@@ -1,0 +1,265 @@
+/* Launch polish layer: beginner-first usability improvements. */
+
+.launch-helper-text {
+  margin: 10px 0 0;
+  color: #cbd5e1;
+  line-height: 1.65;
+  max-width: 68ch;
+}
+
+.launch-primary-path {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.launch-start-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(34, 197, 94, 0.34);
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.13), transparent 34%),
+    linear-gradient(180deg, rgba(7, 18, 14, 0.94) 0%, rgba(6, 10, 16, 0.98) 100%);
+}
+
+.launch-start-card h3,
+.launch-start-card p {
+  margin: 0;
+}
+
+.launch-start-card h3 {
+  color: #f8fafc;
+  font-size: clamp(20px, 4vw, 28px);
+}
+
+.launch-start-card p {
+  color: #dbeafe;
+  line-height: 1.6;
+}
+
+.launch-steps {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  color: #dbeafe;
+  line-height: 1.7;
+}
+
+.launch-steps li + li {
+  margin-top: 4px;
+}
+
+.launch-secondary-disclosure {
+  margin-top: 18px;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 18px;
+  background: rgba(4, 8, 15, 0.64);
+  overflow: hidden;
+}
+
+.launch-secondary-disclosure > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 16px 18px;
+  color: #bfdbfe;
+  font-weight: 800;
+}
+
+.launch-secondary-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.launch-secondary-disclosure[open] > summary {
+  border-bottom: 1px solid rgba(71, 85, 105, 0.48);
+}
+
+.launch-secondary-body {
+  padding: 16px 18px 18px;
+}
+
+body:not(.terminal-page) .reference-labs-panel {
+  display: none;
+}
+
+body:not(.terminal-page) .launch-secondary-disclosure .reference-labs-panel {
+  display: block;
+}
+
+body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
+  min-height: 132px;
+}
+
+.launch-beginner-note {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  background: rgba(15, 23, 42, 0.64);
+  color: #dbeafe;
+  line-height: 1.55;
+}
+
+.launch-beginner-note strong {
+  color: #f8fafc;
+}
+
+.terminal-page .router-top > div:nth-child(2) {
+  max-width: 760px;
+}
+
+.terminal-page .terminal-subbrand {
+  max-width: 72ch;
+  line-height: 1.55;
+}
+
+.terminal-page .scenario-flex,
+.terminal-page #environmentContextCard,
+.terminal-page #progressCard {
+  display: none;
+}
+
+.terminal-page .environment-route-nav {
+  gap: 8px;
+}
+
+.terminal-page #linuxTrackLink,
+.terminal-page #ciscoTrackLink,
+.terminal-page #challengeTrackLink {
+  display: none;
+}
+
+.terminal-page #currentTaskCard h3::after {
+  content: " — do this next";
+  color: #93c5fd;
+  font-size: 0.82em;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.beginner-mode-banner {
+  border-color: rgba(34, 197, 94, 0.34);
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(6, 18, 13, 0.96), rgba(4, 8, 15, 0.98));
+}
+
+.beginner-mode-summary {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.terminal-mobile-context {
+  border-color: rgba(96, 165, 250, 0.28);
+}
+
+.terminal-mobile-context-toggle,
+.terminal-history-btn,
+.trainer-controls button,
+.terminal-run-btn {
+  min-height: 48px;
+}
+
+.trainer-controls button#commandSheetBtn::after {
+  content: " examples";
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.trainer-controls button#hintBtn::after {
+  content: " next step";
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.trainer-controls button#watchWalkthroughBtn::after {
+  content: " show me";
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.trainer-controls button#needHelpBtn::after {
+  content: " explain";
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.command-sheet-kicker::after {
+  content: " — pick a command, copy it, or use it to understand what to type";
+  color: #cbd5e1;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.roadmap-page .terminal-hero,
+.roadmap-page .roadmap-summary-panel,
+.roadmap-page .roadmap-levels-shell {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .launch-primary-path,
+  .launch-start-card,
+  .launch-secondary-body {
+    gap: 10px;
+  }
+
+  .hub-hero-panel h2 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+
+  .hub-hero-actions .app-action-btn,
+  .hub-hero-actions .app-action-link {
+    min-height: 54px;
+    font-size: 16px;
+  }
+
+  .terminal-page .terminal-layout {
+    gap: 10px;
+  }
+
+  .terminal-page .scenario-panel {
+    display: none;
+  }
+
+  .terminal-page .terminal-panel {
+    width: 100%;
+  }
+
+  .terminal-page .environment-route-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .trainer-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .trainer-controls button {
+    font-size: 13px;
+    padding-left: 34px;
+  }
+
+  .terminal-input-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-run-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .trainer-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-mobile-context-toggle {
+    width: 100%;
+  }
+}
