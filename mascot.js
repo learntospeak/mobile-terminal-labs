@@ -41,6 +41,30 @@
     return ALT_TEXT[normalizeState(state)] || ALT_TEXT.main;
   }
 
+  function loadLaunchPolish() {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    if (!document.getElementById("launchPolishStylesheet")) {
+      const css = document.createElement("link");
+      css.id = "launchPolishStylesheet";
+      css.rel = "stylesheet";
+      css.href = "./launch-polish.css?v=20260520launch2";
+      document.head.appendChild(css);
+    }
+
+    if (!document.getElementById("launchPolishScript")) {
+      const script = document.createElement("script");
+      script.id = "launchPolishScript";
+      script.src = "./launch-polish.js?v=20260520launch2";
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  }
+
+  loadLaunchPolish();
+
   window.PatchMascot = {
     getMascotSrc,
     getMascotAlt,
