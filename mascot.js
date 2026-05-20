@@ -41,26 +41,34 @@
     return ALT_TEXT[normalizeState(state)] || ALT_TEXT.main;
   }
 
+  function addStylesheet(id, href) {
+    if (!document.getElementById(id)) {
+      const css = document.createElement("link");
+      css.id = id;
+      css.rel = "stylesheet";
+      css.href = href;
+      document.head.appendChild(css);
+    }
+  }
+
+  function addScript(id, src) {
+    if (!document.getElementById(id)) {
+      const script = document.createElement("script");
+      script.id = id;
+      script.src = src;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  }
+
   function loadLaunchPolish() {
     if (typeof document === "undefined") {
       return;
     }
 
-    if (!document.getElementById("launchPolishStylesheet")) {
-      const css = document.createElement("link");
-      css.id = "launchPolishStylesheet";
-      css.rel = "stylesheet";
-      css.href = "./launch-polish.css?v=20260520launch2";
-      document.head.appendChild(css);
-    }
-
-    if (!document.getElementById("launchPolishScript")) {
-      const script = document.createElement("script");
-      script.id = "launchPolishScript";
-      script.src = "./launch-polish.js?v=20260520launch2";
-      script.defer = true;
-      document.head.appendChild(script);
-    }
+    addStylesheet("launchPolishStylesheet", "./launch-polish.css?v=20260520launch3");
+    addStylesheet("launchTerminalSpaceStylesheet", "./launch-terminal-space.css?v=20260520space1");
+    addScript("launchPolishScript", "./launch-polish.js?v=20260520launch3");
   }
 
   loadLaunchPolish();
