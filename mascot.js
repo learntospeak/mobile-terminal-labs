@@ -50,15 +50,16 @@
     document.head.appendChild(css);
   }
 
-  function loadIncidentPatch() {
+  function loadTerminalPatches() {
     if (typeof window === "undefined") return;
     window.setTimeout(() => {
+      import("./terminal-recovery-patterns.js?v=20260520recovery1").catch(() => {});
       import("./incident-folder-gold.js?v=20260520gold1").catch(() => {});
     }, 0);
   }
 
   loadSharedTheme();
-  loadIncidentPatch();
+  loadTerminalPatches();
 
   window.PatchMascot = {
     getMascotSrc,
