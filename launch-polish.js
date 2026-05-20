@@ -68,13 +68,46 @@
       "  <h2>One problem. One command. One lesson at a time.</h2>",
       "</div>",
       "<ol class=\"launch-howto-steps\">",
-      "  <li><strong>Read the problem</strong> so you know what you are fixing.</li>",
-      "  <li><strong>Type a command</strong> in the terminal box, then press Run.</li>",
-      "  <li><strong>Use Commands, Hint, or Guide</strong> whenever you are unsure.</li>",
+      "  <li><strong>Read the problem</strong> so you understand what is broken.</li>",
+      "  <li><strong>Run one command</strong> to investigate the issue.</li>",
+      "  <li><strong>Read the result</strong> and learn what it means.</li>",
       "</ol>"
     ].join(""));
     card.id = "launchBeginnerHowTo";
     shell.insertBefore(card, layout);
+  }
+
+  function addDesktopFocusCard() {
+    if (window.innerWidth < 980 || document.getElementById("launchDesktopFocusCard")) {
+      return;
+    }
+
+    const scenarioPanel = document.querySelector(".scenario-panel");
+    if (!scenarioPanel) {
+      return;
+    }
+
+    const card = makeCard("launch-desktop-focus-card", [
+      "<p class=\"launch-desktop-focus-kicker\">Desktop workflow</p>",
+      "<h2>Use the left panel as your investigation guide.</h2>",
+      "<div class=\"launch-desktop-focus-grid\">",
+      "  <div class=\"launch-focus-step\">",
+      "    <strong>1. Read the problem</strong>",
+      "    <span>The current task tells you what you are trying to investigate.</span>",
+      "  </div>",
+      "  <div class=\"launch-focus-step\">",
+      "    <strong>2. Use the terminal</strong>",
+      "    <span>Type a command into the terminal and press Run Command.</span>",
+      "  </div>",
+      "  <div class=\"launch-focus-step\">",
+      "    <strong>3. Ask for help</strong>",
+      "    <span>Use Commands, Hint, Guide, or Ask Coach whenever you get stuck.</span>",
+      "  </div>",
+      "</div>"
+    ].join(""));
+
+    card.id = "launchDesktopFocusCard";
+    scenarioPanel.insertBefore(card, scenarioPanel.firstChild);
   }
 
   function addControlToggle() {
@@ -106,8 +139,25 @@
     const tip = document.createElement("p");
     tip.id = "launchCommandTip";
     tip.className = "launch-command-tip";
-    tip.textContent = "Tip: commands are short. Spelling matters, but you can use Commands or Guide if you get stuck.";
+    tip.textContent = "Tip: commands are short. Use Commands or Guide whenever you are unsure what to type.";
     mount.parentNode.insertBefore(tip, mount);
+  }
+
+  function addDesktopCommandTip() {
+    if (window.innerWidth < 980 || document.getElementById("launchDesktopCommandTip")) {
+      return;
+    }
+
+    const outputShell = document.querySelector(".terminal-output-shell");
+    if (!outputShell) {
+      return;
+    }
+
+    const note = document.createElement("p");
+    note.id = "launchDesktopCommandTip";
+    note.className = "launch-desktop-command-tip";
+    note.textContent = "You are expected to learn gradually — not memorise everything immediately. Use command examples and walkthroughs whenever needed.";
+    outputShell.parentNode.insertBefore(note, outputShell);
   }
 
   function polishTerminalPage() {
@@ -156,8 +206,10 @@
     });
 
     addBeginnerHowTo();
+    addDesktopFocusCard();
     addControlToggle();
     addMobileCommandTip();
+    addDesktopCommandTip();
   }
 
   function polishRoadmapPage() {
