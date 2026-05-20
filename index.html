@@ -3,118 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terminal Troubleshooting Lab</title>
+  <title>Terminal Learning - Beginner Labs</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./style.css?v=20260506hub2">
-  <link rel="stylesheet" href="./launch-polish.css?v=20260520launch1">
+  <link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="./supabase-config.js?v=20260421sup1" defer></script>
   <script src="./app-data.js?v=20260510ports1" defer></script>
-  <script src="./mascot.js?v=20260509patchgap1" defer></script>
+  <script src="./mascot.js?v=20260520clean1" defer></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
-  <script src="./index.js?v=20260506hub2" defer></script>
+  <script src="./index.js?v=20260520dashboard1" defer></script>
 </head>
-<body>
-  <div class="rack-room">
-    <div class="router-shell">
-      <div class="router-top router-title-bar">
-        <h1>Terminal Troubleshooting Lab</h1>
-        <div class="router-leds" aria-hidden="true">
-          <span class="led led-green led-blink"></span>
-          <span class="led led-yellow led-blink-slow"></span>
-          <span class="led led-green"></span>
-          <span class="led led-red"></span>
+<body class="home-dashboard">
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="Main navigation">
+      <div class="dashboard-brand">
+        <div class="dashboard-brand-icon" aria-hidden="true">&gt;_</div>
+        <div>
+          <h1>Terminal Learning</h1>
+          <p>Beginner Labs</p>
         </div>
       </div>
 
-      <section class="hub-page-top">
-        <section id="hubResumePanel" class="hub-hero-panel">
-          <div class="hub-hero-content">
-            <div class="hub-hero-copy-block">
-              <h2>Learn beginner IT troubleshooting by doing real terminal tasks.</h2>
-              <p class="hub-hero-copy">Start with guided Windows terminal labs designed for complete beginners. You will solve simple IT problems step-by-step using real commands.</p>
+      <nav class="dashboard-nav-list" aria-label="Beginner labs">
+        <a class="dashboard-nav-card is-primary" href="./index.html" aria-current="page">
+          <span class="dashboard-nav-icon" aria-hidden="true"><i data-lucide="home"></i></span>
+          <span>
+            <h2>Home</h2>
+            <p>Start your journey</p>
+          </span>
+          <span class="dashboard-nav-arrow" aria-hidden="true">›</span>
+        </a>
 
-              <div class="launch-beginner-note">
-                <strong>No experience needed.</strong>
-                <span>You will be guided through every problem with hints, walkthroughs, and beginner explanations.</span>
-              </div>
+        <p class="dashboard-nav-section-title">Beginner Labs</p>
 
-              <div class="launch-primary-path">
-                <article class="launch-start-card">
-                  <h3>Start Here</h3>
-                  <p>Begin with the beginner Windows terminal path. Each lesson teaches one practical troubleshooting skill at a time.</p>
-                  <ol class="launch-steps">
-                    <li>Read the problem</li>
-                    <li>Run a command</li>
-                    <li>Understand what the result means</li>
-                    <li>Fix the issue</li>
-                  </ol>
+        <a class="dashboard-nav-card" href="./terminal-coach.html?track=windows&amp;mode=beginner">
+          <span class="dashboard-nav-icon" aria-hidden="true"><i data-lucide="monitor"></i></span>
+          <span>
+            <h2>Windows Lab</h2>
+            <p>Troubleshoot real Windows issues</p>
+          </span>
+          <span class="dashboard-nav-arrow" aria-hidden="true">›</span>
+        </a>
 
-                  <div class="hub-hero-actions">
-                    <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Start Beginner Terminal Lab" aria-label="Start Beginner Terminal Lab">Start Beginner Lab</a>
-                    <div id="hubResumeActions" class="hub-resume-actions" hidden></div>
-                    <a class="app-action-link" href="./beginner-roadmap.html">View Roadmap</a>
-                  </div>
-                </article>
-              </div>
+        <a class="dashboard-nav-card" href="./terminal-coach.html?track=linux">
+          <span class="dashboard-nav-icon" aria-hidden="true"><i data-lucide="terminal"></i></span>
+          <span>
+            <h2>Linux Beginner</h2>
+            <p>Learn basic Linux commands</p>
+          </span>
+          <span class="dashboard-nav-arrow" aria-hidden="true">›</span>
+        </a>
 
-              <details class="launch-secondary-disclosure">
-                <summary>More Labs and Reference Topics</summary>
-                <div class="launch-secondary-body">
-                  <section id="practiceSection">
-                    <section id="learningPathsPanel" class="learning-paths-panel learning-hub-panel">
-                      <div class="learning-paths-head">
-                        <h3>Additional Labs</h3>
-                        <p class="launch-helper-text">These are more advanced or supporting topics. Most beginners should start with the Beginner Windows Lab first.</p>
-                      </div>
+        <a class="dashboard-nav-card" href="./cisco-cli-lab.html">
+          <span class="dashboard-nav-icon" aria-hidden="true"><i data-lucide="network"></i></span>
+          <span>
+            <h2>Cisco CLI Basics</h2>
+            <p>Introduction to networking</p>
+          </span>
+          <span class="dashboard-nav-arrow" aria-hidden="true">›</span>
+        </a>
 
-                      <div class="learning-path-grid learning-path-grid-terminal">
-                        <a class="learning-path-card learning-path-card-linux" data-section-id="linux-terminal" href="./terminal-coach.html?track=linux" title="Linux Lab" aria-label="Linux Lab">
-                          <span class="learning-path-icon" aria-hidden="true"><i data-lucide="server"></i></span>
-                          <span class="learning-path-kicker">Linux</span>
-                          <span class="learning-path-title">Linux Lab</span>
-                          <span class="learning-path-status" data-progress-slot="linux-terminal">Not Started</span>
-                        </a>
+        <a class="dashboard-nav-card" href="./challenge-mode.html">
+          <span class="dashboard-nav-icon" aria-hidden="true"><i data-lucide="shield"></i></span>
+          <span>
+            <h2>Cyber Security</h2>
+            <p>Security concepts and tools</p>
+          </span>
+          <span class="dashboard-nav-arrow" aria-hidden="true">›</span>
+        </a>
+      </nav>
 
-                        <a class="learning-path-card learning-path-card-cisco" data-section-id="cisco-cli" href="./cisco-cli-lab.html" title="Cisco Lab" aria-label="Cisco Lab">
-                          <span class="learning-path-icon" aria-hidden="true"><i data-lucide="router"></i></span>
-                          <span class="learning-path-kicker">Cisco</span>
-                          <span class="learning-path-title">Cisco Lab</span>
-                          <span class="learning-path-status" data-progress-slot="cisco-cli">Not Started</span>
-                        </a>
+      <section class="dashboard-new-card" aria-label="New user guidance">
+        <h2>New to this?</h2>
+        <p>Start with the Windows Lab. It is the easiest way to begin and explains each command as you go.</p>
+      </section>
+    </aside>
 
-                        <a class="learning-path-card learning-path-card-challenge" data-section-id="cyber-challenge" href="./challenge-mode.html" title="Cyber Mode" aria-label="Cyber Mode">
-                          <span class="learning-path-icon" aria-hidden="true"><i data-lucide="shield-alert"></i></span>
-                          <span class="learning-path-kicker">Cyber</span>
-                          <span class="learning-path-title">Cyber Mode</span>
-                          <span class="learning-path-status" data-progress-slot="cyber-challenge">Not Started</span>
-                        </a>
-                      </div>
-                    </section>
-                  </section>
-                </div>
-              </details>
-            </div>
+    <main class="dashboard-main">
+      <section class="dashboard-hero" aria-labelledby="dashboardHeroTitle">
+        <div>
+          <h2 id="dashboardHeroTitle">Welcome back!</h2>
+          <p class="dashboard-hero-copy">Learn real IT skills by solving realistic problems in a safe terminal environment.</p>
 
-            <aside class="mascot-card mascot-card--hero" aria-label="Patch, the beginner IT guide">
-              <img class="mascot mascot--hero" src="./assets/mascot/patch-main.png" alt="Patch, the beginner IT guide">
-              <p class="mascot-message">You don't need to memorise commands. Learn by solving real beginner-friendly IT problems.</p>
-            </aside>
+          <div class="dashboard-hero-actions">
+            <a class="dashboard-primary-btn" href="./terminal-coach.html?track=windows&amp;mode=beginner&amp;start=1">
+              <i data-lucide="play" aria-hidden="true"></i>
+              <span>Start Windows Lab</span>
+            </a>
+            <div id="hubResumeActions" class="dashboard-resume-actions" hidden></div>
+            <a class="dashboard-secondary-btn" href="./beginner-roadmap.html">
+              <i data-lucide="road" aria-hidden="true"></i>
+              <span>View Learning Path</span>
+            </a>
           </div>
-        </section>
+
+          <div class="dashboard-mascot-card">
+            <img src="./assets/mascot/patch-main.png" alt="Patch, the beginner IT guide">
+            <p>You do not need to memorise commands. Learn by solving one small beginner-friendly IT problem at a time.</p>
+          </div>
+        </div>
+
+        <aside class="dashboard-progress-card" aria-label="Progress preview">
+          <h3>Your Progress</h3>
+          <div class="dashboard-progress-ring" aria-label="12 percent progress">12%</div>
+          <p>Keep going!</p>
+        </aside>
       </section>
 
-      <div class="router-ports" aria-hidden="true">
-        <div class="port connected"><span class="cable"></span></div>
-        <div class="port connected"><span class="cable cable-green"></span></div>
-        <div class="port"></div>
-        <div class="port active"></div>
-        <div class="port connected"><span class="cable cable-yellow"></span></div>
-        <div class="port"></div>
-        <div class="port active"></div>
-        <div class="port"></div>
-      </div>
-    </div>
+      <section class="dashboard-grid">
+        <article class="dashboard-panel" aria-labelledby="howToUseTitle">
+          <p class="dashboard-panel-kicker">How to use this lab</p>
+          <h2 id="howToUseTitle">Simple beginner workflow</h2>
+
+          <div class="dashboard-how-grid">
+            <div class="dashboard-how-step">
+              <span class="dashboard-step-num">1</span>
+              <strong>Read the Problem</strong>
+              <span>Understand the issue raised in the ticket.</span>
+            </div>
+            <div class="dashboard-how-step">
+              <span class="dashboard-step-num">2</span>
+              <strong>Use the Terminal</strong>
+              <span>Type commands to investigate and gather information.</span>
+            </div>
+            <div class="dashboard-how-step">
+              <span class="dashboard-step-num">3</span>
+              <strong>Ask for Help</strong>
+              <span>Use hints or guides if you get stuck.</span>
+            </div>
+          </div>
+
+          <div class="dashboard-quickstart">
+            <p class="dashboard-panel-kicker">Quick Start - Windows Lab</p>
+            <p>New here? Start with these simple skills:</p>
+            <ul>
+              <li><span class="dashboard-check">✓</span> Basic system information</li>
+              <li><span class="dashboard-check">✓</span> Network troubleshooting</li>
+              <li><span class="dashboard-check">✓</span> Common diagnostic commands</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="dashboard-panel dashboard-workspace" aria-labelledby="workspaceTitle">
+          <p class="dashboard-panel-kicker">Investigation Workspace</p>
+          <h2 id="workspaceTitle">What a lab feels like</h2>
+
+          <section class="dashboard-ticket-preview">
+            <h3>Current Problem</h3>
+            <strong>User cannot access the internet</strong>
+            <p>A user reports they cannot access any websites. Your job is to investigate and identify the cause.</p>
+          </section>
+
+          <section class="dashboard-terminal-preview">
+            <h3>Terminal</h3>
+            <div class="dashboard-terminal-window" aria-label="Terminal preview">
+              <div>C:\Users\Analyst&gt; <span aria-hidden="true">█</span></div>
+            </div>
+            <div class="dashboard-terminal-controls">
+              <div class="dashboard-terminal-input">Type a command and press Enter...</div>
+              <a class="dashboard-action-btn" href="./terminal-coach.html?track=windows&amp;mode=beginner&amp;start=1">
+                <i data-lucide="play" aria-hidden="true"></i>
+                <span>Run</span>
+              </a>
+            </div>
+          </section>
+        </article>
+      </section>
+
+      <details class="dashboard-advanced">
+        <summary>Need more options? Show advanced tools</summary>
+        <div class="dashboard-advanced-body">
+          <a class="dashboard-advanced-link" href="./subnetting-lab.html"><strong>Subnetting</strong><span>CIDR, masks, and ranges</span></a>
+          <a class="dashboard-advanced-link" href="./network-ports-lab.html"><strong>Ports</strong><span>TCP, UDP, and services</span></a>
+          <a class="dashboard-advanced-link" href="./protocol-merge.html"><strong>ARP</strong><span>Protocol flow reference</span></a>
+        </div>
+      </details>
+
+      <footer class="dashboard-footer">
+        <span>You do not need to memorise commands. The more you practise, the more confident you will become.</span>
+        <span>Safe Environment - No real systems are changed.</span>
+      </footer>
+    </main>
   </div>
 
   <script>
