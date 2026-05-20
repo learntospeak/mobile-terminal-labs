@@ -7,173 +7,34 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
   <style>
-    body.home-dashboard {
-      padding: 16px;
-    }
-
-    .smoke-shell {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      gap: 16px;
-    }
-
-    .smoke-card {
-      padding: 20px;
-      border: 1px solid rgba(96, 165, 250, 0.22);
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(8, 13, 24, 0.94), rgba(4, 8, 15, 0.98));
-      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.3);
-    }
-
-    .smoke-card h1,
-    .smoke-card h2,
-    .smoke-card p {
-      margin: 0;
-    }
-
-    .smoke-card h1 {
-      font-size: clamp(30px, 5vw, 52px);
-      line-height: 1.05;
-    }
-
-    .smoke-copy {
-      margin-top: 12px !important;
-      color: #cbd5e1;
-      line-height: 1.6;
-      max-width: 72ch;
-    }
-
-    .smoke-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .smoke-btn {
-      min-height: 48px;
-      padding: 0 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(96, 165, 250, 0.34);
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(8, 13, 24, 0.98));
-      color: #f8fafc;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .smoke-btn.primary {
-      background: linear-gradient(180deg, #22c55e, #15803d);
-      border-color: rgba(74, 222, 128, 0.52);
-    }
-
-    .smoke-summary {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .smoke-stat {
-      padding: 16px;
-      border: 1px solid rgba(96, 165, 250, 0.2);
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.54);
-    }
-
-    .smoke-stat strong {
-      display: block;
-      font-size: 28px;
-    }
-
-    .smoke-stat span {
-      color: #cbd5e1;
-    }
-
-    .smoke-results {
-      display: grid;
-      gap: 12px;
-    }
-
-    .smoke-platform {
-      border: 1px solid rgba(96, 165, 250, 0.2);
-      border-radius: 14px;
-      overflow: hidden;
-      background: rgba(2, 6, 23, 0.48);
-    }
-
-    .smoke-platform-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(96, 165, 250, 0.16);
-    }
-
-    .smoke-platform-head h2 {
-      font-size: 20px;
-    }
-
-    .smoke-pass {
-      color: #86efac;
-    }
-
-    .smoke-fail {
-      color: #fca5a5;
-    }
-
-    .smoke-check-list {
-      display: grid;
-      gap: 0;
-    }
-
-    .smoke-check {
-      display: grid;
-      grid-template-columns: 88px minmax(0, 1fr);
-      gap: 10px;
-      padding: 10px 16px;
-      border-bottom: 1px solid rgba(96, 165, 250, 0.08);
-      color: #dbeafe;
-    }
-
-    .smoke-check:last-child {
-      border-bottom: 0;
-    }
-
-    .smoke-check-detail {
-      color: #94a3b8;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .smoke-log {
-      min-height: 220px;
-      padding: 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(56, 189, 248, 0.24);
-      background: #020617;
-      color: #86efac;
-      font-family: Consolas, Monaco, monospace;
-      white-space: pre-wrap;
-      overflow: auto;
-    }
-
-    @media (max-width: 760px) {
-      .smoke-summary,
-      .smoke-check {
-        grid-template-columns: 1fr;
-      }
-
-      .smoke-actions {
-        flex-direction: column;
-      }
-
-      .smoke-btn {
-        width: 100%;
-      }
-    }
+    body.home-dashboard { padding: 16px; }
+    .smoke-shell { width: min(1180px, 100%); margin: 0 auto; display: grid; gap: 16px; }
+    .smoke-card { padding: 20px; border: 1px solid rgba(96, 165, 250, 0.22); border-radius: 18px; background: linear-gradient(180deg, rgba(8, 13, 24, 0.94), rgba(4, 8, 15, 0.98)); box-shadow: 0 22px 56px rgba(0, 0, 0, 0.3); }
+    .smoke-card h1, .smoke-card h2, .smoke-card p { margin: 0; }
+    .smoke-card h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.05; }
+    .smoke-copy { margin-top: 12px !important; color: #cbd5e1; line-height: 1.6; max-width: 72ch; }
+    .smoke-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .smoke-btn { min-height: 48px; padding: 0 16px; border-radius: 10px; border: 1px solid rgba(96, 165, 250, 0.34); background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(8, 13, 24, 0.98)); color: #f8fafc; font-weight: 900; cursor: pointer; }
+    .smoke-btn.primary { background: linear-gradient(180deg, #22c55e, #15803d); border-color: rgba(74, 222, 128, 0.52); }
+    .smoke-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .smoke-stat { padding: 16px; border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 14px; background: rgba(15, 23, 42, 0.54); }
+    .smoke-stat strong { display: block; font-size: 28px; }
+    .smoke-stat span { color: #cbd5e1; }
+    .smoke-results { display: grid; gap: 12px; }
+    .smoke-platform { border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 14px; overflow: hidden; background: rgba(2, 6, 23, 0.48); }
+    .smoke-platform-head { display: flex; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(96, 165, 250, 0.16); }
+    .smoke-platform-head h2 { font-size: 20px; }
+    .smoke-pass { color: #86efac; }
+    .smoke-fail { color: #fca5a5; }
+    .smoke-check-list { display: grid; gap: 0; }
+    .smoke-check { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(96, 165, 250, 0.08); color: #dbeafe; }
+    .smoke-check:last-child { border-bottom: 0; }
+    .smoke-check-detail { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+    .smoke-log { min-height: 220px; padding: 16px; border-radius: 14px; border: 1px solid rgba(56, 189, 248, 0.24); background: #020617; color: #86efac; font-family: Consolas, Monaco, monospace; white-space: pre-wrap; overflow: auto; }
+    @media (max-width: 760px) { .smoke-summary, .smoke-check { grid-template-columns: 1fr; } .smoke-actions { flex-direction: column; } .smoke-btn { width: 100%; } }
   </style>
   <script src="./stateManager.js?v=20260425cmd1" defer></script>
-  <script src="./terminal-emulator-smoke.js?v=20260520smoke1" defer></script>
+  <script src="./terminal-emulator-smoke.js?v=20260520download2" defer></script>
 </head>
 <body class="home-dashboard">
   <main class="smoke-shell">
@@ -271,7 +132,7 @@
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
+        .replace(/\"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
 
