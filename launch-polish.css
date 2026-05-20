@@ -106,37 +106,143 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
   color: #f8fafc;
 }
 
-.terminal-page .router-top > div:nth-child(2) {
-  max-width: 760px;
+/* Shared terminal polish */
+.terminal-page.launch-polished .router-top > div:nth-child(2) {
+  max-width: 780px;
 }
 
-.terminal-page .terminal-subbrand {
+.terminal-page.launch-polished .terminal-subbrand {
   max-width: 72ch;
-  line-height: 1.55;
+  line-height: 1.6;
+  color: #dbeafe;
 }
 
-.terminal-page .scenario-flex,
-.terminal-page #environmentContextCard,
-.terminal-page #progressCard {
+.launch-howto-card,
+.launch-desktop-focus-card {
+  margin: 16px 0;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(96, 165, 250, 0.26);
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.12), transparent 38%),
+    linear-gradient(180deg, rgba(8, 13, 20, 0.94), rgba(4, 8, 15, 0.98));
+}
+
+.launch-howto-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(320px, 1.25fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.launch-howto-card h2,
+.launch-desktop-focus-card h2 {
+  margin: 4px 0 0;
+  color: #f8fafc;
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.launch-howto-kicker,
+.launch-desktop-focus-kicker {
+  margin: 0;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.launch-howto-steps {
+  margin: 0;
+  padding-left: 22px;
+  color: #dbeafe;
+  line-height: 1.7;
+}
+
+.launch-desktop-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.launch-focus-step {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.launch-focus-step strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #f8fafc;
+}
+
+.launch-focus-step span {
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.launch-command-tip,
+.launch-desktop-command-tip {
+  margin: 8px 0 10px;
+  color: #bfdbfe;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.launch-control-toggle-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 8px 0;
+}
+
+.launch-control-toggle {
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  background: rgba(15, 23, 42, 0.82);
+  color: #bfdbfe;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.terminal-page.launch-polished .scenario-flex,
+.terminal-page.launch-polished #environmentContextCard,
+.terminal-page.launch-polished #progressCard {
   display: none;
 }
 
-.terminal-page .environment-route-nav {
+.terminal-page.launch-polished .environment-route-nav {
   gap: 8px;
 }
 
-.terminal-page #linuxTrackLink,
-.terminal-page #ciscoTrackLink,
-.terminal-page #challengeTrackLink {
+.terminal-page.launch-polished #linuxTrackLink,
+.terminal-page.launch-polished #ciscoTrackLink,
+.terminal-page.launch-polished #challengeTrackLink {
   display: none;
 }
 
-.terminal-page #currentTaskCard h3::after {
+.terminal-page.launch-polished #currentTaskCard h3::after {
   content: " — do this next";
   color: #93c5fd;
   font-size: 0.82em;
   font-weight: 700;
   text-transform: none;
+}
+
+.terminal-page.launch-polished .support-card-primary,
+.terminal-page.launch-polished .scenario-card,
+.terminal-page.launch-polished .terminal-output-shell {
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.terminal-page.launch-polished .scenario-title,
+.terminal-page.launch-polished #stepObjective,
+.terminal-page.launch-polished .terminal-mobile-objective {
+  line-height: 1.55;
 }
 
 .beginner-mode-banner {
@@ -202,6 +308,75 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
   margin-right: auto;
 }
 
+/* Desktop experience */
+@media (min-width: 980px) {
+  .terminal-page.launch-polished .terminal-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.78fr) minmax(620px, 1.35fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .terminal-page.launch-polished .scenario-panel {
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+  }
+
+  .terminal-page.launch-polished .terminal-panel {
+    min-width: 0;
+  }
+
+  .terminal-page.launch-polished .terminal-output-shell {
+    min-height: min(58vh, 680px);
+  }
+
+  .terminal-page.launch-polished .terminal-mobile-dock {
+    position: sticky;
+    bottom: 0;
+    z-index: 15;
+    margin-top: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(96, 165, 250, 0.22);
+    background: rgba(4, 8, 15, 0.94);
+    backdrop-filter: blur(14px);
+  }
+
+  .terminal-page.launch-polished .terminal-mobile-context {
+    display: none;
+  }
+
+  .terminal-page.launch-polished .terminal-history-nav {
+    justify-content: flex-end;
+  }
+
+  .terminal-page.launch-polished .trainer-controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .terminal-page.launch-polished:not(.launch-show-extra-controls) #previousScenarioBtn,
+  .terminal-page.launch-polished:not(.launch-show-extra-controls) #nextScenarioBtn,
+  .terminal-page.launch-polished:not(.launch-show-extra-controls) #resetScenarioBtn,
+  .terminal-page.launch-polished:not(.launch-show-extra-controls) #startScenarioBtn {
+    display: none;
+  }
+
+  .terminal-page.launch-polished .terminal-input-shell {
+    grid-template-columns: auto minmax(360px, 1fr) auto;
+  }
+
+  .terminal-page.launch-polished .terminal-input {
+    font-size: 17px;
+  }
+
+  .terminal-page.launch-polished .terminal-run-btn {
+    min-width: 140px;
+  }
+}
+
 @media (max-width: 768px) {
   .launch-primary-path,
   .launch-start-card,
@@ -219,19 +394,27 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
     font-size: 16px;
   }
 
-  .terminal-page .terminal-layout {
-    gap: 10px;
+  .launch-howto-card {
+    grid-template-columns: 1fr;
   }
 
-  .terminal-page .scenario-panel {
+  .launch-desktop-focus-card {
     display: none;
   }
 
-  .terminal-page .terminal-panel {
+  .terminal-page.launch-polished .terminal-layout {
+    gap: 10px;
+  }
+
+  .terminal-page.launch-polished .scenario-panel {
+    display: none;
+  }
+
+  .terminal-page.launch-polished .terminal-panel {
     width: 100%;
   }
 
-  .terminal-page .environment-route-nav {
+  .terminal-page.launch-polished .environment-route-nav {
     display: grid;
     grid-template-columns: 1fr;
   }
