@@ -7,17 +7,24 @@
       "dir", "cd", "type", "echo", "find", "findstr", "tree", "copy", "xcopy", "move", "del", "erase", "ren", "rename",
       "more", "attrib", "hostname", "whoami", "systeminfo", "set", "ver", "date", "time", "cls", "prompt",
       "tasklist", "taskkill", "ping", "tracert", "pathping", "nslookup", "ipconfig", "netstat", "arp", "route",
-      "getmac", "sc", "net", "wmic", "driverquery", "query", "where", "fc", "shutdown", "schtasks"
+      "getmac", "sc", "net", "wmic", "driverquery", "query", "where", "fc", "shutdown", "schtasks",
+      "mkdir", "md", "rmdir", "rd"
     ]),
     linux: new Set([
       "pwd", "ls", "cd", "mkdir", "touch", "cat", "echo", "grep", "find", "tree", "cp", "mv", "rm", "rmdir",
-      "more", "less", "tar", "wget", "ps", "kill", "ping", "traceroute", "ip", "nmap", "python", "nc", "netcat", "telnet"
+      "more", "less", "tar", "wget", "ps", "kill", "ping", "traceroute", "ip", "nmap", "python", "nc", "netcat", "telnet",
+      "whoami", "netstat", "searchsploit", "exit"
     ]),
     cisco: new Set([
       "enable", "disable", "configure", "conf", "exit", "end", "show", "interface", "ip", "no", "description",
-      "hostname", "copy", "write", "shutdown"
+      "hostname", "copy", "write", "shutdown", "ping", "traceroute"
     ])
   };
+
+  const SMTP_SESSION_COMMANDS = /^(ehlo|helo|mail\s+from:|rcpt\s+to:|data|quit|\.)\b/i;
+  const METASPLOIT_SESSION_COMMANDS = /^(msfconsole|search\b|use\b|set\b|run\b|exploit\b|show\b|back\b|exit\b)/i;
+  const CISCO_PROMPT_MARKERS = /^(?:#|>|\(config\)#|\(config-if\)#)$/i;
+  const STANDALONE_FLAG = /^-[A-Za-z0-9]/;
 
   function requireDeps() {
     const missing = [];
@@ -62,9 +69,23 @@
     };
   }
 
+  function commandAllowedByScenarioContext(command, scenario) {
+    const normalized = normalizeCommand(command);
+    const text = `${scenario?.id || ""} ${scenario?.title || ""} ${scenario?.mode || ""} ${(scenario?.commandFocus || []).join(" ")}`.toLowerCase();
+
+    if (!normalized) return true;
+    if (CISCO_PROMPT_MARKERS.test(normalized)) return true;
+    if (STANDALONE_FLAG.test(normalized)) return true;
+    if (SMTP_SESSION_COMMANDS.test(normalized)) return /smtp|mail|banner|text service/.test(text);
+    if (METASPLOIT_SESSION_COMMANDS.test(normalized)) return /metasploit|msf|exploit/.test(text);
+    return false;
+  }
+
   function commandValidForScenario(command, scenario, state) {
-    const word = commandWord(command);
+    const normalized = normalizeCommand(command);
+    const word = commandWord(normalized);
     if (!word) return true;
+    if (commandAllowedByScenarioContext(normalized, scenario)) return true;
     const platform = platformOf(scenario, state);
     return COMMANDS[platform].has(word);
   }
@@ -115,6 +136,7 @@
     basename,
     check,
     commandValidForScenario,
+    commandAllowedByScenarioContext,
     hintCommands,
     walkthroughCommands,
     stepGuidanceCommands,
