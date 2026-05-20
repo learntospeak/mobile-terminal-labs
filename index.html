@@ -6,6 +6,7 @@
   <title>Terminal Troubleshooting Lab</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./style.css?v=20260506hub2">
+  <link rel="stylesheet" href="./launch-polish.css?v=20260520launch1">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="./supabase-config.js?v=20260421sup1" defer></script>
   <script src="./app-data.js?v=20260510ports1" defer></script>
@@ -30,126 +31,75 @@
         <section id="hubResumePanel" class="hub-hero-panel">
           <div class="hub-hero-content">
             <div class="hub-hero-copy-block">
-              <h2>Practise terminal troubleshooting in your browser.</h2>
-              <p class="hub-hero-copy">Guided terminal labs for Windows, Linux, Cisco, cyber, and networking basics.</p>
-              <div class="hub-hero-actions">
-                <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Start Beginner Terminal Lab" aria-label="Start Beginner Terminal Lab">Start</a>
-                <div id="hubResumeActions" class="hub-resume-actions" hidden></div>
+              <h2>Learn beginner IT troubleshooting by doing real terminal tasks.</h2>
+              <p class="hub-hero-copy">Start with guided Windows terminal labs designed for complete beginners. You will solve simple IT problems step-by-step using real commands.</p>
+
+              <div class="launch-beginner-note">
+                <strong>No experience needed.</strong>
+                <span>You will be guided through every problem with hints, walkthroughs, and beginner explanations.</span>
               </div>
+
+              <div class="launch-primary-path">
+                <article class="launch-start-card">
+                  <h3>Start Here</h3>
+                  <p>Begin with the beginner Windows terminal path. Each lesson teaches one practical troubleshooting skill at a time.</p>
+                  <ol class="launch-steps">
+                    <li>Read the problem</li>
+                    <li>Run a command</li>
+                    <li>Understand what the result means</li>
+                    <li>Fix the issue</li>
+                  </ol>
+
+                  <div class="hub-hero-actions">
+                    <a class="app-action-btn hub-hero-action-primary" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Start Beginner Terminal Lab" aria-label="Start Beginner Terminal Lab">Start Beginner Lab</a>
+                    <div id="hubResumeActions" class="hub-resume-actions" hidden></div>
+                    <a class="app-action-link" href="./beginner-roadmap.html">View Roadmap</a>
+                  </div>
+                </article>
+              </div>
+
+              <details class="launch-secondary-disclosure">
+                <summary>More Labs and Reference Topics</summary>
+                <div class="launch-secondary-body">
+                  <section id="practiceSection">
+                    <section id="learningPathsPanel" class="learning-paths-panel learning-hub-panel">
+                      <div class="learning-paths-head">
+                        <h3>Additional Labs</h3>
+                        <p class="launch-helper-text">These are more advanced or supporting topics. Most beginners should start with the Beginner Windows Lab first.</p>
+                      </div>
+
+                      <div class="learning-path-grid learning-path-grid-terminal">
+                        <a class="learning-path-card learning-path-card-linux" data-section-id="linux-terminal" href="./terminal-coach.html?track=linux" title="Linux Lab" aria-label="Linux Lab">
+                          <span class="learning-path-icon" aria-hidden="true"><i data-lucide="server"></i></span>
+                          <span class="learning-path-kicker">Linux</span>
+                          <span class="learning-path-title">Linux Lab</span>
+                          <span class="learning-path-status" data-progress-slot="linux-terminal">Not Started</span>
+                        </a>
+
+                        <a class="learning-path-card learning-path-card-cisco" data-section-id="cisco-cli" href="./cisco-cli-lab.html" title="Cisco Lab" aria-label="Cisco Lab">
+                          <span class="learning-path-icon" aria-hidden="true"><i data-lucide="router"></i></span>
+                          <span class="learning-path-kicker">Cisco</span>
+                          <span class="learning-path-title">Cisco Lab</span>
+                          <span class="learning-path-status" data-progress-slot="cisco-cli">Not Started</span>
+                        </a>
+
+                        <a class="learning-path-card learning-path-card-challenge" data-section-id="cyber-challenge" href="./challenge-mode.html" title="Cyber Mode" aria-label="Cyber Mode">
+                          <span class="learning-path-icon" aria-hidden="true"><i data-lucide="shield-alert"></i></span>
+                          <span class="learning-path-kicker">Cyber</span>
+                          <span class="learning-path-title">Cyber Mode</span>
+                          <span class="learning-path-status" data-progress-slot="cyber-challenge">Not Started</span>
+                        </a>
+                      </div>
+                    </section>
+                  </section>
+                </div>
+              </details>
             </div>
+
             <aside class="mascot-card mascot-card--hero" aria-label="Patch, the beginner IT guide">
               <img class="mascot mascot--hero" src="./assets/mascot/patch-main.png" alt="Patch, the beginner IT guide">
-              <p class="mascot-message">Learn practical IT skills by doing.</p>
+              <p class="mascot-message">You don't need to memorise commands. Learn by solving real beginner-friendly IT problems.</p>
             </aside>
-          </div>
-        </section>
-      </section>
-
-      <div id="hubResumeModal" class="hub-resume-modal" role="dialog" aria-modal="true" aria-labelledby="hubResumeModalTitle" hidden>
-        <button id="hubResumeModalBackdrop" class="hub-resume-modal-backdrop" type="button" aria-label="Close resume details"></button>
-        <div class="hub-resume-modal-shell">
-          <div class="hub-resume-modal-head">
-            <div>
-              <p class="app-shell-kicker">Last Activity</p>
-              <h2 id="hubResumeModalTitle">Continue Where You Left Off</h2>
-            </div>
-            <button id="hubResumeModalClose" class="hub-resume-modal-close" type="button" aria-label="Close resume details">Close</button>
-          </div>
-          <p id="hubResumeModalCopy" class="hub-resume-modal-copy"></p>
-          <div class="app-shell-actions hub-resume-modal-actions">
-            <a id="hubResumeContinue" class="app-action-link" href="./index.html">Continue</a>
-            <button id="hubResumeModalCancel" class="app-action-btn app-action-btn-muted" type="button">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <section id="practiceSection">
-        <section id="learningPathsPanel" class="learning-paths-panel learning-hub-panel">
-          <div class="learning-paths-head">
-            <h3>Terminal Labs</h3>
-          </div>
-
-          <div class="learning-path-grid learning-path-grid-terminal">
-            <a class="learning-path-card learning-path-card-featured learning-path-card-windows" data-section-id="windows-terminal" href="./terminal-coach.html?track=windows&amp;mode=beginner" title="Beginner Lab: guided Windows CMD tickets, walkthroughs, and practical tasks." aria-label="Beginner Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="terminal"></i></span>
-              <span class="learning-path-kicker">Recommended</span>
-              <span class="learning-path-title">Beginner Lab</span>
-              <span class="learning-path-status" data-progress-slot="windows-terminal">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">Guided Windows CMD tickets, walkthroughs, and practical tasks.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-windows" href="./beginner-roadmap.html" title="Roadmap: view levels, saved progress, and your next beginner task." aria-label="Roadmap">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="map"></i></span>
-              <span class="learning-path-kicker">Roadmap</span>
-              <span class="learning-path-title">Roadmap</span>
-              <span class="learning-path-status">Open</span>
-              <span class="learning-path-tooltip" role="tooltip">View levels, saved progress, and your next beginner task.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-linux" data-section-id="linux-terminal" href="./terminal-coach.html?track=linux" title="Linux Lab: practise commands, files, logs, and service checks." aria-label="Linux Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="server"></i></span>
-              <span class="learning-path-kicker">Linux</span>
-              <span class="learning-path-title">Linux Lab</span>
-              <span class="learning-path-status" data-progress-slot="linux-terminal">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">Practise commands, files, logs, and service checks.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-cisco" data-section-id="cisco-cli" href="./cisco-cli-lab.html" title="Cisco Lab: practise router CLI basics, verification, and recovery workflows." aria-label="Cisco Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="router"></i></span>
-              <span class="learning-path-kicker">Cisco</span>
-              <span class="learning-path-title">Cisco Lab</span>
-              <span class="learning-path-status" data-progress-slot="cisco-cli">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">Practise router CLI basics, verification, and recovery workflows.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-challenge" data-section-id="cyber-challenge" href="./challenge-mode.html" title="Cyber Mode: investigate evidence, users, processes, and suspicious activity." aria-label="Cyber Mode">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="shield-alert"></i></span>
-              <span class="learning-path-kicker">Cyber</span>
-              <span class="learning-path-title">Cyber Mode</span>
-              <span class="learning-path-status" data-progress-slot="cyber-challenge">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">Investigate evidence, users, processes, and suspicious activity.</span>
-            </a>
-          </div>
-        </section>
-
-        <section class="learning-paths-panel learning-hub-panel reference-labs-panel">
-          <div class="learning-paths-head">
-            <h3>Supporting Concepts</h3>
-            <p>Quick reference labs for networking concepts.</p>
-          </div>
-
-          <div class="learning-path-grid learning-path-grid-reference">
-            <a class="learning-path-card learning-path-card-reference learning-path-card-subnetting" data-section-id="subnetting-lab" href="./subnetting-lab.html" title="Subnetting Lab: CIDR, masks, ranges, and subnet drills." aria-label="Subnetting Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="binary"></i></span>
-              <span class="learning-path-kicker">Reference</span>
-              <span class="learning-path-title">Subnetting</span>
-              <span class="learning-path-status" data-progress-slot="subnetting-lab">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">CIDR, masks, ranges, and subnet drills.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-reference learning-path-card-ports" data-section-id="network-ports-lab" href="./network-ports-lab.html" title="Ports Lab: TCP, UDP, listening services, ranges, and exposure risks." aria-label="Network Ports Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="cable"></i></span>
-              <span class="learning-path-kicker">Ports</span>
-              <span class="learning-path-title">Ports</span>
-              <span class="learning-path-status" data-progress-slot="network-ports-lab">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">TCP, UDP, services, ranges, and exposure risks.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-reference learning-path-card-web" data-section-id="web-http-lab" href="./web-http-lab.html" title="HTTP Lab: requests, responses, sessions, and proxy basics." aria-label="HTTP Reference Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="globe"></i></span>
-              <span class="learning-path-kicker">Web</span>
-              <span class="learning-path-title">HTTP</span>
-              <span class="learning-path-status" data-progress-slot="web-http-lab">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">Requests, responses, sessions, and proxy basics.</span>
-            </a>
-
-            <a class="learning-path-card learning-path-card-reference learning-path-card-protocol" data-section-id="protocol-lab" href="./protocol-merge.html" title="ARP Lab: ARP and protocol flow reference." aria-label="ARP Reference Lab">
-              <span class="learning-path-icon" aria-hidden="true"><i data-lucide="route"></i></span>
-              <span class="learning-path-kicker">Protocol</span>
-              <span class="learning-path-title">ARP</span>
-              <span class="learning-path-status" data-progress-slot="protocol-lab">Not Started</span>
-              <span class="learning-path-tooltip" role="tooltip">ARP and protocol flow reference.</span>
-            </a>
           </div>
         </section>
       </section>
@@ -166,6 +116,7 @@
       </div>
     </div>
   </div>
+
   <script>
     window.addEventListener("DOMContentLoaded", function () {
       if (window.lucide) {
