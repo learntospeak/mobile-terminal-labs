@@ -1,5 +1,5 @@
 // Terminal emulator smoke tests.
-// Open a terminal lab page, then run in DevTools:
+// Open emulator-smoke-test.html, or run in DevTools:
 // NetlabEmulatorSmokeTest.run()
 
 (function () {
@@ -161,5 +161,140 @@
     };
   }
 
-  window.NetlabEmulatorSmokeTest = { run, runWindows, runLinux, runCisco };
+  function loadScriptOnce(src, globalName) {
+    return new Promise((resolve, reject) => {
+      if (globalName && window[globalName]) {
+        resolve();
+        return;
+      }
+      const existing = Array.from(document.scripts).find((script) => script.src && script.src.includes(src.split("?")[0]));
+      if (existing) {
+        existing.addEventListener("load", () => resolve(), { once: true });
+        existing.addEventListener("error", () => reject(new Error(`Failed to load ${src}`)), { once: true });
+        if (!globalName) resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = src;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function ensureLessonAuditLoaded() {
+    await loadScriptOnce("./scenarioEngine.js?v=20260503helpguide1", "ScenarioEngine");
+    await loadScriptOnce("./lesson-audit-core.js?v=20260520audit1", "NetlabLessonAuditCore");
+    await loadScriptOnce("./lesson-scenario-audit.js?v=20260520audit1", "NetlabLessonScenarioAudit");
+  }
+
+  function auditSummaryPayload(auditResult) {
+    const checks = auditResult?.checks || [];
+    const important = checks.filter((item) => item.severity === "error" || item.severity === "warning");
+    const summary = auditResult?.summary || {};
+    return {
+      name: auditResult?.name || "Lesson Scenario Audit",
+      passed: Number(summary.pass || 0),
+      failed: Number(summary.error || 0),
+      checks: important.slice(0, 80).map((item) => ({
+        ok: item.severity !== "error",
+        name: `${item.severity.toUpperCase()}: ${item.scenarioTitle} ${item.stepIndex !== null ? `(step ${item.stepIndex + 1})` : ""}`,
+        detail: `${item.name}${item.detail ? ` — ${item.detail}` : ""}`
+      })),
+      raw: auditResult
+    };
+  }
+
+  function renderAuditResult(target, auditResult) {
+    if (!target) return;
+    const payload = auditSummaryPayload(auditResult);
+    const raw = payload.raw || auditResult;
+    target.innerHTML = "";
+
+    const header = document.createElement("div");
+    header.className = "smoke-platform-head";
+    header.innerHTML = `<h2>${payload.name}</h2><strong class="${raw.summary?.error ? "smoke-fail" : "smoke-pass"}">${raw.summary?.error || 0} errors · ${raw.summary?.warning || 0} warnings · ${raw.scenarios || 0} scenarios</strong>`;
+
+    const list = document.createElement("div");
+    list.className = "smoke-check-list";
+    if (!payload.checks.length) {
+      list.innerHTML = `<div class="smoke-check"><strong class="smoke-pass">PASS</strong><div>No errors or warnings found.</div></div>`;
+    } else {
+      list.innerHTML = payload.checks.map((check) => (
+        `<div class="smoke-check">`
+        + `<strong class="${check.ok ? "smoke-pass" : "smoke-fail"}">${check.ok ? "WARN" : "FAIL"}</strong>`
+        + `<div><div>${escapeHtml(check.name)}</div><div class="smoke-check-detail">${escapeHtml(check.detail)}</div></div>`
+        + `</div>`
+      )).join("");
+    }
+
+    const pre = document.createElement("pre");
+    pre.className = "smoke-log";
+    pre.textContent = JSON.stringify(raw.summary || {}, null, 2);
+
+    target.append(header, list, pre);
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function addAuditUi() {
+    if (!document.body.classList.contains("home-dashboard") || document.getElementById("lessonAuditCard")) {
+      return;
+    }
+    const shell = document.querySelector(".smoke-shell");
+    if (!shell) return;
+
+    const card = document.createElement("section");
+    card.id = "lessonAuditCard";
+    card.className = "smoke-card";
+    card.innerHTML = [
+      "<h2>Lesson Scenario Audit</h2>",
+      "<p class=\"smoke-copy\">Scans every lesson for missing success rules, broken target folders/files, wrong-platform commands, stale hints, and missing recovery guidance. This helps catch new unknown issues before users find them.</p>",
+      "<div class=\"smoke-actions\">",
+      "  <button id=\"runLessonAuditBtn\" class=\"smoke-btn primary\" type=\"button\">Run Lesson Audit</button>",
+      "  <button id=\"runWindowsAuditBtn\" class=\"smoke-btn\" type=\"button\">Audit Windows</button>",
+      "  <button id=\"runLinuxAuditBtn\" class=\"smoke-btn\" type=\"button\">Audit Linux</button>",
+      "  <button id=\"runCiscoAuditBtn\" class=\"smoke-btn\" type=\"button\">Audit Cisco</button>",
+      "</div>",
+      "<article id=\"lessonAuditResults\" class=\"smoke-platform\"><div class=\"smoke-check\"><strong>READY</strong><div>Press Run Lesson Audit.</div></div></article>"
+    ].join("");
+    shell.appendChild(card);
+
+    async function runAudit(kind) {
+      const target = document.getElementById("lessonAuditResults");
+      target.innerHTML = `<div class="smoke-check"><strong>RUNNING</strong><div>Loading scenario data and audit rules...</div></div>`;
+      try {
+        await ensureLessonAuditLoaded();
+        const audit = window.NetlabLessonScenarioAudit;
+        const result = kind === "windows" ? audit.runWindows()
+          : kind === "linux" ? audit.runLinux()
+          : kind === "cisco" ? audit.runCisco()
+          : audit.run();
+        renderAuditResult(target, result);
+      } catch (error) {
+        target.innerHTML = `<div class="smoke-check"><strong class="smoke-fail">FAIL</strong><div>${escapeHtml(error.message || String(error))}</div></div>`;
+      }
+    }
+
+    document.getElementById("runLessonAuditBtn").addEventListener("click", () => runAudit("all"));
+    document.getElementById("runWindowsAuditBtn").addEventListener("click", () => runAudit("windows"));
+    document.getElementById("runLinuxAuditBtn").addEventListener("click", () => runAudit("linux"));
+    document.getElementById("runCiscoAuditBtn").addEventListener("click", () => runAudit("cisco"));
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addAuditUi, { once: true });
+  } else {
+    addAuditUi();
+  }
+
+  window.NetlabEmulatorSmokeTest = { run, runWindows, runLinux, runCisco, ensureLessonAuditLoaded };
 })();
