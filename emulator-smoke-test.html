@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Emulator Smoke Test</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
+  <style>
+    body.home-dashboard {
+      padding: 16px;
+    }
+
+    .smoke-shell {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .smoke-card {
+      padding: 20px;
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(8, 13, 24, 0.94), rgba(4, 8, 15, 0.98));
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.3);
+    }
+
+    .smoke-card h1,
+    .smoke-card h2,
+    .smoke-card p {
+      margin: 0;
+    }
+
+    .smoke-card h1 {
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.05;
+    }
+
+    .smoke-copy {
+      margin-top: 12px !important;
+      color: #cbd5e1;
+      line-height: 1.6;
+      max-width: 72ch;
+    }
+
+    .smoke-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .smoke-btn {
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(96, 165, 250, 0.34);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(8, 13, 24, 0.98));
+      color: #f8fafc;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .smoke-btn.primary {
+      background: linear-gradient(180deg, #22c55e, #15803d);
+      border-color: rgba(74, 222, 128, 0.52);
+    }
+
+    .smoke-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .smoke-stat {
+      padding: 16px;
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.54);
+    }
+
+    .smoke-stat strong {
+      display: block;
+      font-size: 28px;
+    }
+
+    .smoke-stat span {
+      color: #cbd5e1;
+    }
+
+    .smoke-results {
+      display: grid;
+      gap: 12px;
+    }
+
+    .smoke-platform {
+      border: 1px solid rgba(96, 165, 250, 0.2);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(2, 6, 23, 0.48);
+    }
+
+    .smoke-platform-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.16);
+    }
+
+    .smoke-platform-head h2 {
+      font-size: 20px;
+    }
+
+    .smoke-pass {
+      color: #86efac;
+    }
+
+    .smoke-fail {
+      color: #fca5a5;
+    }
+
+    .smoke-check-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .smoke-check {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.08);
+      color: #dbeafe;
+    }
+
+    .smoke-check:last-child {
+      border-bottom: 0;
+    }
+
+    .smoke-check-detail {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .smoke-log {
+      min-height: 220px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      background: #020617;
+      color: #86efac;
+      font-family: Consolas, Monaco, monospace;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+
+    @media (max-width: 760px) {
+      .smoke-summary,
+      .smoke-check {
+        grid-template-columns: 1fr;
+      }
+
+      .smoke-actions {
+        flex-direction: column;
+      }
+
+      .smoke-btn {
+        width: 100%;
+      }
+    }
+  </style>
+  <script src="./stateManager.js?v=20260425cmd1" defer></script>
+  <script src="./terminal-emulator-smoke.js?v=20260520smoke1" defer></script>
+</head>
+<body class="home-dashboard">
+  <main class="smoke-shell">
+    <section class="smoke-card">
+      <a class="dashboard-secondary-btn" href="./index.html">← Back Home</a>
+      <h1>Terminal Emulator Smoke Test</h1>
+      <p class="smoke-copy">This page checks the core simulated terminal state for Windows CMD, Linux shell, and Cisco IOS prompts. It tests movement, prompt updates, invalid folders, hidden files, and Cisco mode prompts.</p>
+      <div class="smoke-actions">
+        <button id="runAllBtn" class="smoke-btn primary" type="button">Run All Tests</button>
+        <button id="runWindowsBtn" class="smoke-btn" type="button">Run Windows</button>
+        <button id="runLinuxBtn" class="smoke-btn" type="button">Run Linux</button>
+        <button id="runCiscoBtn" class="smoke-btn" type="button">Run Cisco</button>
+      </div>
+    </section>
+
+    <section class="smoke-summary">
+      <article class="smoke-stat"><strong id="totalPassed">0</strong><span>Passed</span></article>
+      <article class="smoke-stat"><strong id="totalFailed">0</strong><span>Failed</span></article>
+      <article class="smoke-stat"><strong id="totalChecks">0</strong><span>Total Checks</span></article>
+    </section>
+
+    <section id="results" class="smoke-results"></section>
+
+    <section class="smoke-card">
+      <h2>Raw Log</h2>
+      <pre id="rawLog" class="smoke-log">Ready. Press Run All Tests.</pre>
+    </section>
+  </main>
+
+  <script>
+    function normalizeResultPayload(payload) {
+      if (!payload) return [];
+      if (payload.results && Array.isArray(payload.results)) return [payload];
+      return Object.values(payload).filter(Boolean);
+    }
+
+    function renderPlatformResult(container, item) {
+      const section = document.createElement("article");
+      section.className = "smoke-platform";
+      const failed = Number(item.failed || 0);
+      const passed = Number(item.passed || 0);
+      const checks = Array.isArray(item.checks) ? item.checks : Array.isArray(item.results) ? item.results : [];
+      section.innerHTML = [
+        '<div class="smoke-platform-head">',
+        '<h2>' + escapeHtml(item.name || 'Test') + '</h2>',
+        '<strong class="' + (failed ? 'smoke-fail' : 'smoke-pass') + '">' + passed + '/' + checks.length + ' passed</strong>',
+        '</div>',
+        '<div class="smoke-check-list">' + checks.map(function (check) {
+          return '<div class="smoke-check">'
+            + '<strong class="' + (check.ok ? 'smoke-pass' : 'smoke-fail') + '">' + (check.ok ? 'PASS' : 'FAIL') + '</strong>'
+            + '<div><div>' + escapeHtml(check.name || '') + '</div>'
+            + (check.detail ? '<div class="smoke-check-detail">' + escapeHtml(check.detail) + '</div>' : '')
+            + '</div></div>';
+        }).join('') + '</div>'
+      ].join('');
+      container.appendChild(section);
+    }
+
+    function renderResults(payload) {
+      const groups = normalizeResultPayload(payload);
+      const results = document.getElementById('results');
+      const rawLog = document.getElementById('rawLog');
+      results.innerHTML = '';
+      let passed = 0;
+      let failed = 0;
+      let total = 0;
+      groups.forEach(function (item) {
+        const checks = Array.isArray(item.checks) ? item.checks : Array.isArray(item.results) ? item.results : [];
+        passed += Number(item.passed || checks.filter(function (check) { return check.ok; }).length || 0);
+        failed += Number(item.failed || checks.filter(function (check) { return !check.ok; }).length || 0);
+        total += checks.length;
+        renderPlatformResult(results, item);
+      });
+      document.getElementById('totalPassed').textContent = String(passed);
+      document.getElementById('totalFailed').textContent = String(failed);
+      document.getElementById('totalChecks').textContent = String(total);
+      rawLog.textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function runSmoke(kind) {
+      if (!window.NetlabEmulatorSmokeTest) {
+        renderResults({ name: 'Loader', passed: 0, failed: 1, checks: [{ ok: false, name: 'Smoke test harness did not load', detail: 'Check terminal-emulator-smoke.js' }] });
+        return;
+      }
+      const harness = window.NetlabEmulatorSmokeTest;
+      const payload = kind === 'windows' ? harness.runWindows()
+        : kind === 'linux' ? harness.runLinux()
+        : kind === 'cisco' ? harness.runCisco()
+        : harness.run();
+      renderResults(payload);
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('runAllBtn').addEventListener('click', function () { runSmoke('all'); });
+      document.getElementById('runWindowsBtn').addEventListener('click', function () { runSmoke('windows'); });
+      document.getElementById('runLinuxBtn').addEventListener('click', function () { runSmoke('linux'); });
+      document.getElementById('runCiscoBtn').addEventListener('click', function () { runSmoke('cisco'); });
+    });
+  </script>
+</body>
+</html>
