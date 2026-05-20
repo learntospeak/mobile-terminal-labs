@@ -1,0 +1,125 @@
+/* Desktop terminal space corrections.
+   This layer fixes the terminal being too squished after launch polish. */
+
+@media (min-width: 980px) {
+  .terminal-page.launch-polished .rack-room {
+    max-width: min(1760px, calc(100vw - 28px));
+  }
+
+  .terminal-page.launch-polished .router-shell {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .terminal-page.launch-polished .terminal-layout {
+    grid-template-columns: minmax(270px, 320px) minmax(760px, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  .terminal-page.launch-polished .scenario-panel {
+    max-width: 320px;
+  }
+
+  .terminal-page.launch-polished .launch-desktop-focus-card {
+    padding: 12px;
+    margin: 10px 0 12px;
+  }
+
+  .terminal-page.launch-polished .launch-desktop-focus-card h2 {
+    font-size: 17px;
+    line-height: 1.25;
+  }
+
+  .terminal-page.launch-polished .launch-desktop-focus-grid {
+    gap: 8px;
+  }
+
+  .terminal-page.launch-polished .launch-focus-step {
+    padding: 10px 11px;
+  }
+
+  .terminal-page.launch-polished .launch-focus-step strong,
+  .terminal-page.launch-polished .launch-focus-step span {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .terminal-page.launch-polished .terminal-panel {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: auto minmax(540px, 1fr) auto auto auto;
+  }
+
+  .terminal-page.launch-polished .terminal-output-shell {
+    min-height: clamp(520px, 62vh, 820px) !important;
+    max-height: none;
+  }
+
+  .terminal-page.launch-polished #terminalOutput {
+    min-height: clamp(490px, 59vh, 790px);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .terminal-page.launch-polished .terminal-mobile-dock {
+    position: relative !important;
+    bottom: auto !important;
+    margin-top: 12px;
+  }
+
+  .terminal-page.launch-polished .terminal-input-shell {
+    grid-template-columns: auto minmax(520px, 1fr) auto !important;
+    gap: 10px;
+  }
+
+  .terminal-page.launch-polished .terminal-input {
+    min-height: 50px;
+    font-size: 17px;
+  }
+
+  .terminal-page.launch-polished .terminal-run-btn {
+    min-width: 156px;
+    min-height: 50px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .terminal-page.launch-polished .terminal-layout {
+    grid-template-columns: minmax(280px, 340px) minmax(880px, 1fr) !important;
+  }
+}
+
+@media (min-width: 1540px) {
+  .terminal-page.launch-polished .terminal-layout {
+    grid-template-columns: minmax(300px, 360px) minmax(1000px, 1fr) !important;
+  }
+}
+
+.launch-empty-terminal-state {
+  display: grid;
+  gap: 8px;
+  max-width: 640px;
+  margin: 18px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(74, 222, 128, 0.28);
+  background: rgba(6, 18, 13, 0.54);
+  color: #dbeafe;
+}
+
+.launch-empty-terminal-state strong {
+  color: #f8fafc;
+  font-size: 16px;
+}
+
+.launch-empty-terminal-state span {
+  line-height: 1.55;
+}
+
+.launch-empty-terminal-state code {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #86efac;
+}
