@@ -1,0 +1,246 @@
+/* Shared dashboard-style theme layer.
+   Safe rule: visual polish only. Do not hide controls or restructure lab engines. */
+
+:root {
+  --app-bg: #020617;
+  --app-panel: rgba(8, 13, 24, 0.94);
+  --app-panel-2: rgba(10, 18, 32, 0.9);
+  --app-panel-3: rgba(15, 23, 42, 0.72);
+  --app-border: rgba(96, 165, 250, 0.24);
+  --app-border-strong: rgba(96, 165, 250, 0.42);
+  --app-green: #4ade80;
+  --app-blue: #38bdf8;
+  --app-text: #f8fafc;
+  --app-muted: #cbd5e1;
+  --app-soft: #94a3b8;
+  --app-shadow: 0 22px 56px rgba(0, 0, 0, 0.3);
+}
+
+body:not(.home-dashboard) {
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.1), transparent 32%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.08), transparent 28%),
+    linear-gradient(180deg, var(--app-bg) 0%, #030712 58%, var(--app-bg) 100%) !important;
+  color: var(--app-text);
+}
+
+body:not(.home-dashboard) .rack-room,
+body:not(.home-dashboard) .terminal-page-shell,
+body:not(.home-dashboard) main {
+  max-width: min(1520px, calc(100vw - 20px));
+}
+
+body:not(.home-dashboard) .router-shell,
+body:not(.home-dashboard) .terminal-shell,
+body:not(.home-dashboard) .lab-panel,
+body:not(.home-dashboard) .app-shell-panel,
+body:not(.home-dashboard) .hub-section-panel,
+body:not(.home-dashboard) .learning-paths-panel,
+body:not(.home-dashboard) .display-panel,
+body:not(.home-dashboard) .scoreboard,
+body:not(.home-dashboard) .support-card,
+body:not(.home-dashboard) .scenario-card,
+body:not(.home-dashboard) .terminal-output-shell,
+body:not(.home-dashboard) .terminal-mobile-dock,
+body:not(.home-dashboard) .roadmap-summary-panel,
+body:not(.home-dashboard) .roadmap-levels-shell,
+body:not(.home-dashboard) .subnet-dashboard-panel,
+body:not(.home-dashboard) .subnet-practice-panel,
+body:not(.home-dashboard) .subnet-reference-panel,
+body:not(.home-dashboard) .subnet-question-panel {
+  border-color: var(--app-border) !important;
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 34%),
+    linear-gradient(180deg, var(--app-panel), rgba(4, 8, 15, 0.98)) !important;
+  box-shadow: var(--app-shadow);
+}
+
+body:not(.home-dashboard) .router-top,
+body:not(.home-dashboard) .terminal-hero,
+body:not(.home-dashboard) #topButtons,
+body:not(.home-dashboard) .mode-panel-head,
+body:not(.home-dashboard) .subnet-dashboard-header {
+  border-color: var(--app-border) !important;
+  background: linear-gradient(180deg, rgba(9, 16, 29, 0.94), rgba(6, 11, 20, 0.96)) !important;
+}
+
+body:not(.home-dashboard) h1,
+body:not(.home-dashboard) h2,
+body:not(.home-dashboard) h3,
+body:not(.home-dashboard) .router-brand,
+body:not(.home-dashboard) .scenario-title,
+body:not(.home-dashboard) .learning-path-title,
+body:not(.home-dashboard) .subnet-mode-card-title {
+  color: var(--app-text) !important;
+}
+
+body:not(.home-dashboard) .terminal-kicker,
+body:not(.home-dashboard) .app-shell-kicker,
+body:not(.home-dashboard) .scenario-category,
+body:not(.home-dashboard) .dashboard-panel-kicker,
+body:not(.home-dashboard) .subnet-dashboard-kicker,
+body:not(.home-dashboard) .subnet-panel-kicker,
+body:not(.home-dashboard) .mission-case-label,
+body:not(.home-dashboard) .ticket-briefing-label {
+  color: #93c5fd !important;
+}
+
+body:not(.home-dashboard) p,
+body:not(.home-dashboard) li,
+body:not(.home-dashboard) .terminal-subbrand,
+body:not(.home-dashboard) .app-shell-copy,
+body:not(.home-dashboard) .scenario-objective,
+body:not(.home-dashboard) .mission-case-copy,
+body:not(.home-dashboard) .ticket-briefing-copy,
+body:not(.home-dashboard) .support-disclosure-meta,
+body:not(.home-dashboard) .learning-path-copy,
+body:not(.home-dashboard) .subnet-mode-card-copy,
+body:not(.home-dashboard) .subnet-reference-card-copy {
+  color: var(--app-muted);
+}
+
+body:not(.home-dashboard) a.top-home-link,
+body:not(.home-dashboard) .page-back-link,
+body:not(.home-dashboard) .environment-route-link,
+body:not(.home-dashboard) .app-action-link,
+body:not(.home-dashboard) .app-action-btn,
+body:not(.home-dashboard) .section-btn,
+body:not(.home-dashboard) .mode-btn,
+body:not(.home-dashboard) .terminal-run-btn,
+body:not(.home-dashboard) .trainer-controls button,
+body:not(.home-dashboard) .subnet-mode-card,
+body:not(.home-dashboard) .subnet-reference-card,
+body:not(.home-dashboard) #answers button,
+body:not(.home-dashboard) #actionButtons button,
+body:not(.home-dashboard) button {
+  border-color: var(--app-border-strong) !important;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(8, 13, 24, 0.98)) !important;
+  color: var(--app-text) !important;
+}
+
+body:not(.home-dashboard) a.top-home-link:hover,
+body:not(.home-dashboard) .environment-route-link:hover,
+body:not(.home-dashboard) .app-action-link:hover,
+body:not(.home-dashboard) .app-action-btn:hover,
+body:not(.home-dashboard) .section-btn:hover,
+body:not(.home-dashboard) .mode-btn:hover,
+body:not(.home-dashboard) .terminal-run-btn:hover,
+body:not(.home-dashboard) .trainer-controls button:hover,
+body:not(.home-dashboard) button:hover {
+  border-color: rgba(74, 222, 128, 0.5) !important;
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 36%),
+    linear-gradient(180deg, rgba(22, 101, 52, 0.84), rgba(8, 13, 24, 0.98)) !important;
+}
+
+body:not(.home-dashboard) .terminal-run-btn,
+body:not(.home-dashboard) .ticket-briefing-start,
+body:not(.home-dashboard) #startScenarioBtn,
+body:not(.home-dashboard) #nextScenarioBtn,
+body:not(.home-dashboard) #nextBtn,
+body:not(.home-dashboard) .task-complete-next {
+  background: linear-gradient(180deg, #22c55e, #15803d) !important;
+  border-color: rgba(74, 222, 128, 0.56) !important;
+  color: #f8fafc !important;
+}
+
+body:not(.home-dashboard) input,
+body:not(.home-dashboard) textarea,
+body:not(.home-dashboard) .terminal-input,
+body:not(.home-dashboard) .app-shell-input,
+body:not(.home-dashboard) .command-sheet-search {
+  border-color: rgba(96, 165, 250, 0.28) !important;
+  background: rgba(2, 6, 23, 0.72) !important;
+  color: var(--app-text) !important;
+}
+
+body:not(.home-dashboard) input::placeholder,
+body:not(.home-dashboard) textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+body:not(.home-dashboard) .terminal-output,
+body:not(.home-dashboard) pre,
+body:not(.home-dashboard) code,
+body:not(.home-dashboard) .walkthrough-code,
+body:not(.home-dashboard) .command-explainer-terminal {
+  color: #86efac;
+}
+
+body:not(.home-dashboard) .status-badge,
+body:not(.home-dashboard) .scenario-mini-badge,
+body:not(.home-dashboard) .learning-path-status,
+body:not(.home-dashboard) .subnet-progress-badge {
+  border-color: rgba(96, 165, 250, 0.3) !important;
+  background: rgba(15, 23, 42, 0.74) !important;
+  color: #bfdbfe !important;
+}
+
+body:not(.home-dashboard) .learning-path-card,
+body:not(.home-dashboard) .subnet-mode-card,
+body:not(.home-dashboard) .subnet-reference-card {
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+body:not(.home-dashboard) .learning-path-card:hover,
+body:not(.home-dashboard) .subnet-mode-card:hover,
+body:not(.home-dashboard) .subnet-reference-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(74, 222, 128, 0.48) !important;
+}
+
+body:not(.home-dashboard) .mascot-card {
+  border-color: var(--app-border) !important;
+  background:
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.1), transparent 34%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.76), rgba(4, 8, 15, 0.94)) !important;
+}
+
+body:not(.home-dashboard) .mascot-message {
+  color: #dbeafe !important;
+}
+
+/* Keep terminal functionality/layout intact. Only add breathing room where safe. */
+.terminal-page .terminal-output-shell {
+  min-height: 360px;
+}
+
+.terminal-page .terminal-input-shell {
+  gap: 8px;
+}
+
+@media (min-width: 980px) {
+  .terminal-page .terminal-output-shell {
+    min-height: min(56vh, 720px);
+  }
+
+  .terminal-page .terminal-input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .terminal-page .terminal-run-btn {
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  body:not(.home-dashboard) {
+    padding: 10px;
+  }
+
+  body:not(.home-dashboard) .router-shell,
+  body:not(.home-dashboard) .lab-panel,
+  body:not(.home-dashboard) .support-card,
+  body:not(.home-dashboard) .terminal-output-shell,
+  body:not(.home-dashboard) .terminal-mobile-dock {
+    border-radius: 16px;
+  }
+
+  body:not(.home-dashboard) .trainer-controls button,
+  body:not(.home-dashboard) .terminal-run-btn,
+  body:not(.home-dashboard) .app-action-btn,
+  body:not(.home-dashboard) .app-action-link {
+    min-height: 48px;
+  }
+}
