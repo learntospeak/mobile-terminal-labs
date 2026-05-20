@@ -1,0 +1,30 @@
+name: Emulator and Lesson Audit Tests
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  emulator-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run emulator smoke tests and lesson audit
+        run: node tools/run-emulator-tests.js
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-test-report
+          path: test-results/emulator-test-report.json
+          if-no-files-found: ignore
