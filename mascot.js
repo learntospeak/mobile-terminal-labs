@@ -41,6 +41,20 @@
     return ALT_TEXT[normalizeState(state)] || ALT_TEXT.main;
   }
 
+  function loadSharedTheme() {
+    if (typeof document === "undefined" || document.getElementById("appThemeStylesheet")) {
+      return;
+    }
+
+    const css = document.createElement("link");
+    css.id = "appThemeStylesheet";
+    css.rel = "stylesheet";
+    css.href = "./app-theme.css?v=20260520theme1";
+    document.head.appendChild(css);
+  }
+
+  loadSharedTheme();
+
   window.PatchMascot = {
     getMascotSrc,
     getMascotAlt,
