@@ -3,6 +3,8 @@
 // NetlabEmulatorSmokeTest.run()
 
 (function () {
+  let latestLessonAuditResult = null;
+
   function result(ok, name, detail) {
     return { ok, name, detail: detail || "" };
   }
@@ -206,8 +208,46 @@
     };
   }
 
+  function auditDownloadPayload(auditResult) {
+    const checks = auditResult?.checks || [];
+    return {
+      generatedAt: new Date().toISOString(),
+      pageUrl: window.location.href,
+      userAgent: window.navigator?.userAgent || "",
+      summary: auditResult?.summary || {},
+      scenarioCount: auditResult?.scenarios || 0,
+      errors: checks.filter((item) => item.severity === "error"),
+      warnings: checks.filter((item) => item.severity === "warning"),
+      info: checks.filter((item) => item.severity === "info"),
+      allChecks: checks
+    };
+  }
+
+  function downloadJson(filename, payload) {
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function downloadLatestLessonAudit() {
+    if (!latestLessonAuditResult) {
+      window.alert("Run the Lesson Audit first, then download the report.");
+      return;
+    }
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    downloadJson(`netlab-lesson-audit-${stamp}.json`, auditDownloadPayload(latestLessonAuditResult));
+  }
+
   function renderAuditResult(target, auditResult) {
     if (!target) return;
+    latestLessonAuditResult = auditResult;
     const payload = auditSummaryPayload(auditResult);
     const raw = payload.raw || auditResult;
     target.innerHTML = "";
@@ -215,6 +255,11 @@
     const header = document.createElement("div");
     header.className = "smoke-platform-head";
     header.innerHTML = `<h2>${payload.name}</h2><strong class="${raw.summary?.error ? "smoke-fail" : "smoke-pass"}">${raw.summary?.error || 0} errors · ${raw.summary?.warning || 0} warnings · ${raw.scenarios || 0} scenarios</strong>`;
+
+    const downloadRow = document.createElement("div");
+    downloadRow.className = "smoke-actions";
+    downloadRow.style.padding = "12px 16px";
+    downloadRow.innerHTML = `<button id="downloadLessonAuditBtn" class="smoke-btn primary" type="button">Download Full Audit JSON</button>`;
 
     const list = document.createElement("div");
     list.className = "smoke-check-list";
@@ -233,7 +278,8 @@
     pre.className = "smoke-log";
     pre.textContent = JSON.stringify(raw.summary || {}, null, 2);
 
-    target.append(header, list, pre);
+    target.append(header, downloadRow, list, pre);
+    document.getElementById("downloadLessonAuditBtn")?.addEventListener("click", downloadLatestLessonAudit);
   }
 
   function escapeHtml(value) {
@@ -264,12 +310,13 @@
       "  <button id=\"runLinuxAuditBtn\" class=\"smoke-btn\" type=\"button\">Audit Linux</button>",
       "  <button id=\"runCiscoAuditBtn\" class=\"smoke-btn\" type=\"button\">Audit Cisco</button>",
       "</div>",
-      "<article id=\"lessonAuditResults\" class=\"smoke-platform\"><div class=\"smoke-check\"><strong>READY</strong><div>Press Run Lesson Audit.</div></div></article>"
+      "<article id=\"lessonAuditResults\" class=\"smoke-platform\"><div class=\"smoke-check\"><strong>READY</strong><div>Press Run Lesson Audit. After it finishes, use Download Full Audit JSON.</div></div></article>"
     ].join("");
     shell.appendChild(card);
 
     async function runAudit(kind) {
       const target = document.getElementById("lessonAuditResults");
+      latestLessonAuditResult = null;
       target.innerHTML = `<div class="smoke-check"><strong>RUNNING</strong><div>Loading scenario data and audit rules...</div></div>`;
       try {
         await ensureLessonAuditLoaded();
@@ -296,5 +343,5 @@
     addAuditUi();
   }
 
-  window.NetlabEmulatorSmokeTest = { run, runWindows, runLinux, runCisco, ensureLessonAuditLoaded };
+  window.NetlabEmulatorSmokeTest = { run, runWindows, runLinux, runCisco, ensureLessonAuditLoaded, downloadLatestLessonAudit };
 })();
