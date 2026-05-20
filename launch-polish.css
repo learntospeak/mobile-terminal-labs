@@ -1,8 +1,20 @@
-/* Launch polish layer: beginner-first usability improvements. */
+/* Launch polish layer: beginner-first usability improvements.
+   Rule: improve the existing app shell without replacing the terminal engine. */
+
+:root {
+  --launch-panel: rgba(7, 13, 24, 0.94);
+  --launch-panel-soft: rgba(10, 18, 32, 0.88);
+  --launch-border: rgba(96, 165, 250, 0.24);
+  --launch-border-strong: rgba(96, 165, 250, 0.42);
+  --launch-green: #4ade80;
+  --launch-blue: #38bdf8;
+  --launch-text: #f8fafc;
+  --launch-muted: #cbd5e1;
+}
 
 .launch-helper-text {
   margin: 10px 0 0;
-  color: #cbd5e1;
+  color: var(--launch-muted);
   line-height: 1.65;
   max-width: 68ch;
 }
@@ -30,7 +42,7 @@
 }
 
 .launch-start-card h3 {
-  color: #f8fafc;
+  color: var(--launch-text);
   font-size: clamp(20px, 4vw, 28px);
 }
 
@@ -103,18 +115,52 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 }
 
 .launch-beginner-note strong {
-  color: #f8fafc;
+  color: var(--launch-text);
 }
 
-/* Shared terminal polish */
+/* Desktop app-shell polish inspired by the cleaner dashboard direction. */
+.terminal-page.launch-polished,
+.roadmap-page.launch-polished {
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 32%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.07), transparent 28%),
+    #020617;
+}
+
+.terminal-page.launch-polished .rack-room {
+  max-width: 1540px;
+}
+
+.terminal-page.launch-polished .router-shell {
+  border-color: var(--launch-border);
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(7, 12, 22, 0.96), rgba(3, 7, 14, 0.98));
+}
+
+.terminal-page.launch-polished .router-top {
+  align-items: center;
+  border-color: var(--launch-border);
+  background: linear-gradient(180deg, rgba(9, 16, 29, 0.94), rgba(6, 11, 20, 0.96));
+}
+
 .terminal-page.launch-polished .router-top > div:nth-child(2) {
-  max-width: 780px;
+  max-width: 860px;
+}
+
+.terminal-page.launch-polished .terminal-kicker {
+  color: var(--launch-green);
+}
+
+.terminal-page.launch-polished .router-brand {
+  color: var(--launch-text);
+  letter-spacing: 0.02em;
 }
 
 .terminal-page.launch-polished .terminal-subbrand {
-  max-width: 72ch;
+  max-width: 76ch;
   line-height: 1.6;
-  color: #dbeafe;
+  color: var(--launch-muted);
 }
 
 .launch-howto-card,
@@ -122,10 +168,10 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
   margin: 16px 0;
   padding: 18px;
   border-radius: 18px;
-  border: 1px solid rgba(96, 165, 250, 0.26);
+  border: 1px solid var(--launch-border);
   background:
     radial-gradient(circle at top right, rgba(96, 165, 250, 0.12), transparent 38%),
-    linear-gradient(180deg, rgba(8, 13, 20, 0.94), rgba(4, 8, 15, 0.98));
+    linear-gradient(180deg, var(--launch-panel), rgba(4, 8, 15, 0.98));
 }
 
 .launch-howto-card {
@@ -138,8 +184,9 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 .launch-howto-card h2,
 .launch-desktop-focus-card h2 {
   margin: 4px 0 0;
-  color: #f8fafc;
+  color: var(--launch-text);
   font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.2;
 }
 
 .launch-howto-kicker,
@@ -159,15 +206,22 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
   line-height: 1.7;
 }
 
+/* This card lives in the narrow left panel, so it must stack vertically. */
+.launch-desktop-focus-card {
+  padding: 16px;
+}
+
 .launch-desktop-focus-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
   margin-top: 14px;
 }
 
 .launch-focus-step {
-  padding: 14px;
+  display: grid;
+  gap: 5px;
+  padding: 13px 14px;
   border-radius: 14px;
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(148, 163, 184, 0.18);
@@ -175,12 +229,12 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 
 .launch-focus-step strong {
   display: block;
-  margin-bottom: 6px;
-  color: #f8fafc;
+  color: var(--launch-text);
+  line-height: 1.25;
 }
 
 .launch-focus-step span {
-  color: #cbd5e1;
+  color: var(--launch-muted);
   line-height: 1.5;
 }
 
@@ -235,14 +289,21 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 
 .terminal-page.launch-polished .support-card-primary,
 .terminal-page.launch-polished .scenario-card,
-.terminal-page.launch-polished .terminal-output-shell {
-  border-color: rgba(96, 165, 250, 0.3);
+.terminal-page.launch-polished .terminal-output-shell,
+.terminal-page.launch-polished .terminal-mobile-dock {
+  border-color: var(--launch-border-strong);
 }
 
 .terminal-page.launch-polished .scenario-title,
 .terminal-page.launch-polished #stepObjective,
 .terminal-page.launch-polished .terminal-mobile-objective {
   line-height: 1.55;
+}
+
+.terminal-page.launch-polished .scenario-panel,
+.terminal-page.launch-polished .terminal-panel {
+  background: linear-gradient(180deg, rgba(8, 13, 24, 0.94), rgba(4, 8, 15, 0.98));
+  border-color: var(--launch-border);
 }
 
 .beginner-mode-banner {
@@ -294,7 +355,7 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 
 .command-sheet-kicker::after {
   content: " — pick a command, copy it, or use it to understand what to type";
-  color: #cbd5e1;
+  color: var(--launch-muted);
   font-weight: 600;
   letter-spacing: normal;
   text-transform: none;
@@ -312,7 +373,7 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 @media (min-width: 980px) {
   .terminal-page.launch-polished .terminal-layout {
     display: grid;
-    grid-template-columns: minmax(320px, 0.78fr) minmax(620px, 1.35fr);
+    grid-template-columns: minmax(340px, 420px) minmax(620px, 1fr);
     gap: 18px;
     align-items: start;
   }
@@ -329,7 +390,7 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
   }
 
   .terminal-page.launch-polished .terminal-output-shell {
-    min-height: min(58vh, 680px);
+    min-height: min(56vh, 660px);
   }
 
   .terminal-page.launch-polished .terminal-mobile-dock {
@@ -337,6 +398,7 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
     bottom: 0;
     z-index: 15;
     margin-top: 12px;
+    padding: 12px;
     border-radius: 18px;
     border: 1px solid rgba(96, 165, 250, 0.22);
     background: rgba(4, 8, 15, 0.94);
@@ -353,14 +415,14 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
 
   .terminal-page.launch-polished .trainer-controls {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 8px;
   }
 
+  /* Keep Start visible. Only tuck away navigation/reset controls until requested. */
   .terminal-page.launch-polished:not(.launch-show-extra-controls) #previousScenarioBtn,
   .terminal-page.launch-polished:not(.launch-show-extra-controls) #nextScenarioBtn,
-  .terminal-page.launch-polished:not(.launch-show-extra-controls) #resetScenarioBtn,
-  .terminal-page.launch-polished:not(.launch-show-extra-controls) #startScenarioBtn {
+  .terminal-page.launch-polished:not(.launch-show-extra-controls) #resetScenarioBtn {
     display: none;
   }
 
@@ -373,7 +435,7 @@ body:not(.terminal-page) .learning-path-card:not(.learning-path-card-featured) {
   }
 
   .terminal-page.launch-polished .terminal-run-btn {
-    min-width: 140px;
+    min-width: 150px;
   }
 }
 
