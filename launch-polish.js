@@ -55,6 +55,49 @@
     return card;
   }
 
+  function terminalHasRealContent(output) {
+    if (!output) {
+      return false;
+    }
+
+    const textContent = String(output.textContent || "").trim();
+    const childCount = Array.from(output.children || []).filter(function (child) {
+      return child.id !== "launchEmptyTerminalState";
+    }).length;
+    return Boolean(textContent || childCount);
+  }
+
+  function ensureEmptyTerminalState() {
+    const output = document.getElementById("terminalOutput");
+    if (!output || document.getElementById("launchEmptyTerminalState")) {
+      return;
+    }
+
+    window.setTimeout(function () {
+      if (!output || terminalHasRealContent(output)) {
+        return;
+      }
+
+      const empty = document.createElement("div");
+      empty.id = "launchEmptyTerminalState";
+      empty.className = "launch-empty-terminal-state";
+      empty.innerHTML = [
+        "<strong>Terminal ready.</strong>",
+        "<span>Press <code>Start Problem</code>, then type a command in the box below and press <code>Run Command</code>.</span>",
+        "<span>New to this? Use <code>Commands</code>, <code>Hint</code>, or <code>Guide</code>.</span>"
+      ].join("");
+      output.appendChild(empty);
+    }, 900);
+
+    const observer = new MutationObserver(function () {
+      const empty = document.getElementById("launchEmptyTerminalState");
+      if (empty && terminalHasRealContent(output)) {
+        empty.remove();
+      }
+    });
+    observer.observe(output, { childList: true, subtree: true, characterData: true });
+  }
+
   function addBeginnerHowTo() {
     const shell = document.querySelector(".terminal-shell");
     const layout = document.querySelector(".terminal-layout");
@@ -210,6 +253,7 @@
     addControlToggle();
     addMobileCommandTip();
     addDesktopCommandTip();
+    ensureEmptyTerminalState();
   }
 
   function polishRoadmapPage() {
