@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connectivity Smoke Test</title>
+  <link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
+  <style>
+    body.home-dashboard{padding:16px}.smoke-shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:16px}.smoke-card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.smoke-copy{color:#cbd5e1;line-height:1.6}.smoke-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.smoke-btn{min-height:48px;padding:0 16px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,rgba(15,23,42,.94),rgba(8,13,24,.98));color:#f8fafc;font-weight:900;cursor:pointer}.smoke-btn.primary{background:linear-gradient(180deg,#22c55e,#15803d);border-color:rgba(74,222,128,.52)}.smoke-platform{border:1px solid rgba(96,165,250,.2);border-radius:14px;overflow:hidden;background:rgba(2,6,23,.48)}.smoke-platform-head{display:flex;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(96,165,250,.16)}.smoke-pass{color:#86efac}.smoke-fail{color:#fca5a5}.smoke-check{display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px;padding:10px 16px;border-bottom:1px solid rgba(96,165,250,.08);color:#dbeafe}.smoke-check-detail{color:#94a3b8;font-size:13px;margin-top:4px}.smoke-log{min-height:220px;padding:16px;border-radius:14px;border:1px solid rgba(56,189,248,.24);background:#020617;color:#86efac;font-family:Consolas,Monaco,monospace;white-space:pre-wrap;overflow:auto}@media(max-width:760px){.smoke-check{grid-template-columns:1fr}.smoke-actions{flex-direction:column}.smoke-btn{width:100%}}
+  </style>
+  <script src="./stateManager.js?v=20260425cmd1" defer></script>
+  <script src="./scenarioEngine.js?v=20260503helpguide1" defer></script>
+  <script src="./lesson-audit-core.js?v=20260520audit2" defer></script>
+  <script src="./connectivity-flow-smoke.js?v=20260520conn1" defer></script>
+</head>
+<body class="home-dashboard">
+  <main class="smoke-shell">
+    <section class="smoke-card">
+      <a class="dashboard-secondary-btn" href="./index.html">← Back Home</a>
+      <h1>Connectivity Smoke Test</h1>
+      <p class="smoke-copy">Checks diagnostic-style labs: ping, ipconfig, nslookup, tracert/traceroute, route, netstat, arp, services, Cisco show, ping, and traceroute.</p>
+      <div class="smoke-actions">
+        <button id="runAllBtn" class="smoke-btn primary" type="button">Run Connectivity Smoke</button>
+        <button id="runWindowsBtn" class="smoke-btn" type="button">Windows Diagnostics</button>
+        <button id="runLinuxBtn" class="smoke-btn" type="button">Linux Diagnostics</button>
+        <button id="runCiscoBtn" class="smoke-btn" type="button">Cisco Diagnostics</button>
+      </div>
+    </section>
+    <article id="results" class="smoke-platform"><div class="smoke-check"><strong>READY</strong><div>Run a connectivity smoke test.</div></div></article>
+    <section class="smoke-card"><h2>Raw Log</h2><pre id="rawLog" class="smoke-log">Ready.</pre></section>
+  </main>
+  <script>
+    let latest = null;
+    function escapeHtml(value){return String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+    function render(result){latest=result;const target=document.getElementById('results');const checks=result.checks||[];const important=checks.filter(x=>x.severity==='error'||x.severity==='warning');target.innerHTML='';const head=document.createElement('div');head.className='smoke-platform-head';head.innerHTML='<h2>'+escapeHtml(result.name||'Connectivity Flow Smoke')+'</h2><strong class="'+(result.summary&&result.summary.error?'smoke-fail':'smoke-pass')+'">'+((result.summary&&result.summary.error)||0)+' errors · '+((result.summary&&result.summary.warning)||0)+' warnings · '+(result.scenarios||0)+' scenarios</strong>';const actions=document.createElement('div');actions.className='smoke-actions';actions.style.padding='12px 16px';actions.innerHTML='<button class="smoke-btn primary" id="downloadBtn" type="button">Download Connectivity JSON</button>';const list=document.createElement('div');if(!important.length){list.innerHTML='<div class="smoke-check"><strong class="smoke-pass">PASS</strong><div>No errors or warnings found.</div></div>'}else{list.innerHTML=important.slice(0,160).map(x=>'<div class="smoke-check"><strong class="'+(x.severity==='error'?'smoke-fail':'smoke-pass')+'">'+(x.severity==='error'?'FAIL':'WARN')+'</strong><div><div>'+escapeHtml((x.scenarioTitle||'')+(x.stepIndex!=null?' step '+(x.stepIndex+1):''))+'</div><div class="smoke-check-detail">'+escapeHtml(x.name+' — '+(x.detail||''))+'</div></div></div>').join('')}target.append(head,actions,list);document.getElementById('rawLog').textContent=JSON.stringify(result,null,2);document.getElementById('downloadBtn').addEventListener('click',download)}
+    function download(){if(!latest)return;const payload={generatedAt:new Date().toISOString(),pageUrl:location.href,summary:latest.summary,scenarioCount:latest.scenarios,errors:(latest.checks||[]).filter(x=>x.severity==='error'),warnings:(latest.checks||[]).filter(x=>x.severity==='warning'),allChecks:latest.checks||[]};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='netlab-connectivity-smoke-'+new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+    function run(kind){if(!window.NetlabConnectivityFlowSmoke){document.getElementById('results').innerHTML='<div class="smoke-check"><strong class="smoke-fail">FAIL</strong><div>Connectivity smoke harness did not load.</div></div>';return}const h=window.NetlabConnectivityFlowSmoke;render(kind==='windows'?h.runWindows():kind==='linux'?h.runLinux():kind==='cisco'?h.runCisco():h.run())}
+    window.addEventListener('DOMContentLoaded',()=>{document.getElementById('runAllBtn').onclick=()=>run('all');document.getElementById('runWindowsBtn').onclick=()=>run('windows');document.getElementById('runLinuxBtn').onclick=()=>run('linux');document.getElementById('runCiscoBtn').onclick=()=>run('cisco')});
+  </script>
+</body>
+</html>
