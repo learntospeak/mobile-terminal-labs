@@ -1,0 +1,123 @@
+// Lesson audit core helpers.
+// Loaded by emulator-smoke-test.html to inspect scenario data for contradictions.
+
+(function () {
+  const COMMANDS = {
+    cmd: new Set([
+      "dir", "cd", "type", "echo", "find", "findstr", "tree", "copy", "xcopy", "move", "del", "erase", "ren", "rename",
+      "more", "attrib", "hostname", "whoami", "systeminfo", "set", "ver", "date", "time", "cls", "prompt",
+      "tasklist", "taskkill", "ping", "tracert", "pathping", "nslookup", "ipconfig", "netstat", "arp", "route",
+      "getmac", "sc", "net", "wmic", "driverquery", "query", "where", "fc", "shutdown", "schtasks"
+    ]),
+    linux: new Set([
+      "pwd", "ls", "cd", "mkdir", "touch", "cat", "echo", "grep", "find", "tree", "cp", "mv", "rm", "rmdir",
+      "more", "less", "tar", "wget", "ps", "kill", "ping", "traceroute", "ip", "nmap", "python", "nc", "netcat", "telnet"
+    ]),
+    cisco: new Set([
+      "enable", "disable", "configure", "conf", "exit", "end", "show", "interface", "ip", "no", "description",
+      "hostname", "copy", "write", "shutdown"
+    ])
+  };
+
+  function requireDeps() {
+    const missing = [];
+    if (!window.StateManager) missing.push("StateManager");
+    if (!window.ScenarioEngine) missing.push("ScenarioEngine");
+    if (missing.length) throw new Error(`Missing dependency: ${missing.join(", ")}`);
+  }
+
+  function scenarioList() {
+    return Array.isArray(window.ScenarioEngine?.scenarios) ? window.ScenarioEngine.scenarios : [];
+  }
+
+  function platformOf(scenario, state) {
+    const shell = scenario?.shell || scenario?.environment?.platform || state?.platform || "linux";
+    if (shell === "cmd") return "cmd";
+    if (shell === "cisco") return "cisco";
+    return "linux";
+  }
+
+  function normalizeCommand(raw) {
+    return String(raw || "").trim().replace(/\s+/g, " ");
+  }
+
+  function commandWord(raw) {
+    return normalizeCommand(raw).split(/\s+/)[0].toLowerCase();
+  }
+
+  function basename(path) {
+    return String(path || "").replace(/\\/g, "/").replace(/\/+$/, "").split("/").filter(Boolean).pop() || "";
+  }
+
+  function check({ ok, severity, scenario, stepIndex = null, name, detail = "" }) {
+    return {
+      ok: Boolean(ok),
+      severity: severity || (ok ? "pass" : "error"),
+      scenarioId: scenario?.id || "unknown",
+      scenarioTitle: scenario?.title || "Untitled scenario",
+      platform: scenario?.shell || scenario?.environment?.platform || scenario?.environmentCategory || "unknown",
+      stepIndex,
+      name,
+      detail
+    };
+  }
+
+  function commandValidForScenario(command, scenario, state) {
+    const word = commandWord(command);
+    if (!word) return true;
+    const platform = platformOf(scenario, state);
+    return COMMANDS[platform].has(word);
+  }
+
+  function hintCommands(step) {
+    const commands = [];
+    (step?.hints || []).forEach((hint) => {
+      const matches = String(hint || "").matchAll(/`([^`]+)`/g);
+      for (const match of matches) {
+        String(match[1] || "").split(/\s+or\s+/i).forEach((command) => {
+          const normalized = normalizeCommand(command);
+          if (normalized) commands.push(normalized);
+        });
+      }
+    });
+    return commands;
+  }
+
+  function walkthroughCommands(step) {
+    return (Array.isArray(step?.walkthrough) ? step.walkthrough : [])
+      .map((entry) => normalizeCommand(entry?.command || entry?.demoCommand || ""))
+      .filter(Boolean);
+  }
+
+  function stepGuidanceCommands(step) {
+    return [
+      normalizeCommand(step?.demoCommand || ""),
+      ...hintCommands(step),
+      ...walkthroughCommands(step)
+    ].filter(Boolean);
+  }
+
+  function summarize(checks) {
+    const summary = { pass: 0, info: 0, warning: 0, error: 0, total: checks.length };
+    checks.forEach((item) => {
+      summary[item.severity] = (summary[item.severity] || 0) + 1;
+    });
+    summary.ok = summary.error === 0;
+    return summary;
+  }
+
+  window.NetlabLessonAuditCore = {
+    requireDeps,
+    scenarioList,
+    platformOf,
+    normalizeCommand,
+    commandWord,
+    basename,
+    check,
+    commandValidForScenario,
+    hintCommands,
+    walkthroughCommands,
+    stepGuidanceCommands,
+    summarize
+  };
+})();
