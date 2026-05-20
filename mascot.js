@@ -42,10 +42,7 @@
   }
 
   function loadSharedTheme() {
-    if (typeof document === "undefined" || document.getElementById("appThemeStylesheet")) {
-      return;
-    }
-
+    if (typeof document === "undefined" || document.getElementById("appThemeStylesheet")) return;
     const css = document.createElement("link");
     css.id = "appThemeStylesheet";
     css.rel = "stylesheet";
@@ -53,7 +50,15 @@
     document.head.appendChild(css);
   }
 
+  function loadIncidentPatch() {
+    if (typeof window === "undefined") return;
+    window.setTimeout(() => {
+      import("./incident-folder-gold.js?v=20260520gold1").catch(() => {});
+    }, 0);
+  }
+
   loadSharedTheme();
+  loadIncidentPatch();
 
   window.PatchMascot = {
     getMascotSrc,
