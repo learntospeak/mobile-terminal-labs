@@ -65,11 +65,12 @@
       import("./windows-type-more-upgrade.js?v=20260521typemore1").catch(() => {});
       import("./windows-host-user-upgrade.js?v=20260521host1").catch(() => {});
       import("./windows-xcopy-upgrade.js?v=20260521xcopy1").catch(() => {});
+      import("./direct-scenario-router.js?v=20260521router1").catch(() => {});
     }, 0);
   }
 
   loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
-  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal1");
+  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal2");
   loadTerminalPatches();
 
   window.PatchMascot = {
