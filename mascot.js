@@ -1,32 +1,37 @@
 (function () {
   const ASSET_BASE = "./assets/mascot/";
-  const STATE_FILES = {
-    main: "patch-main.png", happy: "patch-happy.png", thinking: "patch-thinking.png", confused: "patch-confused.png", excited: "patch-excited.png", nicework: "patch-nicework.png", ping: "patch-ping.png", traceroute: "patch-traceroute.png", ipconfig: "patch-ipconfig.png", nslookup: "patch-nslookup.png", files: "patch-files.png"
-  };
-  const ALT_TEXT = {
-    main: "Patch, the beginner IT guide", happy: "Patch smiling", thinking: "Patch thinking", confused: "Patch helping after a mistake", excited: "Patch celebrating progress", nicework: "Patch celebrating progress", ping: "Patch checking a network connection", traceroute: "Patch tracing a network path", ipconfig: "Patch showing network information", nslookup: "Patch checking DNS", files: "Patch looking at files"
-  };
+  const STATE_FILES = { main: "patch-main.png", happy: "patch-happy.png", thinking: "patch-thinking.png", confused: "patch-confused.png", excited: "patch-excited.png", nicework: "patch-nicework.png", ping: "patch-ping.png", traceroute: "patch-traceroute.png", ipconfig: "patch-ipconfig.png", nslookup: "patch-nslookup.png", files: "patch-files.png" };
+  const ALT_TEXT = { main: "Patch, the beginner IT guide", happy: "Patch smiling", thinking: "Patch thinking", confused: "Patch helping after a mistake", excited: "Patch celebrating progress", nicework: "Patch celebrating progress", ping: "Patch checking a network connection", traceroute: "Patch tracing a network path", ipconfig: "Patch showing network information", nslookup: "Patch checking DNS", files: "Patch looking at files" };
   function normalizeState(state) { const key = String(state || "main").toLowerCase().replace(/[^a-z0-9-]/g, ""); return STATE_FILES[key] ? key : "main"; }
   function getMascotSrc(state = "main") { return `${ASSET_BASE}${STATE_FILES[normalizeState(state)]}`; }
   function getMascotAlt(state = "main") { return ALT_TEXT[normalizeState(state)] || ALT_TEXT.main; }
   function loadStylesheet(id, href) { if (typeof document === "undefined" || document.getElementById(id)) return; const css = document.createElement("link"); css.id = id; css.rel = "stylesheet"; css.href = href; document.head.appendChild(css); }
+  function directScenarioId() { const params = new URLSearchParams(window.location.search); let id = params.get("scenario") || params.get("scenarioId") || params.get("lesson") || ""; return id === "incident-folder-triage" ? "win-dir-incident-triage" : id; }
+  function forceDirectScenarioFilter() {
+    const id = directScenarioId();
+    if (!id || !window.TerminalCoachConfig) return;
+    window.__NETLAB_DIRECT_SCENARIO_ID = id;
+    window.TerminalCoachConfig.scenarioFilter = (scenario) => scenario && scenario.id === id;
+    window.TerminalCoachConfig.isBeginnerMode = false;
+    window.TerminalCoachConfig.uiMode = "standard";
+    try { window.sessionStorage?.setItem("netlab:direct-scenario-id", id); } catch (error) {}
+  }
   function routeDirectScenarioNow() {
+    forceDirectScenarioFilter();
     const engine = window.ScenarioEngine;
-    if (!engine || !Array.isArray(engine.scenarios)) return;
-    const params = new URLSearchParams(window.location.search);
-    let id = params.get("scenario") || params.get("scenarioId") || params.get("lesson") || "";
-    if (id === "incident-folder-triage") id = "win-dir-incident-triage";
-    if (!id) return;
+    const id = directScenarioId();
+    if (!engine || !Array.isArray(engine.scenarios) || !id) return;
     const scenario = engine.scenarios.find((item) => item && item.id === id);
     if (!scenario) return;
     engine.scenarios = [scenario, ...engine.scenarios.filter((item) => item && item.id !== id)];
     window.__NETLAB_DIRECT_SCENARIO_ID = id;
-    try { window.sessionStorage?.setItem("netlab:direct-scenario-id", id); } catch (error) {}
   }
   function loadTerminalPatches() {
     if (typeof window === "undefined") return;
+    forceDirectScenarioFilter();
     routeDirectScenarioNow();
     window.setTimeout(() => {
+      forceDirectScenarioFilter();
       routeDirectScenarioNow();
       import("./terminal-recovery-patterns.js?v=20260520recovery1").catch(() => {});
       import("./incident-folder-gold.js?v=20260520gold1").catch(() => {});
@@ -40,7 +45,7 @@
       import("./windows-type-more-upgrade.js?v=20260521typemore1").catch(() => {});
       import("./windows-host-user-upgrade.js?v=20260521host1").catch(() => {});
       import("./windows-xcopy-upgrade.js?v=20260521xcopy1").catch(() => {});
-      import("./direct-scenario-router.js?v=20260521router2").catch(() => {});
+      import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
   }
