@@ -58,6 +58,7 @@
       import("./windows-notes-upgrade.js?v=20260521notes1").catch(() => {});
       import("./windows-ping-fileserver-upgrade.js?v=20260521ping1").catch(() => {});
       import("./windows-taskkill-upgrade.js?v=20260521taskkill1").catch(() => {});
+      import("./windows-attrib-upgrade.js?v=20260521attrib1").catch(() => {});
     }, 0);
   }
 
