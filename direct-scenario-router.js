@@ -24,6 +24,27 @@
     window.__NETLAB_DIRECT_SCENARIO_ID=id;
     try{sessionStorage.setItem('netlab:direct-scenario-id',id);}catch(err){}
   }
+  function suppressDirectIntro(){
+    if(!getId())return;
+    ['terminalIntroOverlay','beginnerOnboardingOverlay','beginnerOnboardingCard'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el){el.hidden=true;el.setAttribute('aria-hidden','true');el.style.display='none';}
+    });
+    document.documentElement.classList.remove('terminal-intro-root-open');
+    document.body.classList.remove('terminal-intro-open');
+    try{
+      var frame=document.getElementById('terminalIntroFrame');
+      if(frame)frame.src='about:blank';
+    }catch(err){}
+  }
   route();
-  window.addEventListener('DOMContentLoaded',route,{once:true});
+  suppressDirectIntro();
+  window.addEventListener('DOMContentLoaded',function(){route();suppressDirectIntro();},{once:true});
+  var count=0;
+  var timer=setInterval(function(){
+    route();
+    suppressDirectIntro();
+    count+=1;
+    if(count>40)clearInterval(timer);
+  },250);
 })();
