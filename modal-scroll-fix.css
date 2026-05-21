@@ -1,0 +1,39 @@
+.terminal-page .modal,
+.terminal-page .overlay-card,
+.terminal-page .review-card,
+.terminal-page .mission-review-card,
+.terminal-page .task-complete-card,
+.terminal-page [class*="mission-review"],
+.terminal-page [class*="task-complete"],
+.terminal-page [id*="MissionReview"],
+.terminal-page [id*="TaskComplete"] {
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.terminal-page [class*="overlay"]:has([class*="review"]),
+.terminal-page [class*="overlay"]:has([class*="complete"]),
+.terminal-page [id*="Overlay"]:has([class*="review"]),
+.terminal-page [id*="Overlay"]:has([class*="complete"]) {
+  align-items: flex-start;
+  overflow-y: auto;
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 760px) {
+  .terminal-page .modal,
+  .terminal-page .overlay-card,
+  .terminal-page .review-card,
+  .terminal-page .mission-review-card,
+  .terminal-page .task-complete-card,
+  .terminal-page [class*="mission-review"],
+  .terminal-page [class*="task-complete"],
+  .terminal-page [id*="MissionReview"],
+  .terminal-page [id*="TaskComplete"] {
+    width: min(96vw, 720px);
+    max-height: calc(100dvh - 20px);
+  }
+}
