@@ -15,18 +15,19 @@
     const params = new URLSearchParams(location.search);
     const id = params.get('scenario') || params.get('scenarioId') || params.get('lesson') || '';
     const track = params.get('track') || 'windows';
-    const mode = params.get('mode') || 'beginner';
+    const mode = params.get('mode') || 'standard';
     document.getElementById('status').innerHTML = id ? `Opening <code>${id}</code>` : 'No scenario provided.';
     try {
       sessionStorage.setItem('netlab:direct-scenario-id', id);
       sessionStorage.setItem('netlab:force-direct-scenario', '1');
+      sessionStorage.setItem('netlab:skip-beginner-onboarding', '1');
       Object.keys(localStorage).forEach((key) => {
         if (/netlab/i.test(key) && /progress|scenario|terminal|beginner|roadmap/i.test(key)) {
           localStorage.removeItem(key);
         }
       });
     } catch (error) {}
-    const next = `./terminal-coach.html?track=${encodeURIComponent(track)}&mode=${encodeURIComponent(mode)}&scenario=${encodeURIComponent(id)}&resetLab=1&v=direct-${Date.now()}`;
+    const next = `./terminal-coach.html?track=${encodeURIComponent(track)}&mode=${encodeURIComponent(mode)}&skipIntro=1&scenario=${encodeURIComponent(id)}&resetLab=1&v=direct-${Date.now()}`;
     setTimeout(() => location.replace(next), 300);
   </script>
 </body>
