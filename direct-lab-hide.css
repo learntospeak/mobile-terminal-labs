@@ -1,0 +1,13 @@
+body.direct-lab-open #beginnerOnboardingOverlay,
+body.direct-lab-open #beginnerOnboardingCard,
+body.direct-lab-open .beginner-onboarding-overlay,
+body.direct-lab-open .beginner-onboarding-card,
+body.direct-lab-open #terminalIntroOverlay {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+body.direct-lab-open,
+html.direct-lab-open {
+  overflow: auto !important;
+}
