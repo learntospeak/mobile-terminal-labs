@@ -41,12 +41,12 @@
     return ALT_TEXT[normalizeState(state)] || ALT_TEXT.main;
   }
 
-  function loadSharedTheme() {
-    if (typeof document === "undefined" || document.getElementById("appThemeStylesheet")) return;
+  function loadStylesheet(id, href) {
+    if (typeof document === "undefined" || document.getElementById(id)) return;
     const css = document.createElement("link");
-    css.id = "appThemeStylesheet";
+    css.id = id;
     css.rel = "stylesheet";
-    css.href = "./app-theme.css?v=20260520theme1";
+    css.href = href;
     document.head.appendChild(css);
   }
 
@@ -56,10 +56,12 @@
       import("./terminal-recovery-patterns.js?v=20260520recovery1").catch(() => {});
       import("./incident-folder-gold.js?v=20260520gold1").catch(() => {});
       import("./windows-notes-upgrade.js?v=20260521notes1").catch(() => {});
+      import("./windows-ping-fileserver-upgrade.js?v=20260521ping1").catch(() => {});
     }, 0);
   }
 
-  loadSharedTheme();
+  loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
+  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal1");
   loadTerminalPatches();
 
   window.PatchMascot = {
