@@ -60,6 +60,7 @@
       import("./windows-taskkill-upgrade.js?v=20260521taskkill1").catch(() => {});
       import("./windows-attrib-upgrade.js?v=20260521attrib1").catch(() => {});
       import("./windows-tree-upgrade.js?v=20260521tree1").catch(() => {});
+      import("./windows-copy-note-upgrade.js?v=20260521copy1").catch(() => {});
     }, 0);
   }
 
