@@ -62,6 +62,7 @@
       import("./windows-tree-upgrade.js?v=20260521tree1").catch(() => {});
       import("./windows-copy-note-upgrade.js?v=20260521copy1").catch(() => {});
       import("./windows-delete-dump-upgrade.js?v=20260521delete1").catch(() => {});
+      import("./windows-type-more-upgrade.js?v=20260521typemore1").catch(() => {});
     }, 0);
   }
 
