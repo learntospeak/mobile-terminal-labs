@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening Lab...</title>
+  <style>body{font-family:system-ui,sans-serif;background:#020617;color:#e5e7eb;display:grid;place-items:center;min-height:100vh;margin:0;padding:20px;text-align:center}code{color:#86efac}</style>
+</head>
+<body>
+  <main>
+    <h1>Opening lab…</h1>
+    <p id="status">Preparing direct lab link.</p>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const id = params.get('scenario') || params.get('scenarioId') || params.get('lesson') || '';
+    const track = params.get('track') || 'windows';
+    const mode = params.get('mode') || 'beginner';
+    document.getElementById('status').innerHTML = id ? `Opening <code>${id}</code>` : 'No scenario provided.';
+    try {
+      sessionStorage.setItem('netlab:direct-scenario-id', id);
+      sessionStorage.setItem('netlab:force-direct-scenario', '1');
+      Object.keys(localStorage).forEach((key) => {
+        if (/netlab/i.test(key) && /progress|scenario|terminal|beginner|roadmap/i.test(key)) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (error) {}
+    const next = `./terminal-coach.html?track=${encodeURIComponent(track)}&mode=${encodeURIComponent(mode)}&scenario=${encodeURIComponent(id)}&resetLab=1&v=direct-${Date.now()}`;
+    setTimeout(() => location.replace(next), 300);
+  </script>
+</body>
+</html>
