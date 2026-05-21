@@ -57,6 +57,7 @@
       import("./incident-folder-gold.js?v=20260520gold1").catch(() => {});
       import("./windows-notes-upgrade.js?v=20260521notes1").catch(() => {});
       import("./windows-ping-fileserver-upgrade.js?v=20260521ping1").catch(() => {});
+      import("./windows-taskkill-upgrade.js?v=20260521taskkill1").catch(() => {});
     }, 0);
   }
 
