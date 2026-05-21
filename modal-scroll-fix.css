@@ -7,7 +7,11 @@
 .terminal-page [class*="task-complete"],
 .terminal-page [id*="MissionReview"],
 .terminal-page [id*="TaskComplete"] {
+  box-sizing: border-box;
+  width: min(92vw, 720px);
+  max-width: calc(100vw - 24px);
   max-height: calc(100dvh - 24px);
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -17,10 +21,20 @@
 .terminal-page [class*="overlay"]:has([class*="complete"]),
 .terminal-page [id*="Overlay"]:has([class*="review"]),
 .terminal-page [id*="Overlay"]:has([class*="complete"]) {
+  box-sizing: border-box;
   align-items: flex-start;
+  justify-content: center;
+  overflow-x: hidden;
   overflow-y: auto;
+  padding-inline: 12px;
   padding-top: max(12px, env(safe-area-inset-top));
   padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+.terminal-page [class*="mission-review"] *,
+.terminal-page [class*="task-complete"] * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 760px) {
@@ -33,7 +47,8 @@
   .terminal-page [class*="task-complete"],
   .terminal-page [id*="MissionReview"],
   .terminal-page [id*="TaskComplete"] {
-    width: min(96vw, 720px);
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
     max-height: calc(100dvh - 20px);
   }
 }
