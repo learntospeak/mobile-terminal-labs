@@ -64,6 +64,7 @@
       import("./windows-delete-dump-upgrade.js?v=20260521delete1").catch(() => {});
       import("./windows-type-more-upgrade.js?v=20260521typemore1").catch(() => {});
       import("./windows-host-user-upgrade.js?v=20260521host1").catch(() => {});
+      import("./windows-xcopy-upgrade.js?v=20260521xcopy1").catch(() => {});
     }, 0);
   }
 
