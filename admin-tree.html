@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetLab Dev Tree</title>
+<link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
+<style>
+body.home-dashboard{padding:16px}.shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:16px}.card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.copy{color:#cbd5e1;line-height:1.6}.input{width:100%;min-height:46px;border-radius:10px;border:1px solid rgba(96,165,250,.28);background:#020617;color:#f8fafc;padding:0 12px}.btn{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,#22c55e,#15803d);color:white;font-weight:900;cursor:pointer;margin-top:12px}.hidden{display:none!important}.treebox{border:1px solid rgba(56,189,248,.25);border-radius:14px;background:#020617;color:#dbeafe;padding:16px;overflow:auto}.prompt{color:#86efac;font-family:Consolas,monospace;margin:0 0 12px}.tree{font-family:Consolas,monospace;font-size:14px;line-height:1.65;white-space:pre;min-width:720px}.tree a{color:#7dd3fc;text-decoration:none}.tree a:hover{text-decoration:underline;color:#fff}.folder{color:#facc15}.muted{color:#94a3b8}@media(max-width:760px){.tree{font-size:12px;min-width:650px}.card{padding:16px}}
+</style>
+</head>
+<body class="home-dashboard">
+<main class="shell">
+<section id="gate" class="card">
+<h1>Dev Tree</h1>
+<p class="copy">Enter the access word.</p>
+<input id="word" class="input" type="password" placeholder="Access word">
+<button id="unlock" class="btn" type="button">Unlock</button>
+</section>
+<section id="content" class="card hidden">
+<a class="dashboard-secondary-btn" href="./index.html">← Back Home</a>
+<h1>NetLab Dev Tree</h1>
+<p class="copy">CMD-style tree for tests, reports, and direct lab links.</p>
+<div class="treebox"><p class="prompt">C:\NetLabDev&gt; tree /f</p><div id="tree" class="tree"></div></div>
+</section>
+</main>
+<script>
+const rows=[
+['d','C:\\NetLabDev'],
+['d','├── SmokeTests'],
+['f','│   ├── EmulatorSmokeTest.url','./emulator-smoke-test.html?v=tree1','Windows/Linux/Cisco emulator checks'],
+['f','│   ├── ConnectivitySmokeTest.url','./connectivity-smoke-test.html?v=tree1','Diagnostic smoke checks'],
+['f','│   └── LabFlowReport.url','./lab-flow-report.html?v=tree1','Engagement table and cheat sheet'],
+['d','├── WindowsLabs'],
+['d','│   ├── FileNavigation'],
+['f','│   │   ├── IncidentFolderTriage.url','./open-lab.html?track=windows&scenario=win-dir-incident-triage&v=tree1','Gold standard workflow'],
+['f','│   │   ├── NotesFolder.url','./open-lab.html?track=windows&scenario=win-cd-notes-folder&v=tree1','Expanded notes workflow'],
+['f','│   │   ├── HiddenAttributes.url','./open-lab.html?track=windows&scenario=win-attrib-hidden-plan&v=tree1','Hidden file workflow'],
+['f','│   │   ├── XcopyToolkit.url','./open-lab.html?track=windows&scenario=win-xcopy-toolkit-bundle&v=tree1','Toolkit copy workflow'],
+['f','│   │   ├── TreeToolbox.url','./open-lab.html?track=windows&scenario=win-tree-toolbox-map&v=tree1','Tree mapping workflow'],
+['f','│   │   ├── CopyCaseNote.url','./open-lab.html?track=windows&scenario=win-copy-case-note&v=tree1','Copy and verify case note'],
+['f','│   │   ├── DeleteOldDump.url','./open-lab.html?track=windows&scenario=win-delete-old-dump&v=tree1','Safe cleanup workflow'],
+['f','│   │   └── TypeMoreAudit.url','./open-lab.html?track=windows&scenario=win-type-more-audit-log&v=tree1','Long text review workflow'],
+['d','│   ├── Networking'],
+['f','│   │   └── FileserverPing.url','./open-lab.html?track=windows&scenario=win-ping-fileserver&v=tree1','Network diagnostic workflow'],
+['d','│   ├── Processes'],
+['f','│   │   └── TaskkillUpdater.url','./open-lab.html?track=windows&scenario=win-taskkill-updater&v=tree1','Process investigation workflow'],
+['d','│   └── System'],
+['f','│       └── HostUserIdentity.url','./open-lab.html?track=windows&scenario=win-host-and-user-identity&v=tree1','Identity evidence workflow'],
+['d','└── ProjectDocs'],
+['f','    └── ProjectHandover.md','./PROJECT-HANDOVER.md','Current handover notes']
+];
+function esc(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function render(){document.getElementById('tree').innerHTML=rows.map(r=>r[0]==='d'?`<span class="folder">${esc(r[1])}</span>`:`<a href="${esc(r[2])}">${esc(r[1])}</a> <span class="muted">:: ${esc(r[3])}</span>`).join('\n')}
+function show(){document.getElementById('gate').classList.add('hidden');document.getElementById('content').classList.remove('hidden');render()}
+if(sessionStorage.getItem('devIndex')==='1')show();
+document.getElementById('unlock').onclick=()=>{if(document.getElementById('word').value.trim().toLowerCase()==='patch'){sessionStorage.setItem('devIndex','1');show()}else alert('Nope')};
+document.getElementById('word').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('unlock').click()});
+</script>
+</body>
+</html>
