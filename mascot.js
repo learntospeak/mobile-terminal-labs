@@ -47,6 +47,7 @@
       import("./windows-xcopy-upgrade.js?v=20260521xcopy1").catch(() => {});
       import("./windows-batch2-upgrades.js?v=20260522batch2").catch(() => {});
       import("./windows-batch3-upgrades.js?v=20260522batch3").catch(() => {});
+      import("./windows-batch4-upgrades.js?v=20260522batch4").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
