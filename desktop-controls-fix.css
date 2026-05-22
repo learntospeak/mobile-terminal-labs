@@ -191,16 +191,9 @@
   }
 
   .terminal-page .terminal-panel > .environment-route-nav,
-  .terminal-page .environment-route-nav {
-    display: none !important;
-  }
-
+  .terminal-page .environment-route-nav,
   .terminal-page .router-ports {
-    display: block !important;
-    position: relative !important;
-    z-index: 0 !important;
-    overflow: visible !important;
-    margin-top: 12px !important;
+    display: none !important;
   }
 }
 
