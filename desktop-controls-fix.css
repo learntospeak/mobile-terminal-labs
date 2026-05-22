@@ -84,6 +84,7 @@
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
+    overflow: visible !important;
   }
 
   .terminal-page .terminal-mobile-context,
@@ -96,39 +97,50 @@
   .terminal-page .terminal-controls,
   .terminal-page .trainer-controls {
     display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 8px !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
     align-items: center !important;
     justify-content: flex-start !important;
     width: 100% !important;
+    max-width: 100% !important;
     margin: 0 0 8px 0 !important;
     padding: 6px 0 !important;
     box-sizing: border-box !important;
     visibility: visible !important;
     opacity: 1 !important;
-    overflow-x: auto !important;
+    overflow: visible !important;
   }
 
   .terminal-page .terminal-controls button,
   .terminal-page .trainer-controls button {
     display: inline-flex !important;
-    flex: 0 0 auto !important;
+    flex: 0 1 auto !important;
     width: auto !important;
-    min-width: 74px !important;
-    max-width: 150px !important;
-    min-height: 34px !important;
-    height: 34px !important;
-    padding: 0 12px !important;
+    min-width: 68px !important;
+    max-width: 132px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 0 10px !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
     line-height: 1 !important;
     border-radius: 999px !important;
+    white-space: nowrap !important;
   }
+
+  .terminal-page #commandSheetBtn { order: 1 !important; }
+  .terminal-page #hintBtn { order: 2 !important; }
+  .terminal-page #watchWalkthroughBtn { order: 3 !important; }
+  .terminal-page #needHelpBtn { order: 4 !important; }
+  .terminal-page #startScenarioBtn { order: 5 !important; }
+  .terminal-page #previousScenarioBtn { order: 6 !important; }
+  .terminal-page #resetScenarioBtn { order: 7 !important; }
+  .terminal-page #nextScenarioBtn { order: 8 !important; }
 
   .terminal-page #startScenarioBtn,
   .terminal-page #nextScenarioBtn {
-    min-width: 86px !important;
+    min-width: 78px !important;
   }
 
   .terminal-page #terminalDockInputMount,
