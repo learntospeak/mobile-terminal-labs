@@ -190,39 +190,17 @@
     border-radius: 10px !important;
   }
 
-  .terminal-page .router-ports {
+  .terminal-page .terminal-panel > .environment-route-nav,
+  .terminal-page .environment-route-nav {
     display: none !important;
   }
 
-  .terminal-page .terminal-panel > .environment-route-nav,
-  .terminal-page .environment-route-nav {
-    position: static !important;
-    z-index: 1 !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 8px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 12px auto 10px !important;
-    padding: 8px 10px !important;
-    box-sizing: border-box !important;
+  .terminal-page .router-ports {
+    display: block !important;
+    position: relative !important;
+    z-index: 0 !important;
     overflow: visible !important;
-    border-radius: 16px !important;
-    background: rgba(2, 6, 23, 0.72) !important;
-    border: 1px solid rgba(96, 165, 250, 0.16) !important;
-  }
-
-  .terminal-page .environment-route-link {
-    flex: 0 1 auto !important;
-    min-width: 92px !important;
-    max-width: 180px !important;
-    min-height: 32px !important;
-    height: 32px !important;
-    padding: 0 12px 0 26px !important;
-    box-sizing: border-box !important;
-    white-space: nowrap !important;
+    margin-top: 12px !important;
   }
 }
 
