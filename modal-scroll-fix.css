@@ -38,14 +38,89 @@
 }
 
 @media (max-width: 760px) {
+  html.terminal-review-open,
+  body.terminal-review-open,
+  .terminal-page:has(#missionReviewCard:not([hidden])) {
+    overflow: hidden !important;
+  }
+
+  .terminal-page #missionReviewCard,
+  .terminal-page .mission-review-card,
+  .terminal-page .mission-review-page {
+    position: fixed !important;
+    inset: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)) 8px !important;
+    z-index: 9999 !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 18px 14px 22px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 18px !important;
+  }
+
+  .terminal-page #missionReviewCard > h3,
+  .terminal-page .mission-review-card > h3,
+  .terminal-page .mission-review-page > h3 {
+    font-size: clamp(24px, 8vw, 34px) !important;
+    line-height: 1.1 !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .terminal-page #missionReviewCard button,
+  .terminal-page .mission-review-card button,
+  .terminal-page .mission-review-page button,
+  .terminal-page #missionReviewCard [type="button"],
+  .terminal-page .mission-review-card [type="button"],
+  .terminal-page .mission-review-page [type="button"] {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .terminal-page #missionReviewCard .mission-review-close,
+  .terminal-page .mission-review-card .mission-review-close,
+  .terminal-page .mission-review-page .mission-review-close,
+  .terminal-page #missionReviewCard [aria-label*="Close"],
+  .terminal-page .mission-review-card [aria-label*="Close"],
+  .terminal-page .mission-review-page [aria-label*="Close"] {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 14px 0 !important;
+  }
+
+  .terminal-page #missionReviewCategories,
+  .terminal-page .mission-review-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .terminal-page .mission-review-item,
+  .terminal-page .mission-case-block,
+  .terminal-page .task-complete-block {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
   .terminal-page .modal,
   .terminal-page .overlay-card,
   .terminal-page .review-card,
-  .terminal-page .mission-review-card,
   .terminal-page .task-complete-card,
-  .terminal-page [class*="mission-review"],
   .terminal-page [class*="task-complete"],
-  .terminal-page [id*="MissionReview"],
   .terminal-page [id*="TaskComplete"] {
     width: calc(100vw - 20px);
     max-width: calc(100vw - 20px);
