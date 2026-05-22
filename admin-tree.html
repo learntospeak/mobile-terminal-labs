@@ -6,7 +6,7 @@
 <title>NetLab Dev Tree</title>
 <link rel="stylesheet" href="./homepage-dashboard.css?v=20260520dash1">
 <style>
-body.home-dashboard{padding:16px}.shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:16px}.card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.copy{color:#cbd5e1;line-height:1.6}.input{width:100%;min-height:46px;border-radius:10px;border:1px solid rgba(96,165,250,.28);background:#020617;color:#f8fafc;padding:0 12px}.btn{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,#22c55e,#15803d);color:white;font-weight:900;cursor:pointer;margin-top:12px}.hidden{display:none!important}.treebox{border:1px solid rgba(56,189,248,.25);border-radius:14px;background:#020617;color:#dbeafe;padding:16px;overflow:auto}.prompt{color:#86efac;font-family:Consolas,monospace;margin:0 0 12px}.tree{font-family:Consolas,monospace;font-size:14px;line-height:1.65;white-space:pre;min-width:720px}.tree a{color:#7dd3fc;text-decoration:none}.tree a:hover{text-decoration:underline;color:#fff}.folder{color:#facc15}.muted{color:#94a3b8}@media(max-width:760px){.tree{font-size:12px;min-width:650px}.card{padding:16px}}
+body.home-dashboard{padding:16px}.shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:16px}.card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.copy{color:#cbd5e1;line-height:1.6}.input{width:100%;min-height:46px;border-radius:10px;border:1px solid rgba(96,165,250,.28);background:#020617;color:#f8fafc;padding:0 12px}.btn{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,#22c55e,#15803d);color:white;font-weight:900;cursor:pointer;margin-top:12px}.hidden{display:none!important}.treebox{border:1px solid rgba(56,189,248,.25);border-radius:14px;background:#020617;color:#dbeafe;padding:16px;overflow:auto}.prompt{color:#86efac;font-family:Consolas,monospace;margin:0 0 12px}.tree{font-family:Consolas,monospace;font-size:14px;line-height:1.65;white-space:pre;min-width:820px}.tree a{color:#7dd3fc;text-decoration:none}.tree a:hover{text-decoration:underline;color:#fff}.folder{color:#facc15}.muted{color:#94a3b8}@media(max-width:760px){.tree{font-size:12px;min-width:760px}.card{padding:16px}}
 </style>
 </head>
 <body class="home-dashboard">
@@ -20,35 +20,91 @@ body.home-dashboard{padding:16px}.shell{width:min(1180px,100%);margin:0 auto;dis
 <section id="content" class="card hidden">
 <a class="dashboard-secondary-btn" href="./index.html">← Back Home</a>
 <h1>NetLab Dev Tree</h1>
-<p class="copy">CMD-style tree for tests, reports, and direct lab links.</p>
+<p class="copy">CMD-style tree for every main page, tests, reports, docs, and direct lab links.</p>
 <div class="treebox"><p class="prompt">C:\NetLabDev&gt; tree /f</p><div id="tree" class="tree"></div></div>
 </section>
 </main>
 <script>
 const rows=[
 ['d','C:\\NetLabDev'],
+['d','├── PublicPages'],
+['f','│   ├── Home.url','./index.html?v=tree2','Main homepage'],
+['f','│   ├── BeginnerRoadmap.url','./beginner-roadmap.html?v=tree2','Beginner roadmap / learning path'],
+['f','│   ├── WindowsTerminalCoach.url','./terminal-coach.html?track=windows&mode=beginner&v=tree2','Windows CMD lab track'],
+['f','│   ├── LinuxTerminalCoach.url','./terminal-coach.html?track=linux&v=tree2','Linux terminal lab track'],
+['f','│   ├── CiscoCliLab.url','./cisco-cli-lab.html?v=tree2','Cisco CLI lab page'],
+['f','│   └── ChallengeMode.url','./challenge-mode.html?v=tree2','Cyber challenge mode'],
+['d','├── DevAndAdmin'],
+['f','│   ├── AdminDev.url','./admin-dev.html?v=tree2','Original dev link dashboard'],
+['f','│   ├── AdminTree.url','./admin-tree.html?v=tree2','This CMD-style tree page'],
+['f','│   └── OpenLabLauncher.url','./open-lab.html?track=windows&scenario=win-dir-incident-triage&v=tree2','Direct lab launcher template'],
 ['d','├── SmokeTests'],
-['f','│   ├── EmulatorSmokeTest.url','./emulator-smoke-test.html?v=tree1','Windows/Linux/Cisco emulator checks'],
-['f','│   ├── ConnectivitySmokeTest.url','./connectivity-smoke-test.html?v=tree1','Diagnostic smoke checks'],
-['f','│   └── LabFlowReport.url','./lab-flow-report.html?v=tree1','Engagement table and cheat sheet'],
+['f','│   ├── EmulatorSmokeTest.url','./emulator-smoke-test.html?v=tree2','Windows/Linux/Cisco emulator checks'],
+['f','│   ├── ConnectivitySmokeTest.url','./connectivity-smoke-test.html?v=tree2','Diagnostic smoke checks'],
+['f','│   └── LabFlowReport.url','./lab-flow-report.html?v=tree2','Engagement table and full flow cheat sheet'],
 ['d','├── WindowsLabs'],
 ['d','│   ├── FileNavigation'],
-['f','│   │   ├── IncidentFolderTriage.url','./open-lab.html?track=windows&scenario=win-dir-incident-triage&v=tree1','Gold standard workflow'],
-['f','│   │   ├── NotesFolder.url','./open-lab.html?track=windows&scenario=win-cd-notes-folder&v=tree1','Expanded notes workflow'],
-['f','│   │   ├── HiddenAttributes.url','./open-lab.html?track=windows&scenario=win-attrib-hidden-plan&v=tree1','Hidden file workflow'],
-['f','│   │   ├── XcopyToolkit.url','./open-lab.html?track=windows&scenario=win-xcopy-toolkit-bundle&v=tree1','Toolkit copy workflow'],
-['f','│   │   ├── TreeToolbox.url','./open-lab.html?track=windows&scenario=win-tree-toolbox-map&v=tree1','Tree mapping workflow'],
-['f','│   │   ├── CopyCaseNote.url','./open-lab.html?track=windows&scenario=win-copy-case-note&v=tree1','Copy and verify case note'],
-['f','│   │   ├── DeleteOldDump.url','./open-lab.html?track=windows&scenario=win-delete-old-dump&v=tree1','Safe cleanup workflow'],
-['f','│   │   └── TypeMoreAudit.url','./open-lab.html?track=windows&scenario=win-type-more-audit-log&v=tree1','Long text review workflow'],
+['f','│   │   ├── IncidentFolderTriage.url','./open-lab.html?track=windows&scenario=win-dir-incident-triage&v=tree2','Gold standard workflow'],
+['f','│   │   ├── NotesFolder.url','./open-lab.html?track=windows&scenario=win-cd-notes-folder&v=tree2','Expanded notes workflow'],
+['f','│   │   ├── HiddenAttributes.url','./open-lab.html?track=windows&scenario=win-attrib-hidden-plan&v=tree2','Hidden file workflow'],
+['f','│   │   ├── XcopyToolkit.url','./open-lab.html?track=windows&scenario=win-xcopy-toolkit-bundle&v=tree2','Toolkit copy workflow'],
+['f','│   │   ├── TreeToolbox.url','./open-lab.html?track=windows&scenario=win-tree-toolbox-map&v=tree2','Tree mapping workflow'],
+['f','│   │   ├── CopyCaseNote.url','./open-lab.html?track=windows&scenario=win-copy-case-note&v=tree2','Copy and verify case note'],
+['f','│   │   ├── DeleteOldDump.url','./open-lab.html?track=windows&scenario=win-delete-old-dump&v=tree2','Safe cleanup workflow'],
+['f','│   │   ├── TypeMoreAudit.url','./open-lab.html?track=windows&scenario=win-type-more-audit-log&v=tree2','Long text review workflow'],
+['f','│   │   ├── MkdirRmdirTemp.url','./open-lab.html?track=windows&scenario=win-mkdir-rmdir-temp-workspace&v=tree2','Create/remove temp workspace'],
+['f','│   │   └── MoveRenameReviewNote.url','./open-lab.html?track=windows&scenario=win-move-and-rename-review-note&v=tree2','Move and rename review note'],
 ['d','│   ├── Networking'],
-['f','│   │   └── FileserverPing.url','./open-lab.html?track=windows&scenario=win-ping-fileserver&v=tree1','Network diagnostic workflow'],
-['d','│   ├── Processes'],
-['f','│   │   └── TaskkillUpdater.url','./open-lab.html?track=windows&scenario=win-taskkill-updater&v=tree1','Process investigation workflow'],
-['d','│   └── System'],
-['f','│       └── HostUserIdentity.url','./open-lab.html?track=windows&scenario=win-host-and-user-identity&v=tree1','Identity evidence workflow'],
+['f','│   │   ├── FileserverPing.url','./open-lab.html?track=windows&scenario=win-ping-fileserver&v=tree2','Network diagnostic workflow'],
+['f','│   │   ├── IpconfigAudit.url','./open-lab.html?track=windows&scenario=win-ipconfig-and-getmac-audit&v=tree2','Local network settings'],
+['f','│   │   ├── TracertPathping.url','./open-lab.html?track=windows&scenario=win-tracert-and-pathping-web-lab&v=tree2','Path tracing workflow'],
+['f','│   │   ├── NslookupFileserver.url','./open-lab.html?track=windows&scenario=win-nslookup-fileserver&v=tree2','DNS lookup workflow'],
+['f','│   │   ├── NetstatConnectionAudit.url','./open-lab.html?track=windows&scenario=win-netstat-connection-audit&v=tree2','Connections and ports'],
+['f','│   │   └── ArpRouteReview.url','./open-lab.html?track=windows&scenario=win-arp-and-route-review&v=tree2','ARP and route review'],
+['d','│   ├── ProcessesAndServices'],
+['f','│   │   ├── TaskkillUpdater.url','./open-lab.html?track=windows&scenario=win-taskkill-updater&v=tree2','Process investigation workflow'],
+['f','│   │   ├── TasklistWmicInventory.url','./open-lab.html?track=windows&scenario=win-tasklist-and-wmic-inventory&v=tree2','Running process inventory'],
+['f','│   │   ├── ScQuerySpooler.url','./open-lab.html?track=windows&scenario=win-sc-query-spooler&v=tree2','Service state check'],
+['f','│   │   ├── NetStopStartSpooler.url','./open-lab.html?track=windows&scenario=win-net-stop-start-spooler&v=tree2','Stop/start service'],
+['f','│   │   ├── DriverqueryReview.url','./open-lab.html?track=windows&scenario=win-driverquery-review&v=tree2','Loaded driver review'],
+['f','│   │   └── QueryUserSessions.url','./open-lab.html?track=windows&scenario=win-query-user-sessions&v=tree2','Logged-on sessions'],
+['d','│   ├── SystemEnvironment'],
+['f','│   │   ├── HostUserIdentity.url','./open-lab.html?track=windows&scenario=win-host-and-user-identity&v=tree2','Identity evidence workflow'],
+['f','│   │   ├── BuildSnapshot.url','./open-lab.html?track=windows&scenario=win-build-snapshot&v=tree2','System/build snapshot'],
+['f','│   │   ├── SetEchoLabRole.url','./open-lab.html?track=windows&scenario=win-set-and-echo-lab-role&v=tree2','Environment variable workflow'],
+['f','│   │   ├── DateTimeCheck.url','./open-lab.html?track=windows&scenario=win-date-and-time-check&v=tree2','Clock confirmation'],
+['f','│   │   └── ClsPromptCleanup.url','./open-lab.html?track=windows&scenario=win-cls-and-prompt-cleanup&v=tree2','Clear/customise prompt'],
+['d','│   ├── UsersSharesAdmin'],
+['f','│   │   ├── NetUserAnalyst.url','./open-lab.html?track=windows&scenario=win-net-user-analyst&v=tree2','Review local user'],
+['f','│   │   ├── NetLocalgroupAdmins.url','./open-lab.html?track=windows&scenario=win-net-localgroup-admins&v=tree2','Administrators group audit'],
+['f','│   │   ├── NetShareAudit.url','./open-lab.html?track=windows&scenario=win-net-share-audit&v=tree2','Shared resources review'],
+['f','│   │   ├── NetUseMapTools.url','./open-lab.html?track=windows&scenario=win-net-use-map-tools&v=tree2','Map tools share'],
+['f','│   │   ├── SchtasksReview.url','./open-lab.html?track=windows&scenario=win-schtasks-review&v=tree2','Scheduled tasks review'],
+['f','│   │   └── ShutdownPlannedRestart.url','./open-lab.html?track=windows&scenario=win-shutdown-planned-restart&v=tree2','Planned restart task'],
+['d','│   ├── SearchComparison'],
+['f','│   │   ├── FindFailureLines.url','./open-lab.html?track=windows&scenario=win-find-failure-lines&v=tree2','Find failure lines'],
+['f','│   │   ├── FindstrServiceFilter.url','./open-lab.html?track=windows&scenario=win-findstr-service-filter&v=tree2','Filter service output'],
+['f','│   │   ├── WherePython.url','./open-lab.html?track=windows&scenario=win-where-python&v=tree2','Locate executable'],
+['f','│   │   └── FcConfigCompare.url','./open-lab.html?track=windows&scenario=win-fc-config-compare&v=tree2','Compare configs'],
+['d','│   └── Troubleshooting'],
+['f','│       ├── DnsEscalationReview.url','./open-lab.html?track=windows&scenario=win-dns-escalation-ticket&v=tree2','DNS escalation capstone'],
+['f','│       └── ShareAccessIncident.url','./open-lab.html?track=windows&scenario=win-staged-share-access-triage&v=tree2','Share access incident review'],
+['d','├── CiscoLabs'],
+['f','│   ├── CiscoCliHome.url','./cisco-cli-lab.html?v=tree2','Cisco lab page'],
+['f','│   ├── EnterPrivilegedMode.url','./open-lab.html?track=windows&scenario=cisco-enter-privileged-mode&v=tree2','Cisco enable/disable'],
+['f','│   ├── ShowVersionStatus.url','./open-lab.html?track=windows&scenario=cisco-show-version-and-status&v=tree2','Version and status'],
+['f','│   ├── InterfaceDescription.url','./open-lab.html?track=windows&scenario=cisco-interface-description&v=tree2','Interface description'],
+['f','│   ├── NoShutdownLan.url','./open-lab.html?track=windows&scenario=cisco-no-shutdown-lan&v=tree2','Bring interface up'],
+['f','│   ├── AssignIpAddress.url','./open-lab.html?track=windows&scenario=cisco-assign-ip-address&v=tree2','Assign interface IP'],
+['f','│   ├── ChangeHostname.url','./open-lab.html?track=windows&scenario=cisco-change-hostname&v=tree2','Change hostname'],
+['f','│   ├── SaveConfig.url','./open-lab.html?track=windows&scenario=cisco-review-and-save-config&v=tree2','Review/save config'],
+['f','│   ├── ConnectivityChecks.url','./open-lab.html?track=windows&scenario=cisco-connectivity-checks&v=tree2','Ping/traceroute checks'],
+['f','│   ├── StaticRoute.url','./open-lab.html?track=windows&scenario=cisco-add-static-route&v=tree2','Add static route'],
+['f','│   └── ShutdownUnusedInterface.url','./open-lab.html?track=windows&scenario=cisco-shutdown-unused-interface&v=tree2','Shutdown unused interface'],
 ['d','└── ProjectDocs'],
-['f','    └── ProjectHandover.md','./PROJECT-HANDOVER.md','Current handover notes']
+['f','    ├── ProjectHandover.md','./PROJECT-HANDOVER.md','Current handover notes'],
+['f','    ├── TerminalEmulationStandard.md','./TERMINAL-EMULATION-STANDARD.md','Terminal emulation standard'],
+['f','    └── LessonCommandLogicSmokeTest.md','./LESSON-COMMAND-LOGIC-SMOKE-TEST.md','Lesson command logic notes']
 ];
 function esc(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function render(){document.getElementById('tree').innerHTML=rows.map(r=>r[0]==='d'?`<span class="folder">${esc(r[1])}</span>`:`<a href="${esc(r[2])}">${esc(r[1])}</a> <span class="muted">:: ${esc(r[3])}</span>`).join('\n')}
