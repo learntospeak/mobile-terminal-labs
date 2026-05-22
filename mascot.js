@@ -65,6 +65,7 @@
       import("./final-polish-network.js?v=20260522netpolish1").catch(() => {});
       import("./final-polish-admin.js?v=20260522adminpolish1").catch(() => {});
       import("./final-polish-linux.js?v=20260522linuxpolish1").catch(() => {});
+      import("./final-polish-cisco.js?v=20260522ciscopolish1").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
