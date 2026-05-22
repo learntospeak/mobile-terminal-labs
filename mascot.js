@@ -60,6 +60,7 @@
       import("./security-batch3-upgrades.js?v=20260522sec3").catch(() => {});
       import("./security-batch4-upgrades.js?v=20260522sec4").catch(() => {});
       import("./security-batch5-upgrades.js?v=20260522sec5").catch(() => {});
+      import("./security-batch6-upgrades.js?v=20260522sec6").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
