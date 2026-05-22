@@ -1,25 +1,36 @@
 @media (min-width: 761px) {
   .terminal-page .terminal-panel {
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: calc(100dvh - 150px) !important;
+    display: grid !important;
+    grid-template-rows: minmax(520px, 1fr) auto auto !important;
+    min-height: calc(100dvh - 140px) !important;
     overflow: visible !important;
   }
 
   .terminal-page .terminal-output-shell {
-    flex: 1 1 auto !important;
-    min-height: 360px !important;
+    min-height: 520px !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .terminal-page #terminalOutput,
+  .terminal-page .terminal-output {
+    min-height: 500px !important;
   }
 
   .terminal-page .terminal-mobile-dock {
     position: static !important;
-    display: block !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
     width: 100% !important;
-    margin-top: 14px !important;
+    margin-top: 10px !important;
+    padding: 0 !important;
     transform: none !important;
     visibility: visible !important;
     opacity: 1 !important;
     z-index: 1 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
   }
 
   .terminal-page .terminal-mobile-context,
@@ -32,25 +43,39 @@
   .terminal-page .terminal-controls,
   .terminal-page .trainer-controls {
     display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 10px !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
     align-items: center !important;
     justify-content: flex-start !important;
     width: 100% !important;
-    margin: 0 0 12px 0 !important;
-    padding: 10px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 6px 0 !important;
     box-sizing: border-box !important;
     visibility: visible !important;
     opacity: 1 !important;
+    overflow-x: auto !important;
   }
 
   .terminal-page .terminal-controls button,
   .terminal-page .trainer-controls button {
     display: inline-flex !important;
-    min-width: 92px !important;
-    min-height: 42px !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 74px !important;
+    max-width: 150px !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 0 12px !important;
     align-items: center !important;
     justify-content: center !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    border-radius: 999px !important;
+  }
+
+  .terminal-page #startScenarioBtn,
+  .terminal-page #nextScenarioBtn {
+    min-width: 86px !important;
   }
 
   .terminal-page #terminalDockInputMount,
