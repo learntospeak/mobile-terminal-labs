@@ -1,4 +1,85 @@
 /* Dashboard click target fix loaded through mascot.js to avoid stale homepage CSS. */
 
 .home-dashboard .dashboard-main,
-.home-dashboard .dashboard-grid
+.home-dashboard .dashboard-grid,
+.home-dashboard .dashboard-advanced,
+.home-dashboard .dashboard-advanced-body,
+.home-dashboard .dashboard-advanced-link,
+.home-dashboard .dashboard-hero-actions,
+.home-dashboard .dashboard-terminal-controls,
+.home-dashboard .dashboard-resume-actions {
+  position: relative !important;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+}
+
+.home-dashboard .dashboard-footer {
+  position: relative !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  margin-top: 18px !important;
+}
+
+.home-dashboard .dashboard-footer,
+.home-dashboard .dashboard-footer * {
+  pointer-events: none !important;
+}
+
+.home-dashboard .dashboard-primary-btn,
+.home-dashboard .dashboard-secondary-btn,
+.home-dashboard .dashboard-action-btn,
+.home-dashboard .dashboard-advanced-link,
+.home-dashboard .app-action-link,
+.home-dashboard .app-action-btn,
+.home-dashboard .hub-account-btn,
+.home-dashboard .dashboard-terminal-controls a,
+.home-dashboard .dashboard-hero-actions a,
+.home-dashboard .dashboard-resume-actions a,
+.home-dashboard .dashboard-resume-actions button {
+  position: relative !important;
+  z-index: 30 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  padding: 0 14px !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
+}
+
+.home-dashboard .dashboard-advanced-link {
+  display: grid !important;
+  align-content: center !important;
+  min-height: 58px !important;
+  padding: 12px 14px !important;
+}
+
+.home-dashboard .dashboard-advanced-link strong,
+.home-dashboard .dashboard-advanced-link span,
+.home-dashboard .dashboard-primary-btn span,
+.home-dashboard .dashboard-secondary-btn span,
+.home-dashboard .dashboard-action-btn span,
+.home-dashboard .dashboard-terminal-controls span,
+.home-dashboard .dashboard-hero-actions span,
+.home-dashboard .dashboard-resume-actions span {
+  pointer-events: none !important;
+}
+
+@media (max-width: 760px) {
+  .home-dashboard .dashboard-advanced-body {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .home-dashboard .dashboard-primary-btn,
+  .home-dashboard .dashboard-secondary-btn,
+  .home-dashboard .dashboard-action-btn,
+  .home-dashboard .dashboard-advanced-link,
+  .home-dashboard .app-action-link,
+  .home-dashboard .app-action-btn,
+  .home-dashboard .hub-account-btn {
+    width: 100% !important;
+    min-height: 44px !important;
+  }
+}
