@@ -54,6 +54,7 @@
       import("./linux-batch2-upgrades.js?v=20260522linux2").catch(() => {});
       import("./linux-batch3-upgrades.js?v=20260522linux3").catch(() => {});
       import("./cisco-batch1-upgrades.js?v=20260522cisco1").catch(() => {});
+      import("./cisco-batch2-upgrades.js?v=20260522cisco2").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
