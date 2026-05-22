@@ -56,6 +56,7 @@
       import("./cisco-batch1-upgrades.js?v=20260522cisco1").catch(() => {});
       import("./cisco-batch2-upgrades.js?v=20260522cisco2").catch(() => {});
       import("./security-batch1-upgrades.js?v=20260522sec1").catch(() => {});
+      import("./security-batch2-upgrades.js?v=20260522sec2").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
