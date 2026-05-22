@@ -178,3 +178,74 @@
     border-radius: 10px !important;
   }
 }
+
+.terminal-page #beginnerOnboardingOverlay,
+.terminal-page .beginner-onboarding-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9500 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom)) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+}
+
+.terminal-page #beginnerOnboardingOverlay[hidden],
+.terminal-page .beginner-onboarding-overlay[hidden] {
+  display: none !important;
+}
+
+.terminal-page #beginnerOnboardingCard,
+.terminal-page .beginner-onboarding-card {
+  position: relative !important;
+  box-sizing: border-box !important;
+  width: min(560px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: none !important;
+  margin: max(24px, 6vh) auto 24px !important;
+  overflow: visible !important;
+  border-radius: 20px !important;
+}
+
+.terminal-page #beginnerOnboardingCard h2,
+.terminal-page .beginner-onboarding-card h2 {
+  font-size: clamp(24px, 4vw, 34px) !important;
+  line-height: 1.08 !important;
+}
+
+.terminal-page #beginnerOnboardingCard p,
+.terminal-page #beginnerOnboardingCard li,
+.terminal-page .beginner-onboarding-card p,
+.terminal-page .beginner-onboarding-card li {
+  font-size: clamp(14px, 1.7vw, 17px) !important;
+  line-height: 1.45 !important;
+}
+
+.terminal-page #beginnerOnboardingStartBtn,
+.terminal-page #beginnerOnboardingWalkthroughBtn,
+.terminal-page .beginner-onboarding-card button {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 44px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 760px) {
+  .terminal-page #beginnerOnboardingOverlay,
+  .terminal-page .beginner-onboarding-overlay {
+    padding: max(10px, env(safe-area-inset-top)) 10px max(16px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .terminal-page #beginnerOnboardingCard,
+  .terminal-page .beginner-onboarding-card {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    margin: 10px auto 16px !important;
+    padding: 18px 14px !important;
+  }
+}
