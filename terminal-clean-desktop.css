@@ -1,0 +1,53 @@
+@media (min-width: 761px) {
+  .terminal-page .terminal-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding-bottom: 14px !important;
+  }
+
+  .terminal-page .terminal-output-shell {
+    flex: 0 0 auto !important;
+    min-height: clamp(420px, 52vh, 620px) !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .terminal-page #terminalOutput,
+  .terminal-page .terminal-output {
+    min-height: clamp(400px, 50vh, 600px) !important;
+  }
+
+  .terminal-page .terminal-mobile-dock {
+    flex: 0 0 auto !important;
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .terminal-page .terminal-panel > .environment-route-nav,
+  .terminal-page .terminal-panel > .router-ports,
+  .terminal-page .terminal-panel > .terminal-mascot-card,
+  .terminal-page .terminal-panel > .terminal-mascot-card--desktop,
+  .terminal-page .terminal-panel > .lab-panel,
+  .terminal-page .terminal-panel > .support-card {
+    display: none !important;
+  }
+
+  .terminal-page .router-shell,
+  .terminal-page .terminal-shell {
+    overflow: visible !important;
+    padding-bottom: 16px !important;
+  }
+
+  .terminal-page .terminal-layout {
+    align-items: start !important;
+    padding-bottom: 16px !important;
+  }
+
+  .terminal-page .rack-room {
+    padding-bottom: 28px !important;
+  }
+}
