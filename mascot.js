@@ -68,6 +68,7 @@
       import("./final-polish-cisco.js?v=20260522ciscopolish1").catch(() => {});
       import("./final-polish-process.js?v=20260522processpolish1").catch(() => {});
       import("./final-polish-review.js?v=20260522reviewpolish1").catch(() => {});
+      import("./incident-ahead-fix.js?v=20260522ahead1").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
