@@ -1,0 +1,4 @@
+/* Dashboard click target fix loaded through mascot.js to avoid stale homepage CSS. */
+
+.home-dashboard .dashboard-main,
+.home-dashboard .dashboard-grid
