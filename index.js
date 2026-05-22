@@ -53,6 +53,7 @@
     els.resumeModalBackdrop = document.getElementById("hubResumeModalBackdrop");
     els.cardProgressSlots = Array.from(document.querySelectorAll("[data-progress-slot]"));
 
+    bindStartJourneyCard();
     renderLoadingState();
     bindGlobalEvents();
     await NetlabApp.whenReady();
@@ -65,6 +66,24 @@
     if (requestedAuthMode && NetlabApp.getActiveProfile().isGuest) {
       focusRequestedAuth(requestedAuthMode);
     }
+  }
+
+  function bindStartJourneyCard() {
+    const startHref = "./terminal-coach.html?track=windows&mode=beginner&start=1";
+    const cards = Array.from(document.querySelectorAll(".dashboard-nav-card"));
+    cards.forEach(function (card) {
+      const title = card.querySelector("h2");
+      const copy = card.querySelector("p");
+      if (title && copy && title.textContent.trim().toLowerCase() === "home" && /start your journey/i.test(copy.textContent)) {
+        card.setAttribute("href", startHref);
+        card.removeAttribute("aria-current");
+        card.setAttribute("aria-label", "Start your journey in the Windows beginner lab");
+        card.addEventListener("click", function (event) {
+          event.preventDefault();
+          window.location.href = startHref;
+        });
+      }
+    });
   }
 
   function bindGlobalEvents() {
