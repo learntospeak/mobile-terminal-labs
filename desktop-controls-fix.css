@@ -1,9 +1,62 @@
 @media (min-width: 761px) {
   .terminal-page .terminal-panel {
     display: grid !important;
-    grid-template-rows: minmax(520px, 1fr) auto auto !important;
+    grid-template-rows: auto minmax(520px, 1fr) auto auto !important;
     min-height: calc(100dvh - 140px) !important;
     overflow: visible !important;
+  }
+
+  .terminal-page #beginnerModeBanner,
+  .terminal-page .beginner-mode-banner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    max-height: 56px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+  }
+
+  .terminal-page .beginner-mode-copy {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+  }
+
+  .terminal-page .beginner-mode-kicker {
+    margin: 0 !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .terminal-page #beginnerModeSummary,
+  .terminal-page .beginner-mode-summary {
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .terminal-page #beginnerGuideBtn,
+  .terminal-page .beginner-guide-btn {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 130px !important;
+    max-width: 190px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    border-radius: 999px !important;
   }
 
   .terminal-page .terminal-output-shell {
