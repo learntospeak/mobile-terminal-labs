@@ -1,0 +1,60 @@
+/* Shared mobile clickability fixes for dashboards, smoke pages, and terminal labs. */
+
+@media (max-width: 760px) {
+  .dashboard-advanced,
+  .dashboard-advanced-body,
+  .dashboard-advanced-link {
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
+  }
+
+  .dashboard-advanced-link,
+  .dashboard-secondary-btn,
+  .dashboard-primary-btn,
+  .dashboard-action-btn,
+  .top-home-link,
+  a[href*="index.html"],
+  a[href*="admin-tree.html"] {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .terminal-page .terminal-mobile-dock,
+  .terminal-page .terminal-history-nav,
+  .terminal-page .trainer-controls,
+  .terminal-page .terminal-controls,
+  .terminal-page .terminal-mobile-choice-grid,
+  .terminal-page .mobile-command-choice-grid,
+  .terminal-page .terminal-mobile-context {
+    position: relative !important;
+    z-index: 40 !important;
+    pointer-events: auto !important;
+  }
+
+  .terminal-page .terminal-history-nav button,
+  .terminal-page .trainer-controls button,
+  .terminal-page .terminal-controls button,
+  .terminal-page .terminal-mobile-choice-grid button,
+  .terminal-page .mobile-command-choice-grid button,
+  .terminal-page #commandSheetBtn,
+  .terminal-page #hintBtn,
+  .terminal-page #watchWalkthroughBtn,
+  .terminal-page #needHelpBtn {
+    position: relative !important;
+    z-index: 45 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  .terminal-page .router-shell::before,
+  .terminal-page .router-shell::after,
+  .terminal-page .terminal-shell::before,
+  .terminal-page .terminal-shell::after,
+  .terminal-page .terminal-output-shell::before,
+  .terminal-page .terminal-output-shell::after,
+  .terminal-page .scenario-panel::before,
+  .terminal-page .scenario-panel::after {
+    pointer-events: none !important;
+  }
+}
