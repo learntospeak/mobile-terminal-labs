@@ -52,6 +52,7 @@
       import("./windows-batch5b-upgrades.js?v=20260522batch5b").catch(() => {});
       import("./linux-batch1-upgrades.js?v=20260522linux1").catch(() => {});
       import("./linux-batch2-upgrades.js?v=20260522linux2").catch(() => {});
+      import("./linux-batch3-upgrades.js?v=20260522linux3").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
