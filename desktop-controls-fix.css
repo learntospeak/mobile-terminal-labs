@@ -1,0 +1,64 @@
+@media (min-width: 761px) {
+  .terminal-page .terminal-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: calc(100dvh - 150px) !important;
+    overflow: visible !important;
+  }
+
+  .terminal-page .terminal-output-shell {
+    flex: 1 1 auto !important;
+    min-height: 360px !important;
+  }
+
+  .terminal-page .terminal-mobile-dock {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+    transform: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+  }
+
+  .terminal-page .terminal-mobile-context,
+  .terminal-page .terminal-history-nav,
+  .terminal-page #beginnerTaskStrip,
+  .terminal-page #beginnerHelpStrip {
+    display: none !important;
+  }
+
+  .terminal-page .terminal-controls,
+  .terminal-page .trainer-controls {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    margin: 0 0 12px 0 !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .terminal-page .terminal-controls button,
+  .terminal-page .trainer-controls button {
+    display: inline-flex !important;
+    min-width: 92px !important;
+    min-height: 42px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .terminal-page #terminalDockInputMount,
+  .terminal-page .terminal-dock-input-mount,
+  .terminal-page .terminal-input-shell {
+    display: flex !important;
+    width: 100% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
