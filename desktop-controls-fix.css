@@ -1,3 +1,5 @@
+@import url('./terminal-clean-desktop.css?v=20260522clean1');
+
 @media (min-width: 761px) {
   .terminal-page .terminal-panel {
     display: grid !important;
