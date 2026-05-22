@@ -191,16 +191,13 @@
   }
 
   .terminal-page .router-ports {
-    position: relative !important;
-    z-index: 0 !important;
-    overflow: visible !important;
-    padding-top: 12px !important;
+    display: none !important;
   }
 
   .terminal-page .terminal-panel > .environment-route-nav,
   .terminal-page .environment-route-nav {
-    position: relative !important;
-    z-index: 4 !important;
+    position: static !important;
+    z-index: 1 !important;
     display: flex !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
