@@ -1,0 +1,186 @@
+/* Terminal lab dashboard restyle — test on terminal pages first. */
+
+body.terminal-page {
+  margin: 0;
+  min-height: 100vh;
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 32%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.1), transparent 28%),
+    linear-gradient(180deg, #020617 0%, #030712 55%, #020617 100%) !important;
+}
+
+.terminal-page *,
+.terminal-page *::before,
+.terminal-page *::after {
+  box-sizing: border-box;
+}
+
+.terminal-page .rack-room {
+  width: min(1520px, 100%);
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.terminal-page .router-shell,
+.terminal-page .terminal-shell {
+  border: 1px solid rgba(96, 165, 250, 0.22) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(180deg, rgba(8, 13, 24, 0.94), rgba(3, 7, 14, 0.98)) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34) !important;
+  overflow: hidden;
+}
+
+.terminal-page .router-top,
+.terminal-page .terminal-header {
+  border-bottom: 1px solid rgba(96, 165, 250, 0.18) !important;
+  background: rgba(2, 6, 23, 0.62) !important;
+  backdrop-filter: blur(14px);
+}
+
+.terminal-page .router-brand,
+.terminal-page #terminalPageTitle {
+  color: #f8fafc !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 22px rgba(56, 189, 248, 0.16);
+}
+
+.terminal-page .terminal-layout {
+  gap: 18px !important;
+  padding: 18px !important;
+}
+
+.terminal-page .scenario-panel,
+.terminal-page .terminal-panel,
+.terminal-page .beginner-mode-banner,
+.terminal-page .mission-case-file-card,
+.terminal-page .current-task-card,
+.terminal-page .progress-card,
+.terminal-page .beginner-visual-guide-card,
+.terminal-page .ticket-briefing-card,
+.terminal-page .task-complete-card,
+.terminal-page .mission-review-card {
+  border: 1px solid rgba(96, 165, 250, 0.22) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(2, 6, 23, 0.9)) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28) !important;
+}
+
+.terminal-page .scenario-panel {
+  padding: 18px !important;
+}
+
+.terminal-page .terminal-panel {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.terminal-page .terminal-output-shell,
+.terminal-page #terminalOutput,
+.terminal-page .terminal-output {
+  border-color: rgba(56, 189, 248, 0.2) !important;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.06), transparent 35%),
+    rgba(0, 5, 10, 0.92) !important;
+  box-shadow: inset 0 0 36px rgba(14, 165, 233, 0.06) !important;
+}
+
+.terminal-page .terminal-kicker,
+.terminal-page .scenario-category,
+.terminal-page .beginner-mode-kicker,
+.terminal-page .mission-case-kicker,
+.terminal-page .ticket-briefing-kicker {
+  color: #93c5fd !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+.terminal-page .scenario-title,
+.terminal-page #scenarioTitle,
+.terminal-page .mission-case-title,
+.terminal-page #missionCaseTitle {
+  color: #f8fafc !important;
+}
+
+.terminal-page .scenario-objective,
+.terminal-page #scenarioObjective,
+.terminal-page .mission-case-block,
+.terminal-page .beginner-mode-summary,
+.terminal-page .current-task-card,
+.terminal-page .progress-summary {
+  color: #cbd5e1 !important;
+}
+
+.terminal-page .terminal-controls button,
+.terminal-page .trainer-controls button,
+.terminal-page .beginner-guide-btn,
+.terminal-page .dashboard-secondary-btn,
+.terminal-page .top-home-link {
+  border: 1px solid rgba(96, 165, 250, 0.32) !important;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98)) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+.terminal-page .terminal-controls button:hover,
+.terminal-page .trainer-controls button:hover,
+.terminal-page .beginner-guide-btn:hover,
+.terminal-page .dashboard-secondary-btn:hover,
+.terminal-page .top-home-link:hover {
+  border-color: rgba(125, 211, 252, 0.68) !important;
+  transform: translateY(-1px);
+}
+
+.terminal-page #startScenarioBtn,
+.terminal-page #nextScenarioBtn,
+.terminal-page #terminalForm button[type="submit"] {
+  border-color: rgba(34, 197, 94, 0.45) !important;
+  background: linear-gradient(180deg, #22c55e, #15803d) !important;
+  color: white !important;
+}
+
+.terminal-page #terminalForm,
+.terminal-page .terminal-form,
+.terminal-page .terminal-input-shell {
+  border: 1px solid rgba(96, 165, 250, 0.18) !important;
+  border-radius: 18px !important;
+  background: rgba(2, 6, 23, 0.72) !important;
+  padding: 10px !important;
+}
+
+.terminal-page #terminalInput,
+.terminal-page .terminal-input {
+  border: 1px solid rgba(96, 165, 250, 0.22) !important;
+  border-radius: 12px !important;
+  background: rgba(15, 23, 42, 0.7) !important;
+  color: #f8fafc !important;
+}
+
+.terminal-page .terminal-prompt,
+.terminal-page #terminalPrompt {
+  color: #c4b5fd !important;
+}
+
+.terminal-page .router-leds .led,
+.terminal-page .led {
+  box-shadow: 0 0 14px currentColor;
+}
+
+@media (max-width: 760px) {
+  .terminal-page .rack-room {
+    padding: 0;
+  }
+
+  .terminal-page .router-shell,
+  .terminal-page .terminal-shell {
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .terminal-page .terminal-layout {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+}
