@@ -1,0 +1,111 @@
+@media (min-width: 1000px) {
+  .terminal-page .terminal-layout {
+    grid-template-columns: 260px minmax(0, 1fr) !important;
+    gap: 14px !important;
+    align-items: start !important;
+  }
+
+  .terminal-page .scenario-panel {
+    max-height: calc(100dvh - 140px) !important;
+    overflow-y: auto !important;
+    padding: 14px !important;
+  }
+
+  .terminal-page .scenario-card {
+    padding: 14px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .terminal-page .scenario-title,
+  .terminal-page #scenarioTitle {
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .terminal-page .scenario-objective,
+  .terminal-page #scenarioObjective,
+  .terminal-page .scenario-stage-briefing,
+  .terminal-page #scenarioStageBriefing,
+  .terminal-page .scenario-flex {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+  }
+
+  .terminal-page .scenario-flex {
+    padding: 10px 12px !important;
+  }
+
+  .terminal-page .terminal-mascot-card {
+    grid-template-columns: 74px 1fr !important;
+    padding: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .terminal-page .terminal-mascot-card img,
+  .terminal-page .terminal-mascot-card picture,
+  .terminal-page .terminal-mascot-card .mascot-img {
+    max-width: 72px !important;
+  }
+
+  .terminal-page .scenario-support-grid,
+  .terminal-page #missionCaseFileCard,
+  .terminal-page #beginnerVisualGuideCard,
+  .terminal-page #progressCard,
+  .terminal-page #currentTaskCard,
+  .terminal-page #commandFamilyIntroCard {
+    gap: 10px !important;
+  }
+
+  .terminal-page .support-card,
+  .terminal-page .mission-case-file-card,
+  .terminal-page .beginner-visual-guide-card,
+  .terminal-page .progress-card,
+  .terminal-page .current-task-card,
+  .terminal-page .command-family-intro-card {
+    padding: 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .terminal-page .support-card h3,
+  .terminal-page .mission-case-file-card h3,
+  .terminal-page .beginner-visual-guide-card h3,
+  .terminal-page .progress-card h3,
+  .terminal-page .current-task-card h3 {
+    font-size: 13px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .terminal-page .support-card p,
+  .terminal-page .mission-case-file-card p,
+  .terminal-page .beginner-visual-guide-card p,
+  .terminal-page .progress-card p,
+  .terminal-page .current-task-card p {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  .terminal-page .terminal-panel {
+    min-height: calc(100dvh - 125px) !important;
+  }
+
+  .terminal-page .terminal-output-shell {
+    min-height: 56vh !important;
+  }
+
+  .terminal-page #terminalOutput,
+  .terminal-page .terminal-output {
+    min-height: 54vh !important;
+  }
+
+  .terminal-page .environment-route-nav {
+    margin-top: 8px !important;
+    gap: 8px !important;
+  }
+
+  .terminal-page .environment-route-link {
+    min-height: 32px !important;
+    padding-block: 0 !important;
+    font-size: 11px !important;
+  }
+}
