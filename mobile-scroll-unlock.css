@@ -1,9 +1,12 @@
-/* Mobile scroll safety patch for terminal labs and investigation mode. */
+/* Mobile scroll and single-column safety patch for terminal labs. */
 
 @media (max-width: 760px) {
   html,
   body,
   body.terminal-page {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     min-height: 100% !important;
     height: auto !important;
     overflow-x: hidden !important;
@@ -12,22 +15,58 @@
     touch-action: pan-y !important;
   }
 
+  .terminal-page *,
+  .terminal-page *::before,
+  .terminal-page *::after {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
   .terminal-page .rack-room,
   .terminal-page .router-shell,
   .terminal-page .terminal-shell,
   .terminal-page .terminal-layout,
   .terminal-page .terminal-panel,
   .terminal-page .scenario-panel,
-  .terminal-page .lab-panel {
+  .terminal-page .lab-panel,
+  .terminal-page .support-card,
+  .terminal-page .scenario-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
   }
 
+  .terminal-page .rack-room {
+    display: block !important;
+    padding: 8px !important;
+  }
+
   .terminal-page .router-shell,
   .terminal-page .terminal-shell {
     display: block !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .terminal-page .router-top {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .terminal-page .router-brand,
+  .terminal-page .terminal-subbrand,
+  .terminal-page .terminal-kicker,
+  .terminal-page .scenario-title,
+  .terminal-page .scenario-objective {
+    overflow-wrap: anywhere !important;
   }
 
   .terminal-page .terminal-layout {
@@ -36,12 +75,30 @@
     gap: 12px !important;
   }
 
+  .terminal-page .scenario-support-grid,
+  .terminal-page .support-grid,
+  .terminal-page .trainer-grid,
+  .terminal-page .router-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
   .terminal-page .investigation-panel {
-    width: auto !important;
+    display: grid !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
     max-width: 100% !important;
     max-height: none !important;
     overflow: visible !important;
-    margin: 12px !important;
+    margin: 10px 0 !important;
+    padding: 12px !important;
+  }
+
+  .terminal-page .investigation-panel::before,
+  .terminal-page .investigation-panel::after {
+    max-width: 100% !important;
   }
 
   .terminal-page .investigation-intention-grid,
@@ -51,31 +108,75 @@
   .terminal-page .patch-ping-nodes,
   .terminal-page .patch-ping-edges,
   .terminal-page .patch-ping-controls {
+    display: grid !important;
     grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
   }
 
   .terminal-page .investigation-intention-btn,
   .terminal-page .command-category-btn,
   .terminal-page .investigation-command-option,
-  .terminal-page .evidence-choice {
+  .terminal-page .evidence-choice,
+  .terminal-page .choice-card,
+  .terminal-page .command-choice,
+  .terminal-page .trainer-controls button,
+  .terminal-page .terminal-controls button {
     min-height: 56px !important;
     width: 100% !important;
+    min-width: 0 !important;
     max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    text-align: left !important;
   }
 
   .terminal-page .trainer-controls,
   .terminal-page .terminal-controls,
   .terminal-page .command-options-grid,
   .terminal-page .choice-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    min-width: 0 !important;
     max-width: 100% !important;
     overflow: visible !important;
+  }
+
+  .terminal-page .terminal-input-row,
+  .terminal-page .command-input-row,
+  .terminal-page .terminal-command-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .terminal-page input,
+  .terminal-page textarea,
+  .terminal-page pre,
+  .terminal-page code {
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+    white-space: pre-wrap !important;
   }
 
   .terminal-page .terminal-output,
   .terminal-page .terminal-output-shell,
   .terminal-page .terminal-screen,
   .terminal-page .router-screen {
+    width: 100% !important;
+    min-width: 0 !important;
     max-height: none !important;
     overflow: visible !important;
+  }
+
+  .terminal-page .terminal-output pre,
+  .terminal-page .terminal-screen pre,
+  .terminal-page .router-screen pre {
+    overflow-x: auto !important;
   }
 }
