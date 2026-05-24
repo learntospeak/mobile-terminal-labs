@@ -15,6 +15,14 @@
     return document.querySelector('.terminal-panel') || document.querySelector('#terminalPanel') || document.querySelector('.terminal-layout') || document.body;
   }
 
+  function commandFeedback(s, cmd){
+    var command = String(cmd.command || '').toLowerCase();
+    var match = (s.investigation.plausibleWrongOptions || []).find(function(item){ return String(item.command || '').toLowerCase() === command; });
+    if(match) return match.feedback || s.investigation.patchFeedback.wrongButPlausible;
+    if(cmd.best) return s.investigation.patchFeedback.correctIntention || cmd.reason || 'Good choice.';
+    return cmd.reason || s.investigation.patchFeedback.wrongButPlausible || 'That command is plausible, but check whether it answers the ticket.';
+  }
+
   function render(){
     var s = scenario();
     if(!s || !s.investigation || !s.investigation.enabled) return false;
@@ -77,14 +85,31 @@
       commandOptions.innerHTML = '';
       (cat.commands || []).forEach(function(cmd){
         var chip = document.createElement('button');
+        var wrong = !cmd.best;
         chip.type = 'button';
-        chip.className = 'investigation-command-option';
+        chip.className = 'investigation-command-option' + (wrong ? ' plausible-wrong-option' : '');
         chip.setAttribute('data-command-option', cmd.command || 'command');
         chip.setAttribute('data-command-best', cmd.best ? 'true' : 'false');
+        if(wrong){
+          chip.setAttribute('data-wrong-option', 'true');
+          chip.setAttribute('data-plausible-wrong', 'true');
+        }
         chip.innerHTML = '<span class="code">' + escapeHtml(cmd.command || '') + '</span><span>' + escapeHtml(cmd.reason || '') + '</span>';
         chip.addEventListener('click', function(){
+          panel.querySelectorAll('[data-wrong-option-selected],[data-plausible-wrong-selected]').forEach(function(el){
+            el.removeAttribute('data-wrong-option-selected');
+            el.removeAttribute('data-plausible-wrong-selected');
+          });
+          if(wrong){
+            chip.setAttribute('data-wrong-option-selected', 'true');
+            chip.setAttribute('data-plausible-wrong-selected', 'true');
+          }
           var feedback = document.getElementById('patchFeedback');
-          if(feedback) feedback.textContent = 'Patch: ' + (cmd.reason || 'Think about whether this command matches the ticket.');
+          if(feedback){
+            feedback.setAttribute('data-patch-feedback-kind', wrong ? 'wrong' : 'correct');
+            feedback.setAttribute('data-feedback-for', wrong ? 'wrong' : 'correct');
+            feedback.textContent = 'Patch: ' + commandFeedback(s, cmd);
+          }
         });
         commandOptions.appendChild(chip);
       });
@@ -93,17 +118,33 @@
     (s.investigation.intentions || []).forEach(function(intent){
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'investigation-intention-btn intention-choice';
+      btn.className = 'investigation-intention-btn intention-choice' + (!intent.best ? ' plausible-wrong-option' : '');
       btn.setAttribute('data-intention-choice', intent.id || intent.label || 'choice');
       btn.setAttribute('data-intention-kind', intent.best ? 'best' : 'distractor');
       btn.setAttribute('data-intention-best', intent.best ? 'true' : 'false');
+      if(!intent.best){
+        btn.setAttribute('data-wrong-option', 'true');
+        btn.setAttribute('data-plausible-wrong', 'true');
+      }
       btn.innerHTML = '<span class="investigation-intention-label">' + escapeHtml(intent.label || 'Choose path') + '</span><span class="investigation-intention-note">' + escapeHtml(intent.best ? 'Best fit for this ticket' : 'Plausible, but probably not first') + '</span>';
       btn.addEventListener('click', function(){
         panel.setAttribute('data-selected-intention', intent.id || intent.label || 'choice');
         panel.querySelectorAll('[data-intention-active]').forEach(function(el){ el.removeAttribute('data-intention-active'); });
+        panel.querySelectorAll('[data-wrong-option-selected],[data-plausible-wrong-selected]').forEach(function(el){
+          el.removeAttribute('data-wrong-option-selected');
+          el.removeAttribute('data-plausible-wrong-selected');
+        });
         btn.setAttribute('data-intention-active', 'true');
+        if(!intent.best){
+          btn.setAttribute('data-wrong-option-selected', 'true');
+          btn.setAttribute('data-plausible-wrong-selected', 'true');
+        }
         var feedback = document.getElementById('patchFeedback');
-        if(feedback) feedback.textContent = 'Patch: ' + (intent.explanation || (intent.best ? s.investigation.patchFeedback.correctIntention : s.investigation.patchFeedback.wrongButPlausible));
+        if(feedback){
+          feedback.setAttribute('data-patch-feedback-kind', intent.best ? 'correct' : 'wrong');
+          feedback.setAttribute('data-feedback-for', intent.best ? 'correct' : 'wrong');
+          feedback.textContent = 'Patch: ' + (intent.explanation || (intent.best ? s.investigation.patchFeedback.correctIntention : s.investigation.patchFeedback.wrongButPlausible));
+        }
         renderCategories(intent);
       });
       grid.appendChild(btn);
