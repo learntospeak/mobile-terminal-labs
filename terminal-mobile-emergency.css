@@ -1,3 +1,86 @@
 @media (max-width: 760px) {
   html,
-  body
+  body,
+  body.terminal-page {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .terminal-page .rack-room,
+  .terminal-page .router-shell,
+  .terminal-page .terminal-shell,
+  .terminal-page .terminal-layout,
+  .terminal-page .lab-panel,
+  .terminal-page .scenario-panel,
+  .terminal-page .terminal-panel,
+  .terminal-page .terminal-mobile-dock,
+  .terminal-page .terminal-output-shell,
+  .terminal-page .terminal-output,
+  .terminal-page .terminal-input-shell,
+  .terminal-page .trainer-controls,
+  .terminal-page .terminal-controls {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .terminal-page .rack-room,
+  .terminal-page .router-shell,
+  .terminal-page .terminal-shell {
+    overflow-x: hidden !important;
+  }
+
+  .terminal-page .terminal-layout {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .terminal-page .router-top {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+  }
+
+  .terminal-page .trainer-controls,
+  .terminal-page .terminal-controls {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    position: static !important;
+  }
+
+  .terminal-page .trainer-controls button,
+  .terminal-page .terminal-controls button {
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+
+  .terminal-page pre,
+  .terminal-page code,
+  .terminal-page .terminal-output {
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .terminal-page .environment-route-nav {
+    display: none !important;
+  }
+
+  .terminal-page #investigationModalOverlay,
+  .terminal-page #investigationPanel,
+  .terminal-page #investigationCuriosityPanel,
+  .terminal-page #patchPingRunGame,
+  .terminal-page #investigationReview,
+  .terminal-page #eggSmokeCard {
+    display: none !important;
+  }
+}
