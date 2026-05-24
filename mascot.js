@@ -87,6 +87,7 @@
   loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
   loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal2");
   loadStylesheet("investigationModeStylesheet", "./investigation-mode-ui.css?v=20260524launcher1");
+  loadStylesheet("mobileScrollUnlockStylesheet", "./mobile-scroll-unlock.css?v=20260525scroll1");
   loadTerminalPatches();
   window.PatchMascot = { getMascotSrc, getMascotAlt, normalizeState };
 })();
