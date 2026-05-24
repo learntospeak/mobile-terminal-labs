@@ -1,0 +1,103 @@
+.terminal-page .investigation-panel {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.86), rgba(2, 6, 23, 0.94));
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
+}
+
+.terminal-page .investigation-panel[hidden] {
+  display: none !important;
+}
+
+.terminal-page .investigation-kicker {
+  margin: 0;
+  color: #93c5fd;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.terminal-page .investigation-title {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(18px, 2.8vw, 24px);
+  line-height: 1.12;
+}
+
+.terminal-page .investigation-copy {
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+.terminal-page .investigation-intention-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.terminal-page .investigation-intention-btn {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  min-height: 74px;
+  padding: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.72);
+  color: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.terminal-page .investigation-intention-btn:hover,
+.terminal-page .investigation-intention-btn:focus-visible {
+  border-color: rgba(125, 211, 252, 0.72);
+  outline: none;
+}
+
+.terminal-page .investigation-intention-btn[data-intention-kind="best"] {
+  border-color: rgba(34, 197, 94, 0.48);
+}
+
+.terminal-page .investigation-intention-label {
+  font-weight: 900;
+}
+
+.terminal-page .investigation-intention-note {
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.terminal-page .investigation-feedback {
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  background: rgba(2, 6, 23, 0.66);
+  color: #dbeafe;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .terminal-page .investigation-panel {
+    margin: 0 0 10px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .terminal-page .investigation-intention-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-page .investigation-intention-btn {
+    min-height: 64px;
+  }
+}
