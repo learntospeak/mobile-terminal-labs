@@ -71,6 +71,7 @@
       import("./incident-ahead-fix.js?v=20260522ahead1").catch(() => {});
       import("./investigation-pilot-incident.js?v=20260523pilot1").catch(() => {});
       import("./investigation-mode-ui.js?v=20260523stage2").catch(() => {});
+      import("./investigation-smoke-download.js?v=20260523download1").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
