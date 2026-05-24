@@ -1,0 +1,81 @@
+/* Mobile scroll safety patch for terminal labs and investigation mode. */
+
+@media (max-width: 760px) {
+  html,
+  body,
+  body.terminal-page {
+    min-height: 100% !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: auto !important;
+    touch-action: pan-y !important;
+  }
+
+  .terminal-page .rack-room,
+  .terminal-page .router-shell,
+  .terminal-page .terminal-shell,
+  .terminal-page .terminal-layout,
+  .terminal-page .terminal-panel,
+  .terminal-page .scenario-panel,
+  .terminal-page .lab-panel {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .terminal-page .router-shell,
+  .terminal-page .terminal-shell {
+    display: block !important;
+  }
+
+  .terminal-page .terminal-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .terminal-page .investigation-panel {
+    width: auto !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 12px !important;
+  }
+
+  .terminal-page .investigation-intention-grid,
+  .terminal-page .command-category-grid,
+  .terminal-page .command-options,
+  .terminal-page .evidence-choice-grid,
+  .terminal-page .patch-ping-nodes,
+  .terminal-page .patch-ping-edges,
+  .terminal-page .patch-ping-controls {
+    grid-template-columns: 1fr !important;
+  }
+
+  .terminal-page .investigation-intention-btn,
+  .terminal-page .command-category-btn,
+  .terminal-page .investigation-command-option,
+  .terminal-page .evidence-choice {
+    min-height: 56px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .terminal-page .trainer-controls,
+  .terminal-page .terminal-controls,
+  .terminal-page .command-options-grid,
+  .terminal-page .choice-grid {
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .terminal-page .terminal-output,
+  .terminal-page .terminal-output-shell,
+  .terminal-page .terminal-screen,
+  .terminal-page .router-screen {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
