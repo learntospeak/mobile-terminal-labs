@@ -14,19 +14,32 @@
     return rows;
   }
 
+  function getEggRowsFromDom(){
+    var rows=[];
+    document.querySelectorAll('#eggSmokeResults .check').forEach(function(card){
+      var statusText=(card.querySelector('.status')&&card.querySelector('.status').textContent||'').toUpperCase();
+      var title=(card.querySelector('.stage-title')&&card.querySelector('.stage-title').textContent||'').trim();
+      var detail=(card.querySelector('.detail')&&card.querySelector('.detail').textContent||'').trim();
+      rows.push({
+        id:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+        label:title,
+        detail:detail,
+        ok:statusText.indexOf('PASS')>=0,
+        status:statusText.indexOf('PASS')>=0?'pass':'fail'
+      });
+    });
+    return rows;
+  }
+
   function getEggRows(){
     if(window.NetlabEggSmoke && typeof window.NetlabEggSmoke.run === 'function') {
       try { window.NetlabEggSmoke.run(); } catch(e) {}
     }
+
+    var domRows = getEggRowsFromDom();
+    if(domRows.length) return domRows;
+
     var rows = Array.isArray(window.__NetlabEggSmokeRows) ? window.__NetlabEggSmokeRows : [];
-    if(!rows.length){
-      document.querySelectorAll('#eggSmokeResults .check').forEach(function(card){
-        var statusText=(card.querySelector('.status')&&card.querySelector('.status').textContent||'').toUpperCase();
-        var title=(card.querySelector('.stage-title')&&card.querySelector('.stage-title').textContent||'').trim();
-        var detail=(card.querySelector('.detail')&&card.querySelector('.detail').textContent||'').trim();
-        rows.push({id:title.toLowerCase().replace(/[^a-z0-9]+/g,'-'),label:title,detail:detail,ok:statusText.indexOf('PASS')>=0});
-      });
-    }
     return rows.map(function(row){return {id:row.id||'',label:row.label||'',detail:row.detail||'',ok:Boolean(row.ok),status:row.ok?'pass':'fail'};});
   }
 
@@ -36,6 +49,9 @@
 
   function buildReport(){
     if(typeof window.run==='function') window.run();
+    if(window.NetlabEggSmoke && typeof window.NetlabEggSmoke.run === 'function') {
+      try { window.NetlabEggSmoke.run(); } catch(e) {}
+    }
     var rows=getRows();
     var eggRows=getEggRows();
     var investigationSummary=summarizeRows(rows);
@@ -56,10 +72,7 @@
         eggOk:eggSummary.ok
       },
       stages:rows,
-      goldenEggSmoke:{
-        summary:eggSummary,
-        checks:eggRows
-      }
+      goldenEggSmoke:{summary:eggSummary,checks:eggRows}
     };
   }
 
@@ -91,6 +104,7 @@
     run.insertAdjacentElement('afterend',btn);
   }
 
+  window.NetlabInvestigationSmokeDownload = { buildReport: buildReport, download: download, getEggRows: getEggRows };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(addButton,300);});
   else setTimeout(addButton,300);
 })();
