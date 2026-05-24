@@ -84,6 +84,18 @@
     }
   ];
 
+  function openGameShell(){
+    if (window.PatchPingRun && typeof window.PatchPingRun.createGameShell === 'function') {
+      try { window.PatchPingRun.createGameShell(); } catch(e) {}
+    }
+    if (!document.querySelector('#patchPingRunGame,[data-mini-game="patch-ping-run"]')) {
+      const trigger = document.querySelector('[data-easter-egg-trigger]');
+      if (trigger) {
+        try { trigger.click(); } catch(e) {}
+      }
+    }
+  }
+
   function goldenEggCount(){
     try {
       const raw = localStorage.getItem('netlab:golden-eggs');
@@ -118,6 +130,7 @@
   }
 
   function run(){
+    openGameShell();
     const rows = CHECKS.map(result);
     window.__NetlabEggSmokeRows = rows;
     const pass = rows.filter(r => r.ok).length;
