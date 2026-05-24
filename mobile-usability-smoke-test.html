@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Usability Smoke Test</title>
+<link rel="stylesheet" href="./homepage-dashboard.css?v=20260524mobile1">
+<style>
+body.home-dashboard{padding:16px}.shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:16px}.card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.copy{color:#cbd5e1;line-height:1.6}.btn{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,#22c55e,#15803d);color:#fff;font-weight:900;cursor:pointer}.btn.secondary{background:linear-gradient(180deg,rgba(15,23,42,.94),rgba(8,13,24,.98))}.actions{display:flex;flex-wrap:wrap;gap:10px}.summary{display:flex;flex-wrap:wrap;gap:10px}.pill{padding:8px 10px;border-radius:999px;border:1px solid rgba(96,165,250,.22);background:#020617;color:#dbeafe;font-weight:800}.bad{color:#fecaca}.warn{color:#fde68a}.ok{color:#86efac}.grid{display:grid;gap:12px}.check{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:12px;border:1px solid rgba(96,165,250,.16);border-radius:14px;background:rgba(2,6,23,.54)}.status{font-weight:900}.pass .status{color:#86efac}.fail .status{color:#fecaca}.warning .status{color:#fde68a}.detail{color:#94a3b8;margin-top:4px}.code{font-family:Consolas,monospace;color:#bfdbfe}.target-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.target-grid label{display:flex;gap:8px;align-items:center;color:#cbd5e1}.table{overflow:auto;border:1px solid rgba(96,165,250,.18);border-radius:14px}.hidden-frame{position:fixed;left:-10000px;top:0;border:0;opacity:.01;pointer-events:none}@media(max-width:760px){body.home-dashboard{padding:10px}.card{padding:16px}.check{grid-template-columns:1fr}.actions{display:grid}.btn{width:100%}}
+</style>
+</head>
+<body class="home-dashboard">
+<main class="shell">
+<section class="card">
+<a class="dashboard-secondary-btn" href="./admin-tree.html?v=mobile-smoke">← Dev Tree</a>
+<h1>Mobile Usability Smoke Test</h1>
+<p class="copy">Checks mobile layout blockers before new feature work: scrolling, horizontal overflow, fixed overlays, reachable controls, modal scroll, and terminal cut-off risks. Uses a Samsung-style 390×844 viewport.</p>
+<div class="target-grid" id="targets"></div>
+<p class="actions"><button id="runBtn" class="btn" type="button">Run Mobile Usability Smoke</button><button id="downloadBtn" class="btn secondary" type="button">Download JSON Report</button></p>
+<div id="summary" class="summary"><span class="pill">Ready</span></div>
+</section>
+<section class="card">
+<h2>Results</h2>
+<div id="results" class="grid"></div>
+</section>
+</main>
+<script>
+const VIEWPORT={name:'Samsung mobile 390×844',width:390,height:844};
+const PAGES=[
+ ['Home','./index.html?v=mobileusability'],
+ ['Windows Lab','./open-lab.html?track=windows&scenario=win-dir-incident-triage&skipIntro=1&buttonSmoke=1&v=mobileusability'],
+ ['Windows Coach','./terminal-coach.html?track=windows&mode=beginner&skipIntro=1&buttonSmoke=1&v=mobileusability'],
+ ['Linux Coach','./terminal-coach.html?track=linux&skipIntro=1&buttonSmoke=1&v=mobileusability'],
+ ['Cisco CLI','./cisco-cli-lab.html?skipIntro=1&buttonSmoke=1&v=mobileusability'],
+ ['Challenge Mode','./challenge-mode.html?skipIntro=1&buttonSmoke=1&v=mobileusability'],
+ ['Admin Tree','./admin-tree.html?v=mobileusability'],
+ ['Button Smoke','./button-smoke-test.html?v=mobileusability'],
+ ['Investigation Smoke','./investigation-mode-smoke-test.html?v=mobileusability'],
+ ['Emulator Smoke','./emulator-smoke-test.html?v=mobileusability'],
+ ['Connectivity Smoke','./connectivity-smoke-test.html?v=mobileusability'],
+ ['Lab Flow Report','./lab-flow-report.html?v=mobileusability'],
+ ['Flow Risk Report','./flow-risk-report.html?v=mobileusability']
+];
+let latestReport=null;
+function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function row(severity,page,check,detail,meta){return{severity,page,check,detail:detail||'',meta:meta||{}}}
+function visible(el,win){const cs=win.getComputedStyle(el);const r=el.getBoundingClientRect();return !el.closest('[hidden]')&&cs.display!=='none'&&cs.visibility!=='hidden'&&Number(cs.opacity)!==0&&r.width>0&&r.height>0}
+function label(el){return (el.getAttribute('aria-label')||el.getAttribute('title')||el.textContent||el.id||el.className||el.tagName).trim().replace(/\s+/g,' ').slice(0,100)}
+function selector(el){return el.id?'#'+el.id:el.tagName.toLowerCase()+' '+label(el)}
+function neutralizeOverlays(doc){['#terminalIntroOverlay','#terminalIntroFrame','.terminal-intro-overlay','.command-explainer-overlay','.walkthrough-overlay','.beginner-onboarding-overlay[hidden]'].forEach(sel=>{doc.querySelectorAll(sel).forEach(el=>{if(el.id==='terminalIntroOverlay'||el.id==='terminalIntroFrame'||el.classList.contains('terminal-intro-overlay')){el.hidden=true;el.style.display='none';el.style.pointerEvents='none';}})});try{doc.body.classList.remove('terminal-intro-open','command-explainer-open');doc.documentElement.classList.remove('terminal-intro-open','command-explainer-open')}catch(e){}}
+function isCovered(el,doc,win){try{el.scrollIntoView({block:'center',inline:'center'});}catch(e){}const r=el.getBoundingClientRect();if(r.width<2||r.height<2||r.bottom<0||r.top>win.innerHeight||r.right<0||r.left>win.innerWidth)return null;const x=Math.min(Math.max(r.left+r.width/2,0),win.innerWidth-1);const y=Math.min(Math.max(r.top+r.height/2,0),win.innerHeight-1);const top=doc.elementFromPoint(x,y);if(top&&top!==el&&!el.contains(top)&&!top.contains(el))return selector(top);return null}
+function auditPage(pageName,doc,win){neutralizeOverlays(doc);const out=[];const de=doc.documentElement;const body=doc.body;const bodyStyle=win.getComputedStyle(body);const htmlStyle=win.getComputedStyle(de);const scrollHeight=Math.max(body.scrollHeight,de.scrollHeight);const scrollWidth=Math.max(body.scrollWidth,de.scrollWidth);const canScroll=scrollHeight>win.innerHeight+8;const pageHasContent=scrollHeight>win.innerHeight*1.05;
+ if((bodyStyle.overflowY==='hidden'||htmlStyle.overflowY==='hidden')&&pageHasContent)out.push(row('error',pageName,'Vertical scrolling locked','Page content is taller than viewport but body/html has overflow-y hidden',{bodyOverflowY:bodyStyle.overflowY,htmlOverflowY:htmlStyle.overflowY,scrollHeight,viewport:win.innerHeight}));
+ if(scrollWidth>win.innerWidth+6)out.push(row('error',pageName,'Horizontal overflow','Document is wider than mobile viewport',{scrollWidth,viewport:win.innerWidth}));
+ if(pageHasContent&&!canScroll)out.push(row('warning',pageName,'Page may not scroll','Content appears taller than viewport but scroll test did not detect extra scroll range',{scrollHeight,viewport:win.innerHeight}));
+ const actionSelectors='button,a,[role="button"],input[type="button"],input[type="submit"]';
+ const actions=Array.from(doc.querySelectorAll(actionSelectors)).filter(el=>visible(el,win)&&!el.disabled&&el.getAttribute('aria-disabled')!=='true');
+ actions.forEach(el=>{const r=el.getBoundingClientRect();const name=selector(el);if(r.width<28||r.height<28)out.push(row('warning',pageName,'Small tap target',name+' is '+Math.round(r.width)+'×'+Math.round(r.height),{}));if(r.left<-2||r.right>win.innerWidth+2)out.push(row('error',pageName,'Action horizontal overflow',name+' extends outside viewport',{left:r.left,right:r.right,viewport:win.innerWidth}));const cover=isCovered(el,doc,win);if(cover)out.push(row('error',pageName,'Action covered',name+' is covered by '+cover,{}));});
+ const fixed=Array.from(doc.querySelectorAll('*')).filter(el=>{const cs=win.getComputedStyle(el);if(cs.position!=='fixed'||!visible(el,win))return false;const r=el.getBoundingClientRect();return r.width>win.innerWidth*.5&&r.height>win.innerHeight*.15;});
+ fixed.forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom>win.innerHeight-4&&r.height>120)out.push(row('warning',pageName,'Large fixed bottom panel',selector(el)+' may cover mobile controls',{height:r.height,bottom:r.bottom,viewport:win.innerHeight}));});
+ const terminalPanels=Array.from(doc.querySelectorAll('.terminal-panel,.terminal-output-shell,.router-shell,.terminal-shell')).filter(el=>visible(el,win));
+ terminalPanels.forEach(el=>{const r=el.getBoundingClientRect();if(r.height>win.innerHeight*1.25)out.push(row('warning',pageName,'Oversized terminal panel',selector(el)+' is much taller than viewport',{height:r.height,viewport:win.innerHeight}));});
+ const modals=Array.from(doc.querySelectorAll('[role="dialog"],.modal,.command-sheet,.mission-review-card,.beginner-onboarding-card,.walkthrough-card')).filter(el=>visible(el,win));
+ modals.forEach(el=>{const r=el.getBoundingClientRect();const cs=win.getComputedStyle(el);if(r.height>win.innerHeight-20&&!(cs.overflowY==='auto'||cs.overflowY==='scroll'))out.push(row('error',pageName,'Modal cannot scroll',selector(el)+' is taller than viewport without internal vertical scrolling',{height:r.height,viewport:win.innerHeight,overflowY:cs.overflowY}));});
+ if(!out.length)out.push(row('pass',pageName,'Mobile usability','No mobile layout blockers detected',{}));
+ return out;
+}
+function loadPage(page){return new Promise(resolve=>{const frame=document.createElement('iframe');frame.className='hidden-frame';frame.style.width=VIEWPORT.width+'px';frame.style.height=VIEWPORT.height+'px';frame.src=page[1];let done=false;const finish=()=>{if(done)return;done=true;setTimeout(()=>{let rows=[];try{rows=auditPage(page[0],frame.contentDocument,frame.contentWindow)}catch(e){rows=[row('error',page[0],'Unable to inspect page',e.message,{})]}frame.remove();resolve(rows)},1600)};frame.onload=finish;document.body.appendChild(frame);setTimeout(finish,7500)})}
+function selectedPages(){const selected=Array.from(document.querySelectorAll('[data-page-check]:checked')).map(x=>Number(x.value));return selected.length?selected.map(i=>PAGES[i]):PAGES}
+async function run(){const pages=selectedPages();document.getElementById('summary').innerHTML='<span class="pill">Running '+pages.length+' pages…</span>';let all=[];for(const p of pages){all=all.concat(await loadPage(p));render(all)}latestReport={generatedAt:new Date().toISOString(),pageUrl:location.href,userAgent:navigator.userAgent,viewport:VIEWPORT,pages:pages.map(p=>p[0]),summary:summarize(all),results:all};render(all)}
+function summarize(rows){return{pass:rows.filter(r=>r.severity==='pass').length,warning:rows.filter(r=>r.severity==='warning').length,error:rows.filter(r=>r.severity==='error').length,total:rows.length,ok:rows.filter(r=>r.severity==='error').length===0}}
+function render(rows){const s=summarize(rows);document.getElementById('summary').innerHTML='<span class="pill ok">Pass: '+s.pass+'</span><span class="pill warn">Warnings: '+s.warning+'</span><span class="pill bad">Errors: '+s.error+'</span><span class="pill">Total: '+s.total+'</span>';document.getElementById('results').innerHTML=rows.map(r=>'<div class="check '+(r.severity==='pass'?'pass':r.severity==='warning'?'warning':'fail')+'"><div class="status">'+esc(r.severity.toUpperCase())+'</div><div><h3 class="stage-title">'+esc(r.page)+' — '+esc(r.check)+'</h3><div class="detail">'+esc(r.detail)+'</div></div></div>').join('')}
+function download(){if(!latestReport){latestReport={generatedAt:new Date().toISOString(),pageUrl:location.href,userAgent:navigator.userAgent,viewport:VIEWPORT,pages:selectedPages().map(p=>p[0]),summary:summarize([]),results:[]}}const blob=new Blob([JSON.stringify(latestReport,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');const stamp=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);a.href=url;a.download='mobile-usability-smoke-'+stamp+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function init(){document.getElementById('targets').innerHTML=PAGES.map((p,i)=>'<label><input type="checkbox" data-page-check value="'+i+'" checked> '+esc(p[0])+'</label>').join('');document.getElementById('runBtn').onclick=run;document.getElementById('downloadBtn').onclick=download}
+init();
+</script>
+</body>
+</html>
