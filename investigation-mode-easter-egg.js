@@ -12,7 +12,18 @@
   }
 
   function escapeHtml(value){
-    return String(value || '').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+    return String(value || '').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]; });
+  }
+
+  function revealWhenEvidenceVisible(){
+    var box = document.getElementById('investigationCuriosityPanel');
+    if(!box) return;
+    var evidenceVisible = document.querySelector('#evidenceQuestion:not([hidden]), [data-evidence-question]:not([hidden])');
+    var evidenceAnswered = document.querySelector('[data-evidence-choice-selected], [data-evidence-result]');
+    if(evidenceVisible || evidenceAnswered){
+      box.hidden = false;
+      box.setAttribute('data-curiosity-revealed', 'true');
+    }
   }
 
   function render(){
@@ -30,6 +41,7 @@
     box.className = 'evidence-question investigation-curiosity-panel';
     box.setAttribute('data-red-herring', red.id || 'red-herring');
     box.setAttribute('data-easter-egg', egg.id || 'easter-egg');
+    box.hidden = true;
     box.innerHTML = [
       '<p class="investigation-kicker">Optional curiosity</p>',
       '<h3 class="investigation-subtitle">Red herrings and hidden finds</h3>',
@@ -60,6 +72,7 @@
       if(feedback) feedback.textContent = reward.textContent;
     });
 
+    revealWhenEvidenceVisible();
     return true;
   }
 
@@ -69,5 +82,7 @@
       tries += 1;
       if(render() || tries > 50) clearInterval(timer);
     }, 150);
+    document.addEventListener('click', function(){ setTimeout(revealWhenEvidenceVisible, 80); }, true);
+    setInterval(revealWhenEvidenceVisible, 500);
   });
 })();
