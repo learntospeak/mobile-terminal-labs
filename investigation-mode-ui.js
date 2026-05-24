@@ -156,6 +156,7 @@
           if(wrong){
             chip.setAttribute('data-wrong-option-selected', 'true');
             chip.setAttribute('data-plausible-wrong-selected', 'true');
+            panel.setAttribute('data-wrong-option-tested', 'true');
           }
           var feedback = document.getElementById('patchFeedback');
           if(feedback){
@@ -192,6 +193,7 @@
         if(!intent.best){
           btn.setAttribute('data-wrong-option-selected', 'true');
           btn.setAttribute('data-plausible-wrong-selected', 'true');
+          panel.setAttribute('data-wrong-option-tested', 'true');
         }
         var feedback = document.getElementById('patchFeedback');
         if(feedback){
