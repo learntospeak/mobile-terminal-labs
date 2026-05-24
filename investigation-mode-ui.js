@@ -11,10 +11,6 @@
     return engine.scenarios.find(function(item){ return item && item.id === direct; }) || engine.scenarios.find(function(item){ return item && item.id === 'win-dir-incident-triage'; });
   }
 
-  function findMount(){
-    return document.querySelector('.terminal-panel') || document.querySelector('#terminalPanel') || document.querySelector('.terminal-layout') || document.body;
-  }
-
   function commandFeedback(s, cmd){
     var command = String(cmd.command || '').toLowerCase();
     var match = (s.investigation.plausibleWrongOptions || []).find(function(item){ return String(item.command || '').toLowerCase() === command; });
@@ -23,20 +19,42 @@
     return cmd.reason || s.investigation.patchFeedback.wrongButPlausible || 'That command is plausible, but check whether it answers the ticket.';
   }
 
+  function closeModal(){
+    var overlay = document.getElementById('investigationModalOverlay');
+    if(overlay){
+      overlay.hidden = true;
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('investigation-modal-open');
+    document.documentElement.classList.remove('investigation-modal-open');
+  }
+
   function render(){
     var s = scenario();
     if(!s || !s.investigation || !s.investigation.enabled) return false;
     if(s.id !== 'win-dir-incident-triage') return false;
     if(document.getElementById('investigationPanel')) return true;
 
-    var panel = document.createElement('section');
+    var overlay = document.createElement('section');
+    overlay.id = 'investigationModalOverlay';
+    overlay.className = 'investigation-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'investigationModalTitle');
+
+    var panel = document.createElement('div');
     panel.id = 'investigationPanel';
-    panel.className = 'investigation-panel';
+    panel.className = 'investigation-panel investigation-modal-panel';
     panel.setAttribute('data-investigation-panel', 'true');
     panel.setAttribute('data-investigation-surface', 'mobile desktop');
     panel.innerHTML = [
-      '<p class="investigation-kicker">Investigation Mode</p>',
-      '<h2 class="investigation-title">Choose your investigation intention first</h2>',
+      '<div class="investigation-modal-head">',
+      '  <div>',
+      '    <p class="investigation-kicker">Investigation Mode</p>',
+      '    <h2 id="investigationModalTitle" class="investigation-title">Choose your investigation intention first</h2>',
+      '  </div>',
+      '  <button id="investigationSkipBtn" class="investigation-modal-close" type="button" aria-label="Continue to terminal">×</button>',
+      '</div>',
       '<p class="investigation-copy">Before running commands, decide what this ticket is asking you to prove.</p>',
       '<div class="investigation-intention-grid" data-intention-grid></div>',
       '<div id="commandCategoryPanel" class="command-category-panel" data-command-category-panel hidden>',
@@ -51,8 +69,10 @@
       '  <div class="evidence-choice-grid" data-evidence-choice-grid></div>',
       '  <div class="evidence-explanation" data-evidence-explanation data-correct-answer hidden></div>',
       '</div>',
-      '<div id="patchFeedback" class="investigation-feedback patch-feedback" data-patch-feedback>Patch: Pick the investigation path that best matches the ticket.</div>'
+      '<div id="patchFeedback" class="investigation-feedback patch-feedback" data-patch-feedback>Patch: Pick the investigation path that best matches the ticket.</div>',
+      '<button id="investigationContinueBtn" class="investigation-continue-btn" type="button" hidden>Continue to terminal</button>'
     ].join('');
+    overlay.appendChild(panel);
 
     var grid = panel.querySelector('[data-intention-grid]');
     var categoryPanel = panel.querySelector('[data-command-category-panel]');
@@ -62,6 +82,7 @@
     var evidencePrompt = panel.querySelector('[data-evidence-question-prompt]');
     var evidenceGrid = panel.querySelector('[data-evidence-choice-grid]');
     var evidenceExplanation = panel.querySelector('[data-evidence-explanation]');
+    var continueBtn = panel.querySelector('#investigationContinueBtn');
 
     function categoryById(id){
       return (s.investigation.commandCategories || []).find(function(cat){ return cat && cat.id === id; });
@@ -104,6 +125,10 @@
             feedback.setAttribute('data-patch-feedback-kind', correct ? 'correct-evidence' : 'wrong-evidence');
             feedback.textContent = 'Patch: ' + (correct ? (s.investigation.patchFeedback.evidenceRead || 'Good evidence reading.') : 'Close, but read the output again and choose the evidence that matches the ticket.');
           }
+          if(correct){
+            continueBtn.hidden = false;
+            continueBtn.textContent = 'Return to terminal';
+          }
         });
         evidenceGrid.appendChild(btn);
       });
@@ -130,6 +155,8 @@
         });
         categoryGrid.appendChild(btn);
       });
+      continueBtn.hidden = false;
+      continueBtn.textContent = 'Continue to terminal';
     }
 
     function renderCommands(cat){
@@ -206,9 +233,14 @@
       grid.appendChild(btn);
     });
 
-    var mount = findMount();
-    mount.insertBefore(panel, mount.firstChild);
-    document.body.setAttribute('data-investigation-mode-active', 'true');
+    panel.querySelector('#investigationSkipBtn').addEventListener('click', closeModal);
+    continueBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', function(event){ if(event.target === overlay) closeModal(); });
+    document.addEventListener('keydown', function(event){ if(event.key === 'Escape') closeModal(); });
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('investigation-modal-open');
+    document.documentElement.classList.add('investigation-modal-open');
     return true;
   }
 
