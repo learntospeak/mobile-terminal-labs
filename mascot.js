@@ -26,6 +26,22 @@
     engine.scenarios = [scenario, ...engine.scenarios.filter((item) => item && item.id !== id)];
     window.__NETLAB_DIRECT_SCENARIO_ID = id;
   }
+  function removeInvestigationExperimentUi() {
+    if (typeof document === "undefined") return;
+    document.querySelectorAll("#investigationModalOverlay,#investigationPanel,#investigationCuriosityPanel,#patchPingRunGame,#investigationReview,#eggSmokeCard").forEach((el) => el.remove());
+    document.body?.classList.remove("investigation-modal-open", "ticket-briefing-open", "briefing-open", "modal-open", "overlay-open");
+    document.documentElement?.classList.remove("investigation-modal-open", "ticket-briefing-open", "briefing-open", "modal-open", "overlay-open");
+    if (document.body) {
+      document.body.style.overflow = "";
+      document.body.style.overflowY = "";
+      document.body.style.filter = "";
+    }
+    if (document.documentElement) {
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.overflowY = "";
+      document.documentElement.style.filter = "";
+    }
+  }
   function loadTerminalPatches() {
     if (typeof window === "undefined") return;
     forceDirectScenarioFilter();
@@ -69,26 +85,18 @@
       import("./final-polish-process.js?v=20260522processpolish1").catch(() => {});
       import("./final-polish-review.js?v=20260522reviewpolish1").catch(() => {});
       import("./incident-ahead-fix.js?v=20260522ahead1").catch(() => {});
-      import("./investigation-pilot-incident.js?v=20260523pilot1").catch(() => {});
-      import("./investigation-mode-rollout.js?v=20260524stage8").catch(() => {});
-      import("./investigation-mode-ui.js?v=20260523stage2").catch(() => {});
-      import("./investigation-mode-easter-egg.js?v=20260524stage6").catch(() => {});
-      import("./patch-ping-run.js?v=20260524launcher1").catch(() => {});
-      import("./investigation-mode-review.js?v=20260524stage7").catch(() => {});
-      import("./investigation-egg-smoke-addon.js?v=20260524eggsmoke1").catch(() => {});
-      import("./investigation-smoke-flow.js?v=20260524flow1").catch(() => {});
-      import("./investigation-smoke-download.js?v=20260523download1").catch(() => {});
-      import("./investigation-mode-scope-guard.js?v=20260524scope2").catch(() => {});
-      import("./stale-overlay-cleanup.js?v=20260524stale1").catch(() => {});
-      import("./investigation-modal-runtime-fix.js?v=20260525modal1").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
+      removeInvestigationExperimentUi();
     }, 0);
   }
   loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
   loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal2");
-  loadStylesheet("investigationModeStylesheet", "./investigation-mode-ui.css?v=20260524launcher1");
-  loadStylesheet("mobileScrollUnlockStylesheet", "./mobile-scroll-unlock.css?v=20260525scroll1");
   loadTerminalPatches();
+  if (typeof document !== "undefined") {
+    document.addEventListener("DOMContentLoaded", removeInvestigationExperimentUi, { once: true });
+    window.setTimeout(removeInvestigationExperimentUi, 500);
+    window.setTimeout(removeInvestigationExperimentUi, 1500);
+  }
   window.PatchMascot = { getMascotSrc, getMascotAlt, normalizeState };
 })();
