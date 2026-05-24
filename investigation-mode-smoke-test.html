@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investigation Mode Smoke Test</title>
+<link rel="stylesheet" href="./homepage-dashboard.css?v=20260522investigation1">
+<style>
+body.home-dashboard{padding:16px}.shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:16px}.card{padding:20px;border:1px solid rgba(96,165,250,.22);border-radius:18px;background:linear-gradient(180deg,rgba(8,13,24,.94),rgba(4,8,15,.98));box-shadow:0 22px 56px rgba(0,0,0,.3)}.copy{color:#cbd5e1;line-height:1.6}.btn{min-height:46px;padding:0 16px;border-radius:10px;border:1px solid rgba(96,165,250,.34);background:linear-gradient(180deg,#22c55e,#15803d);color:white;font-weight:900;cursor:pointer}.summary{display:flex;flex-wrap:wrap;gap:10px}.pill{padding:8px 10px;border-radius:999px;border:1px solid rgba(96,165,250,.22);background:#020617;color:#dbeafe;font-weight:800}.bad{color:#fecaca}.warn{color:#fde68a}.ok{color:#86efac}.grid{display:grid;gap:12px}.check{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:12px;border:1px solid rgba(96,165,250,.16);border-radius:14px;background:rgba(2,6,23,.54)}.status{font-weight:900}.pass .status{color:#86efac}.fail .status{color:#fecaca}.info .status{color:#fde68a}.detail{color:#94a3b8;margin-top:4px}.code{font-family:Consolas,monospace;color:#bfdbfe}.target{border:1px solid rgba(56,189,248,.25);border-radius:14px;padding:14px;background:#020617;color:#dbeafe}.target strong{color:#fff}@media(max-width:760px){.check{grid-template-columns:1fr}.card{padding:16px}}
+</style>
+<script src="./scenarioEngine.js?v=20260522investigation1" defer></script>
+<script src="./mascot.js?v=20260522investigation1" defer></script>
+</head>
+<body class="home-dashboard">
+<main class="shell">
+<section class="card">
+<a class="dashboard-secondary-btn" href="./admin-tree.html?v=investigation1">← Dev Tree</a>
+<h1>Investigation Mode Smoke Test</h1>
+<p class="copy">This is the project tracker for the new investigation-first learning mode. It starts with one pilot lab, then becomes the green/red checklist before we expand to more labs.</p>
+<div class="target"><strong>Pilot lab:</strong> <span class="code">win-dir-incident-triage</span><br><strong>Goal:</strong> turn a short command-tapping lab into an investigation flow with intention choices, command categories, plausible wrong options, output evidence, Patch feedback, and an optional Easter egg hook.</div>
+<p><button id="runBtn" class="btn" type="button">Run Investigation Mode Smoke Test</button></p>
+<div id="summary" class="summary"><span class="pill">Ready</span></div>
+</section>
+<section class="card">
+<h2>Checklist</h2>
+<div id="results" class="grid"></div>
+</section>
+<section class="card">
+<h2>Definition of Done</h2>
+<p class="copy">This page should go green before we call Investigation Mode complete for the pilot lab. Red means the feature does not exist yet. Yellow means it is present but shallow or incomplete.</p>
+</section>
+</main>
+<script>
+const PILOT_ID='win-dir-incident-triage';
+const REQUIRED=[
+ {id:'pilot-exists',label:'Pilot lab exists',why:'The smoke test can find the selected pilot scenario.'},
+ {id:'investigation-mode-flag',label:'Investigation mode enabled',why:'Scenario has an investigationMode, investigation, or interactionMode marker so we know it is intentionally upgraded.'},
+ {id:'intention-layer',label:'Intention-first layer',why:'Learner must choose what they are trying to do before choosing/running a command.'},
+ {id:'command-category-layer',label:'Command category layer',why:'Commands are grouped by purpose such as navigation, evidence, connectivity, DNS, process, or reporting.'},
+ {id:'plausible-wrong-options',label:'Plausible wrong options',why:'The lab includes realistic but less-useful choices so mobile users cannot just tap the obvious answer.'},
+ {id:'output-evidence-question',label:'Output/evidence question',why:'Learner must interpret command output or choose what evidence proves the answer.'},
+ {id:'patch-feedback',label:'Patch feedback hooks',why:'Patch gives useful feedback for correct choices, wrong-but-plausible choices, and recovery.'},
+ {id:'red-herring',label:'Red herring / Easter egg hook',why:'Lab contains at least one optional curiosity item that can trigger a hidden challenge, mini-game, or extra content.'},
+ {id:'micro-case-metadata',label:'Micro-case metadata',why:'Lab belongs to a case arc with a case title, case step, and short story context.'},
+ {id:'mobile-desktop-support',label:'Mobile and desktop support',why:'Investigation controls specify they work for tap-based mobile flow and typed-command desktop flow.'},
+ {id:'completion-review',label:'Completion review upgraded',why:'End state summarizes intention, evidence, and real-world meaning, not just command success.'},
+ {id:'smoke-regression-safe',label:'Regression-safe schema',why:'The new data lives alongside current scenario fields so existing labs do not break.'}
+];
+function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function scenario(){return (window.ScenarioEngine&&Array.isArray(window.ScenarioEngine.scenarios))?window.ScenarioEngine.scenarios.find(s=>s&&s.id===PILOT_ID):null}
+function arr(v){return Array.isArray(v)?v:[]}
+function hasAny(obj,names){return names.some(name=>obj&&obj[name]!==undefined&&obj[name]!==null&&obj[name]!==false)}
+function textHas(s,terms){const t=JSON.stringify(s||{}).toLowerCase();return terms.some(term=>t.includes(term));}
+function investigationBlock(s){return s&&(s.investigation||s.investigationMode||s.mobileInvestigation||s.thinkMode||s.interactionMode||s.intentions||s.intentionsFirst||null)}
+function checkItem(id,s){const inv=investigationBlock(s);const steps=arr(s&&s.steps);const raw=JSON.stringify(s||{}).toLowerCase();switch(id){
+ case 'pilot-exists':return s?pass('Found '+PILOT_ID):fail('Scenario not found.');
+ case 'investigation-mode-flag':return inv||/investigation|thinkmode|intention/.test(raw)?pass('Investigation marker found.'):fail('Missing investigationMode/investigation/intention marker.');
+ case 'intention-layer':return hasAny(s,['intentions','intentionChoices','investigationIntents'])||hasAny(inv,['intentions','choices'])||textHas(s,['choose intention','what are you trying','investigation goal'])?pass('Intention layer detected.'):fail('No intention-first choices detected yet.');
+ case 'command-category-layer':return hasAny(s,['commandCategories','commandGroups'])||hasAny(inv,['commandCategories','commandGroups'])||textHas(s,['connectivity test','file reading','navigation','evidence','command category'])?pass('Command grouping detected.'):fail('No command category layer detected yet.');
+ case 'plausible-wrong-options':return hasAny(s,['distractors','wrongButPlausible','plausibleWrongOptions'])||hasAny(inv,['distractors','wrongOptions'])||textHas(s,['wrong-but-plausible','less useful','distractor'])?pass('Plausible wrong options detected.'):fail('No plausible wrong options detected yet.');
+ case 'output-evidence-question':return hasAny(s,['evidenceQuestions','diagnosisQuestions','outputQuestions'])||hasAny(inv,['evidenceQuestions','outputQuestions'])||textHas(s,['what did this prove','what evidence','which file contained','interpret output'])?pass('Evidence question detected.'):fail('No output/evidence question detected yet.');
+ case 'patch-feedback':return hasAny(s,['patchFeedback','mascotFeedback'])||hasAny(inv,['patchFeedback','mascotFeedback'])||textHas(s,['patch says','patch feedback','real technician','good investigation'])?pass('Patch feedback hooks detected.'):fail('No upgraded Patch feedback hooks detected yet.');
+ case 'red-herring':return hasAny(s,['redHerrings','easterEggs','secretChallenges'])||hasAny(inv,['redHerrings','easterEggs'])||textHas(s,['easter egg','red herring','secret challenge','mini-game','minigame'])?pass('Red herring/Easter egg hook detected.'):fail('No red herring or Easter egg hook detected yet.');
+ case 'micro-case-metadata':return hasAny(s,['caseId','caseTitle','caseStep','caseArc'])||hasAny(inv,['caseId','caseTitle','caseStep'])||textHas(s,['case file','case arc','micro case'])?pass('Micro-case metadata detected.'):fail('No micro-case metadata detected yet.');
+ case 'mobile-desktop-support':return hasAny(s,['mobileInvestigation','desktopInvestigation','interactionSurfaces'])||hasAny(inv,['mobile','desktop','surfaces'])||textHas(s,['mobile','desktop','tap','typed command'])?pass('Mobile/desktop support detected.'):fail('No explicit mobile/desktop investigation support detected yet.');
+ case 'completion-review':return hasAny(s,['investigationReview','caseReview','evidenceReview'])||hasAny(inv,['review','completionReview'])||textHas(s,['evidence summary','real-world meaning','intention summary'])?pass('Upgraded completion review detected.'):fail('No investigation-style completion review detected yet.');
+ case 'smoke-regression-safe':return s&&steps.length&&steps.every(st=>st.objective&&Array.isArray(st.accepts))?pass('Existing scenario shape still present.'):fail('Existing scenario shape is missing required current fields.');
+ default:return fail('Unknown check.');}}
+function pass(detail){return{status:'pass',detail}}
+function fail(detail){return{status:'fail',detail}}
+function run(){const s=scenario();const rows=REQUIRED.map(req=>({...req,...checkItem(req.id,s)}));render(rows)}
+function render(rows){const passCount=rows.filter(r=>r.status==='pass').length;const failCount=rows.filter(r=>r.status==='fail').length;document.getElementById('summary').innerHTML=`<span class="pill ok">Pass: ${passCount}</span><span class="pill bad">Missing: ${failCount}</span><span class="pill">Total: ${rows.length}</span>`;document.getElementById('results').innerHTML=rows.map(r=>`<div class="check ${r.status==='pass'?'pass':'fail'}"><div class="status">${r.status==='pass'?'PASS':'MISSING'}</div><div><strong>${esc(r.label)}</strong><div class="detail">${esc(r.why)}</div><div class="detail">${esc(r.detail)}</div></div></div>`).join('')}
+document.getElementById('runBtn').onclick=run;window.addEventListener('DOMContentLoaded',()=>setTimeout(run,500));
+</script>
+</body>
+</html>
