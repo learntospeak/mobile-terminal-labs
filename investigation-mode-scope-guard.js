@@ -7,29 +7,38 @@
     return direct === 'incident-folder-triage' ? PILOT : direct;
   }
 
-  function isSmokePage(){
+  function isInvestigationSmokePage(){
     return /investigation-mode-smoke-test\.html/i.test(location.pathname);
   }
 
-  function shouldAllowInvestigationUi(){
-    if (isSmokePage()) return true;
+  function shouldAllowPilotUi(){
+    if (isInvestigationSmokePage()) return true;
     return currentScenarioId() === PILOT;
   }
 
-  function removePilotUi(){
-    if (shouldAllowInvestigationUi()) return;
-    document.querySelectorAll('#investigationPanel,#investigationCuriosityPanel,#patchPingRunGame,#investigationReview').forEach(function(el){ el.remove(); });
-    document.body.removeAttribute('data-investigation-mode-active');
+  function shouldAllowEggSmokeUi(){
+    return isInvestigationSmokePage();
+  }
+
+  function removeOutOfScopeUi(){
+    if (!shouldAllowPilotUi()) {
+      document.querySelectorAll('#investigationPanel,#investigationCuriosityPanel,#patchPingRunGame,#investigationReview').forEach(function(el){ el.remove(); });
+      document.body.removeAttribute('data-investigation-mode-active');
+    }
+
+    if (!shouldAllowEggSmokeUi()) {
+      document.querySelectorAll('#eggSmokeCard,#eggSmokeSummary,#eggSmokeResults').forEach(function(el){ el.remove(); });
+    }
   }
 
   function install(){
-    removePilotUi();
+    removeOutOfScopeUi();
     let tries = 0;
     const timer = setInterval(function(){
       tries += 1;
-      removePilotUi();
-      if (tries > 80) clearInterval(timer);
-    }, 150);
+      removeOutOfScopeUi();
+      if (tries > 100) clearInterval(timer);
+    }, 120);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
