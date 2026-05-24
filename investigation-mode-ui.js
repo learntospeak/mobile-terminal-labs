@@ -45,6 +45,12 @@
       '  <div class="command-category-grid" data-command-category-grid></div>',
       '  <div class="command-options is-locked" data-command-options-hidden-until-category="true" data-command-options></div>',
       '</div>',
+      '<div id="evidenceQuestion" class="evidence-question" data-evidence-question hidden>',
+      '  <p class="investigation-kicker">Evidence check</p>',
+      '  <h3 class="investigation-subtitle" data-evidence-question-prompt></h3>',
+      '  <div class="evidence-choice-grid" data-evidence-choice-grid></div>',
+      '  <div class="evidence-explanation" data-evidence-explanation data-correct-answer hidden></div>',
+      '</div>',
       '<div id="patchFeedback" class="investigation-feedback patch-feedback" data-patch-feedback>Patch: Pick the investigation path that best matches the ticket.</div>'
     ].join('');
 
@@ -52,9 +58,55 @@
     var categoryPanel = panel.querySelector('[data-command-category-panel]');
     var categoryGrid = panel.querySelector('[data-command-category-grid]');
     var commandOptions = panel.querySelector('[data-command-options]');
+    var evidencePanel = panel.querySelector('[data-evidence-question]');
+    var evidencePrompt = panel.querySelector('[data-evidence-question-prompt]');
+    var evidenceGrid = panel.querySelector('[data-evidence-choice-grid]');
+    var evidenceExplanation = panel.querySelector('[data-evidence-explanation]');
 
     function categoryById(id){
       return (s.investigation.commandCategories || []).find(function(cat){ return cat && cat.id === id; });
+    }
+
+    function firstEvidenceQuestion(){
+      return (s.investigation.evidenceQuestions || [])[0];
+    }
+
+    function shouldShowEvidenceQuestion(cmd){
+      var command = String(cmd.command || '').toLowerCase();
+      return cmd.best && (/summary\.txt|type summary|dir/.test(command));
+    }
+
+    function renderEvidenceQuestion(sourceCommand){
+      var q = firstEvidenceQuestion();
+      if(!q) return;
+      evidencePanel.hidden = false;
+      evidencePanel.setAttribute('data-evidence-source', /summary/i.test(String(sourceCommand || '')) ? 'summary.txt' : 'folder-listing');
+      evidencePrompt.textContent = q.prompt || 'What evidence did you find?';
+      evidenceGrid.innerHTML = '';
+      evidenceExplanation.hidden = true;
+      evidenceExplanation.textContent = '';
+      (q.choices || []).forEach(function(choice){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'evidence-choice';
+        btn.setAttribute('data-evidence-choice', choice);
+        if(choice === q.answer) btn.setAttribute('data-correct-answer', 'true');
+        btn.textContent = choice;
+        btn.addEventListener('click', function(){
+          panel.querySelectorAll('[data-evidence-choice-selected]').forEach(function(el){ el.removeAttribute('data-evidence-choice-selected'); });
+          btn.setAttribute('data-evidence-choice-selected', 'true');
+          var correct = choice === q.answer;
+          evidenceExplanation.hidden = false;
+          evidenceExplanation.setAttribute('data-evidence-result', correct ? 'correct' : 'wrong');
+          evidenceExplanation.textContent = (correct ? 'Correct. ' : 'Not quite. ') + (q.explanation || 'Use the command output to choose the strongest evidence.');
+          var feedback = document.getElementById('patchFeedback');
+          if(feedback){
+            feedback.setAttribute('data-patch-feedback-kind', correct ? 'correct-evidence' : 'wrong-evidence');
+            feedback.textContent = 'Patch: ' + (correct ? (s.investigation.patchFeedback.evidenceRead || 'Good evidence reading.') : 'Close, but read the output again and choose the evidence that matches the ticket.');
+          }
+        });
+        evidenceGrid.appendChild(btn);
+      });
     }
 
     function renderCategories(intent){
@@ -63,6 +115,7 @@
       commandOptions.innerHTML = '<p class="investigation-copy">Choose a command category to reveal command options.</p>';
       commandOptions.classList.add('is-locked');
       commandOptions.setAttribute('data-command-options-hidden-until-category', 'true');
+      if(evidencePanel) evidencePanel.hidden = true;
       (intent.commandCategories || []).map(categoryById).filter(Boolean).forEach(function(cat){
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -110,6 +163,7 @@
             feedback.setAttribute('data-feedback-for', wrong ? 'wrong' : 'correct');
             feedback.textContent = 'Patch: ' + commandFeedback(s, cmd);
           }
+          if(shouldShowEvidenceQuestion(cmd)) renderEvidenceQuestion(cmd.command);
         });
         commandOptions.appendChild(chip);
       });
