@@ -73,6 +73,7 @@
       import("./investigation-mode-rollout.js?v=20260524stage8").catch(() => {});
       import("./investigation-mode-ui.js?v=20260523stage2").catch(() => {});
       import("./investigation-mode-easter-egg.js?v=20260524stage6").catch(() => {});
+      import("./patch-ping-run.js?v=20260524launcher1").catch(() => {});
       import("./investigation-mode-review.js?v=20260524stage7").catch(() => {});
       import("./investigation-egg-smoke-addon.js?v=20260524eggsmoke1").catch(() => {});
       import("./investigation-smoke-flow.js?v=20260524flow1").catch(() => {});
@@ -83,7 +84,7 @@
   }
   loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
   loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal2");
-  loadStylesheet("investigationModeStylesheet", "./investigation-mode-ui.css?v=20260523stage2");
+  loadStylesheet("investigationModeStylesheet", "./investigation-mode-ui.css?v=20260524launcher1");
   loadTerminalPatches();
   window.PatchMascot = { getMascotSrc, getMascotAlt, normalizeState };
 })();
