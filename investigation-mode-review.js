@@ -15,6 +15,16 @@
     return String(value || '').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
   }
 
+  function revealWhenEvidenceComplete(){
+    var review = document.getElementById('investigationReview');
+    if(!review) return;
+    var correctSelected = document.querySelector('[data-evidence-choice-selected][data-correct-answer="true"], [data-evidence-result="correct"]');
+    if(correctSelected){
+      review.hidden = false;
+      review.setAttribute('data-review-revealed', 'true');
+    }
+  }
+
   function render(){
     var s = scenario();
     if(!s || s.id !== 'win-dir-incident-triage') return false;
@@ -27,6 +37,7 @@
     box.id = 'investigationReview';
     box.className = 'evidence-question investigation-review';
     box.setAttribute('data-investigation-review', 'true');
+    box.hidden = true;
     box.innerHTML = [
       '<p class="investigation-kicker">Investigation review</p>',
       '<h3 class="investigation-subtitle">' + escapeHtml(review.title || 'Investigation Complete') + '</h3>',
@@ -45,5 +56,7 @@
       tries += 1;
       if(render() || tries > 60) clearInterval(timer);
     }, 150);
+    document.addEventListener('click', function(){ setTimeout(revealWhenEvidenceComplete, 80); }, true);
+    setInterval(revealWhenEvidenceComplete, 500);
   });
 })();
