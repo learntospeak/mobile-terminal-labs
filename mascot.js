@@ -78,6 +78,7 @@
       import("./investigation-egg-smoke-addon.js?v=20260524eggsmoke1").catch(() => {});
       import("./investigation-smoke-flow.js?v=20260524flow1").catch(() => {});
       import("./investigation-smoke-download.js?v=20260523download1").catch(() => {});
+      import("./investigation-mode-scope-guard.js?v=20260524scope1").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
