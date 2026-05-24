@@ -31,10 +31,65 @@
       '<h2 class="investigation-title">Choose your investigation intention first</h2>',
       '<p class="investigation-copy">Before running commands, decide what this ticket is asking you to prove.</p>',
       '<div class="investigation-intention-grid" data-intention-grid></div>',
+      '<div id="commandCategoryPanel" class="command-category-panel" data-command-category-panel hidden>',
+      '  <p class="investigation-kicker">Command purpose</p>',
+      '  <h3 class="investigation-subtitle">Now choose the type of command that fits that intention</h3>',
+      '  <div class="command-category-grid" data-command-category-grid></div>',
+      '  <div class="command-options is-locked" data-command-options-hidden-until-category="true" data-command-options></div>',
+      '</div>',
       '<div id="patchFeedback" class="investigation-feedback patch-feedback" data-patch-feedback>Patch: Pick the investigation path that best matches the ticket.</div>'
     ].join('');
 
     var grid = panel.querySelector('[data-intention-grid]');
+    var categoryPanel = panel.querySelector('[data-command-category-panel]');
+    var categoryGrid = panel.querySelector('[data-command-category-grid]');
+    var commandOptions = panel.querySelector('[data-command-options]');
+
+    function categoryById(id){
+      return (s.investigation.commandCategories || []).find(function(cat){ return cat && cat.id === id; });
+    }
+
+    function renderCategories(intent){
+      categoryPanel.hidden = false;
+      categoryGrid.innerHTML = '';
+      commandOptions.innerHTML = '<p class="investigation-copy">Choose a command category to reveal command options.</p>';
+      commandOptions.classList.add('is-locked');
+      commandOptions.setAttribute('data-command-options-hidden-until-category', 'true');
+      (intent.commandCategories || []).map(categoryById).filter(Boolean).forEach(function(cat){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'command-category-btn';
+        btn.setAttribute('data-command-category', cat.id || cat.label || 'category');
+        btn.innerHTML = '<span class="investigation-intention-label">' + escapeHtml(cat.label || 'Command category') + '</span><span class="investigation-intention-note">' + escapeHtml(cat.purpose || 'Choose this command purpose.') + '</span>';
+        btn.addEventListener('click', function(){
+          panel.querySelectorAll('[data-command-category-active]').forEach(function(el){ el.removeAttribute('data-command-category-active'); });
+          btn.setAttribute('data-command-category-active', 'true');
+          panel.setAttribute('data-active-command-category', cat.id || cat.label || 'category');
+          renderCommands(cat);
+        });
+        categoryGrid.appendChild(btn);
+      });
+    }
+
+    function renderCommands(cat){
+      commandOptions.classList.remove('is-locked');
+      commandOptions.removeAttribute('data-command-options-hidden-until-category');
+      commandOptions.innerHTML = '';
+      (cat.commands || []).forEach(function(cmd){
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'investigation-command-option';
+        chip.setAttribute('data-command-option', cmd.command || 'command');
+        chip.setAttribute('data-command-best', cmd.best ? 'true' : 'false');
+        chip.innerHTML = '<span class="code">' + escapeHtml(cmd.command || '') + '</span><span>' + escapeHtml(cmd.reason || '') + '</span>';
+        chip.addEventListener('click', function(){
+          var feedback = document.getElementById('patchFeedback');
+          if(feedback) feedback.textContent = 'Patch: ' + (cmd.reason || 'Think about whether this command matches the ticket.');
+        });
+        commandOptions.appendChild(chip);
+      });
+    }
+
     (s.investigation.intentions || []).forEach(function(intent){
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -49,6 +104,7 @@
         btn.setAttribute('data-intention-active', 'true');
         var feedback = document.getElementById('patchFeedback');
         if(feedback) feedback.textContent = 'Patch: ' + (intent.explanation || (intent.best ? s.investigation.patchFeedback.correctIntention : s.investigation.patchFeedback.wrongButPlausible));
+        renderCategories(intent);
       });
       grid.appendChild(btn);
     });
