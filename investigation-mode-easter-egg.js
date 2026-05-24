@@ -15,14 +15,17 @@
     return String(value || '').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]; });
   }
 
-  function revealWhenEvidenceVisible(){
-    var box = document.getElementById('investigationCuriosityPanel');
-    if(!box) return;
-    var evidenceVisible = document.querySelector('#evidenceQuestion:not([hidden]), [data-evidence-question]:not([hidden])');
-    var evidenceAnswered = document.querySelector('[data-evidence-choice-selected], [data-evidence-result]');
-    if(evidenceVisible || evidenceAnswered){
-      box.hidden = false;
-      box.setAttribute('data-curiosity-revealed', 'true');
+  function launchSecret(egg){
+    var reward = document.getElementById('easterEggReward');
+    if(reward){
+      reward.hidden = false;
+      reward.setAttribute('data-curiosity-result', 'easter-egg');
+      reward.textContent = 'Patch: ' + (egg.message || 'You found a hidden Patch note.') + ' Reward hook: ' + (egg.reward || 'future-command-snake-mini-game') + '.';
+    }
+    var feedback = document.getElementById('patchFeedback');
+    if(feedback) feedback.textContent = reward ? reward.textContent : 'Patch: Hidden route found.';
+    if(window.PatchPingRun && typeof window.PatchPingRun.createGameShell === 'function'){
+      try { window.PatchPingRun.createGameShell(); } catch(e) {}
     }
   }
 
@@ -38,18 +41,13 @@
 
     var box = document.createElement('section');
     box.id = 'investigationCuriosityPanel';
-    box.className = 'evidence-question investigation-curiosity-panel';
+    box.className = 'investigation-curiosity-panel';
     box.setAttribute('data-red-herring', red.id || 'red-herring');
     box.setAttribute('data-easter-egg', egg.id || 'easter-egg');
     box.hidden = true;
     box.innerHTML = [
-      '<p class="investigation-kicker">Optional curiosity</p>',
-      '<h3 class="investigation-subtitle">Red herrings and hidden finds</h3>',
-      '<p class="investigation-copy">Optional files can teach you to separate useful evidence from noise. Some may eventually unlock tiny hidden challenges.</p>',
-      '<div class="evidence-choice-grid">',
-      '  <button class="evidence-choice" type="button" data-red-herring-trigger="true" data-curiosity-file="' + escapeHtml(red.file || 'printer-note.txt') + '">Read red herring: <span class="code">' + escapeHtml(red.file || 'printer-note.txt') + '</span></button>',
-      '  <button class="evidence-choice" type="button" data-easter-egg-trigger="true" data-curiosity-file="' + escapeHtml(egg.file || 'old-game-note.txt') + '">Open hidden note: <span class="code">' + escapeHtml(egg.file || 'old-game-note.txt') + '</span></button>',
-      '</div>',
+      '<button type="button" data-red-herring-trigger="true" data-curiosity-file="' + escapeHtml(red.file || 'printer-note.txt') + '" hidden>Hidden red herring trigger</button>',
+      '<button type="button" data-easter-egg-trigger="true" data-secret-exploration-trigger="true" data-curiosity-file="' + escapeHtml(egg.file || 'old-game-note.txt') + '" hidden>Hidden Easter egg trigger</button>',
       '<div id="easterEggReward" class="evidence-explanation" data-easter-egg-reward="true" data-secret-challenge="future-command-snake" data-mini-game-hook="command-snake" hidden></div>'
     ].join('');
 
@@ -64,15 +62,17 @@
       if(feedback) feedback.textContent = reward.textContent;
     });
 
-    box.querySelector('[data-easter-egg-trigger]').addEventListener('click', function(){
-      reward.hidden = false;
-      reward.setAttribute('data-curiosity-result', 'easter-egg');
-      reward.textContent = 'Patch: ' + (egg.message || 'You found a hidden Patch note.') + ' Reward hook: ' + (egg.reward || 'future-command-snake-mini-game') + '.';
-      var feedback = document.getElementById('patchFeedback');
-      if(feedback) feedback.textContent = reward.textContent;
-    });
+    box.querySelector('[data-easter-egg-trigger]').addEventListener('click', function(){ launchSecret(egg); });
 
-    revealWhenEvidenceVisible();
+    document.addEventListener('click', function(event){
+      var command = event.target.closest('[data-command-option], [data-command-choice], button');
+      if(!command) return;
+      var text = String(command.getAttribute('data-command-option') || command.getAttribute('data-command-choice') || command.textContent || '').toLowerCase();
+      if(text.indexOf(String(egg.file || 'old-game-note.txt').toLowerCase()) !== -1 || text.indexOf('old-game') !== -1 || text.indexOf('secret') !== -1){
+        setTimeout(function(){ launchSecret(egg); }, 80);
+      }
+    }, true);
+
     return true;
   }
 
@@ -82,7 +82,5 @@
       tries += 1;
       if(render() || tries > 50) clearInterval(timer);
     }, 150);
-    document.addEventListener('click', function(){ setTimeout(revealWhenEvidenceVisible, 80); }, true);
-    setInterval(revealWhenEvidenceVisible, 500);
   });
 })();
