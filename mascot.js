@@ -70,6 +70,7 @@
       import("./final-polish-review.js?v=20260522reviewpolish1").catch(() => {});
       import("./incident-ahead-fix.js?v=20260522ahead1").catch(() => {});
       import("./investigation-pilot-incident.js?v=20260523pilot1").catch(() => {});
+      import("./investigation-mode-rollout.js?v=20260524stage8").catch(() => {});
       import("./investigation-mode-ui.js?v=20260523stage2").catch(() => {});
       import("./investigation-mode-easter-egg.js?v=20260524stage6").catch(() => {});
       import("./investigation-mode-review.js?v=20260524stage7").catch(() => {});
