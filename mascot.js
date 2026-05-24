@@ -80,6 +80,7 @@
       import("./investigation-smoke-download.js?v=20260523download1").catch(() => {});
       import("./investigation-mode-scope-guard.js?v=20260524scope2").catch(() => {});
       import("./stale-overlay-cleanup.js?v=20260524stale1").catch(() => {});
+      import("./investigation-modal-runtime-fix.js?v=20260525modal1").catch(() => {});
       import("./direct-scenario-router.js?v=20260521router4").catch(() => {});
       routeDirectScenarioNow();
     }, 0);
