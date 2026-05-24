@@ -96,11 +96,6 @@
     padding: 12px !important;
   }
 
-  .terminal-page .investigation-panel::before,
-  .terminal-page .investigation-panel::after {
-    max-width: 100% !important;
-  }
-
   .terminal-page .investigation-intention-grid,
   .terminal-page .command-category-grid,
   .terminal-page .command-options,
@@ -121,9 +116,7 @@
   .terminal-page .investigation-command-option,
   .terminal-page .evidence-choice,
   .terminal-page .choice-card,
-  .terminal-page .command-choice,
-  .terminal-page .trainer-controls button,
-  .terminal-page .terminal-controls button {
+  .terminal-page .command-choice {
     min-height: 56px !important;
     width: 100% !important;
     min-width: 0 !important;
@@ -133,8 +126,6 @@
     text-align: left !important;
   }
 
-  .terminal-page .trainer-controls,
-  .terminal-page .terminal-controls,
   .terminal-page .command-options-grid,
   .terminal-page .choice-grid {
     display: grid !important;
@@ -143,6 +134,34 @@
     min-width: 0 !important;
     max-width: 100% !important;
     overflow: visible !important;
+    gap: 10px !important;
+  }
+
+  .terminal-page .trainer-controls,
+  .terminal-page .terminal-controls {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    position: static !important;
+    transform: none !important;
+    margin: 10px 0 !important;
+  }
+
+  .terminal-page .trainer-controls button,
+  .terminal-page .terminal-controls button {
+    min-height: 48px !important;
+    height: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 8px 6px !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
   }
 
   .terminal-page .terminal-input-row,
@@ -172,6 +191,7 @@
     min-width: 0 !important;
     max-height: none !important;
     overflow: visible !important;
+    padding-bottom: 12px !important;
   }
 
   .terminal-page .terminal-output pre,
