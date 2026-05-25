@@ -28,6 +28,35 @@
     'MONITOR01':['PACKET-LOSS'],
     'DOOR-CTRL':['VAULT-GATE']
   };
+  const ipData={
+    'YOUR-PC':['10.10.5.23','255.255.255.0','10.10.5.1','Office workstation'],
+    'ACCESS-SW':['10.10.5.1','255.255.255.0','10.10.5.254','LAN access switch/gateway'],
+    'ROUTER-A':['10.10.5.254','255.255.255.0','10.20.0.1','Router to core network'],
+    'CORE-SW':['10.20.0.1','255.255.255.0','10.20.7.1','Core switch'],
+    'FIREWALL':['10.20.0.254','255.255.255.0','10.20.7.1','Firewall between core and secure servers'],
+    'VAULT-GATE':['10.20.7.1','255.255.255.0','10.20.7.15','Secure server gateway'],
+    'FILESERV':['10.20.7.15','255.255.255.0','10.20.7.1','Target file server'],
+    'SALES-01':['10.10.5.41','255.255.255.0','10.10.5.1','Sales PC'],
+    'SALES-02':['10.10.5.42','255.255.255.0','10.10.5.1','Sales PC'],
+    'SALES-PRN':['10.10.5.44','255.255.255.0','10.10.5.1','Sales printer'],
+    'RECEPTION':['10.10.5.31','255.255.255.0','10.10.5.1','Reception PC'],
+    'LOBBY-AP':['10.10.5.12','255.255.255.0','10.10.5.1','Lobby access point'],
+    'KIOSK':['10.10.5.77','255.255.255.0','10.10.5.1','Reception kiosk'],
+    'DNS01':['10.10.20.10','255.255.255.0','10.10.20.1','DNS server'],
+    'DHCP01':['10.10.20.11','255.255.255.0','10.10.20.1','DHCP server'],
+    'WEB-DMZ':['172.16.10.20','255.255.255.0','172.16.10.1','DMZ web server'],
+    'ARCHIVE':['10.10.30.50','255.255.255.0','10.10.30.1','Archive server'],
+    'ACCOUNTS-PC':['10.20.0.41','255.255.255.0','10.20.0.1','Accounts PC'],
+    'NAS-ACCOUNTS':['10.20.0.60','255.255.255.0','10.20.0.1','Accounts NAS'],
+    'PAYROLL':['10.20.0.45','255.255.255.0','10.20.0.1','Payroll PC'],
+    'BACKUP-NAS':['10.20.7.40','255.255.255.0','10.20.7.1','Backup storage'],
+    'WAREHOUSE-PC':['10.20.0.81','255.255.255.0','10.20.0.1','Warehouse PC'],
+    'SCANNER':['10.20.0.82','255.255.255.0','10.20.0.1','Warehouse scanner'],
+    'LABEL-PRN':['10.20.0.83','255.255.255.0','10.20.0.1','Label printer'],
+    'PACKET-LOSS':['10.20.0.200','255.255.255.0','10.20.0.1','Unstable link cloud'],
+    'MONITOR01':['10.20.0.90','255.255.255.0','10.20.0.1','Monitoring node'],
+    'DOOR-CTRL':['10.20.7.30','255.255.255.0','10.20.7.1','Door controller']
+  };
   const edgeList=[['YOUR-PC','ACCESS-SW'],['ACCESS-SW','ROUTER-A'],['ROUTER-A','CORE-SW'],['CORE-SW','FIREWALL'],['FIREWALL','VAULT-GATE'],['VAULT-GATE','FILESERV'],['ACCESS-SW','SALES-01'],['ACCESS-SW','SALES-02'],['ACCESS-SW','SALES-PRN'],['ACCESS-SW','RECEPTION'],['ACCESS-SW','LOBBY-AP'],['LOBBY-AP','KIOSK'],['ROUTER-A','DNS01'],['ROUTER-A','DHCP01'],['ROUTER-A','WEB-DMZ'],['ROUTER-A','ARCHIVE'],['CORE-SW','ACCOUNTS-PC'],['ACCOUNTS-PC','NAS-ACCOUNTS'],['NAS-ACCOUNTS','PAYROLL'],['NAS-ACCOUNTS','BACKUP-NAS'],['CORE-SW','WAREHOUSE-PC'],['WAREHOUSE-PC','SCANNER'],['SCANNER','LABEL-PRN'],['CORE-SW','PACKET-LOSS'],['PACKET-LOSS','MONITOR01'],['VAULT-GATE','DOOR-CTRL']];
   const zones={
     lan:['ACCESS-SW','SALES-01','SALES-02','SALES-PRN','RECEPTION','LOBBY-AP','KIOSK'],
@@ -48,6 +77,10 @@
   function pingReply(ip,name,zone,nextHint){
     return 'C:\\Lab> ping '+ip+'\n\nPinging '+name+' ['+ip+'] with 32 bytes of data:\nReply from '+ip+': bytes=32 time=2ms TTL=64\nReply from '+ip+': bytes=32 time=2ms TTL=64\n\nPing statistics for '+ip+':\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss)\n\nPatch: Reply received. '+zone+' revealed.'+(nextHint?'\nNext clue: '+nextHint:'');
   }
+  function ipconfigText(id){
+    const d=ipData[id]||['0.0.0.0','255.255.255.0','0.0.0.0','Unknown device'];
+    return 'C:\\Lab> ipconfig\n\nNode . . . . . . . . . . . . : '+id+'\nDescription . . . . . . . . : '+d[3]+'\nIPv4 Address . . . . . . . . : '+d[0]+'\nSubnet Mask . . . . . . . . : '+d[1]+'\nDefault Gateway . . . . . . : '+d[2]+'\n\nPatch: In the real world, ipconfig shows the machine you are on. Here it shows the node where the packet worm currently is.';
+  }
   function unlockZone(name){
     if(zones[name]) reveal(zones[name]);
     unlocked.add(name);
@@ -56,6 +89,10 @@
   function handleCommand(raw){
     const cmd=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');
     if(!cmd) return false;
+    if(cmd==='ipconfig'){
+      setLog(ipconfigText(currentId()));
+      return true;
+    }
     if(cmd==='ping 10.10.5.1'){
       unlockZone('lan');
       setLog(pingReply('10.10.5.1','ACCESS-SW.office.local','LAN access layer','ping 10.10.5.254 to test the router/gateway.'));
@@ -83,10 +120,6 @@
       if(!unlocked.has('secure')){setLog('C:\\Lab> '+raw+'\n\nPing request could not reach the target network.\nPatch: FILESERV is behind the secure gateway. Try ping 10.20.7.1 first.');return true;}
       unlockZone('target');
       setLog(pingReply('10.20.7.15','FILESERV.office.local','FILESERV target','follow the revealed secure path to deliver the packet.'));
-      return true;
-    }
-    if(cmd==='ipconfig'){
-      setLog('C:\\Lab> ipconfig\n\nIPv4 Address . . . . . . . . . : 10.10.5.23\nSubnet Mask . . . . . . . . . : 255.255.255.0\nDefault Gateway . . . . . . . : 10.10.5.1\n\nPatch: Your first reachable network device should be the gateway. Try ping 10.10.5.1.');
       return true;
     }
     return false;
