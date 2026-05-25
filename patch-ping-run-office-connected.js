@@ -1,54 +1,55 @@
 (function(){
   const graph = {
-    'START':['SWITCH-01','RECEPTION-PC','LOBBY-AP'],
-    'RECEPTION-PC':['START','FRONT-PRN','KIOSK-01','SWITCH-01'],
+    'START':['SWITCH-01'],
+    'SWITCH-01':['START','RECEPTION-PC','SALES-PC01','GUEST-PC','ROUTER-A'],
+    'RECEPTION-PC':['SWITCH-01','FRONT-PRN','LOBBY-AP','KIOSK-01'],
     'FRONT-PRN':['RECEPTION-PC'],
-    'KIOSK-01':['RECEPTION-PC','LOBBY-AP'],
-    'LOBBY-AP':['START','KIOSK-01','GUEST-PC'],
-    'SWITCH-01':['START','SALES-PC01','SALES-PC02','SALES-PRN','GUEST-PC','ROUTER-A'],
-    'SALES-PC01':['SWITCH-01','SALES-LAPTOP'],
-    'SALES-PC02':['SWITCH-01','SALES-PRN'],
+    'LOBBY-AP':['RECEPTION-PC'],
+    'KIOSK-01':['RECEPTION-PC'],
+    'SALES-PC01':['SWITCH-01','SALES-PC02','SALES-LAPTOP','SALES-PRN'],
+    'SALES-PC02':['SALES-PC01'],
     'SALES-LAPTOP':['SALES-PC01','SALES-PHONE'],
-    'SALES-PRN':['SALES-PC02','SWITCH-01'],
     'SALES-PHONE':['SALES-LAPTOP'],
-    'GUEST-PC':['SWITCH-01','LOBBY-AP'],
-    'ROUTER-A':['SWITCH-01','CORE-02','WEB-DMZ','ARCHIVE','DNS01','DHCP01'],
+    'SALES-PRN':['SALES-PC01'],
+    'GUEST-PC':['SWITCH-01'],
+    'ROUTER-A':['SWITCH-01','DNS01','DHCP01','WEB-DMZ','ARCHIVE','CORE-02'],
     'DNS01':['ROUTER-A','PATCH-SRV'],
-    'DHCP01':['ROUTER-A','PATCH-SRV'],
-    'PATCH-SRV':['DNS01','DHCP01','MONITOR01'],
+    'DHCP01':['ROUTER-A'],
+    'PATCH-SRV':['DNS01'],
     'WEB-DMZ':['ROUTER-A','CAM-02'],
+    'CAM-02':['WEB-DMZ'],
     'ARCHIVE':['ROUTER-A','OLD-NAS'],
-    'CAM-01':['CORE-02'],
-    'CAM-02':['WEB-DMZ','CORE-02'],
     'OLD-NAS':['ARCHIVE'],
-    'CORE-02':['ROUTER-A','FILESERV','PACKET-LOSS','FIREWALL','ACC-PC01','WAREHOUSE-PC','MONITOR01','CAM-01','CAM-02'],
-    'MONITOR01':['CORE-02','PATCH-SRV','AP-STAFF'],
-    'AP-STAFF':['MONITOR01','PICKER-TAB'],
+    'CORE-02':['ROUTER-A','ACC-PC01','WAREHOUSE-PC','MONITOR01','FIREWALL','FILESERV'],
     'ACC-PC01':['CORE-02','ACC-PC02','PAYROLL-PC','ACC-PRN'],
     'ACC-PC02':['ACC-PC01','NAS-ACCOUNTS'],
-    'PAYROLL-PC':['ACC-PC01','NAS-ACCOUNTS'],
+    'PAYROLL-PC':['ACC-PC01'],
     'ACC-PRN':['ACC-PC01'],
-    'NAS-ACCOUNTS':['ACC-PC02','PAYROLL-PC','BACKUP-NAS'],
-    'WAREHOUSE-PC':['CORE-02','SCANNER-01','LABEL-PRN'],
-    'SCANNER-01':['WAREHOUSE-PC','PICKER-TAB'],
+    'NAS-ACCOUNTS':['ACC-PC02','BACKUP-NAS'],
+    'WAREHOUSE-PC':['CORE-02','SCANNER-01','LABEL-PRN','PICKER-TAB'],
+    'SCANNER-01':['WAREHOUSE-PC'],
     'LABEL-PRN':['WAREHOUSE-PC'],
-    'PICKER-TAB':['SCANNER-01','AP-STAFF'],
-    'PACKET-LOSS':['CORE-02','FIREWALL'],
+    'PICKER-TAB':['WAREHOUSE-PC','AP-STAFF'],
+    'AP-STAFF':['PICKER-TAB'],
+    'MONITOR01':['CORE-02','CAM-01'],
+    'CAM-01':['MONITOR01'],
     'FIREWALL':['CORE-02','PACKET-LOSS','VAULT-GATE'],
-    'FILESERV':['CORE-02','BACKUP-NAS','VAULT-GATE'],
-    'BACKUP-NAS':['FILESERV','NAS-ACCOUNTS'],
-    'VAULT-GATE':['FILESERV','FIREWALL','DOOR-CTRL'],
+    'PACKET-LOSS':['FIREWALL'],
+    'VAULT-GATE':['FIREWALL','DOOR-CTRL'],
     'DOOR-CTRL':['VAULT-GATE','THERMO-01'],
     'THERMO-01':['DOOR-CTRL'],
+    'FILESERV':['CORE-02','BACKUP-NAS'],
+    'BACKUP-NAS':['FILESERV','NAS-ACCOUNTS'],
     'PRINTER':['SWITCH-01']
   };
   const office = [
-    ['SALES-PC01','PC','sales',11,15],['SALES-PC02','PC','sales',15,24],['SALES-LAPTOP','LT','sales',8,33],['SALES-PRN','PRN','sales',18,40],['SALES-PHONE','PH','sales',6,23],
-    ['ACC-PC01','PC','accounts',72,15],['ACC-PC02','PC','accounts',78,24],['PAYROLL-PC','PAY','accounts',82,34],['NAS-ACCOUNTS','NAS','accounts',74,40],['ACC-PRN','PRN','accounts',88,18],
-    ['RECEPTION-PC','PC','reception',7,62],['FRONT-PRN','PRN','reception',16,66],['LOBBY-AP','AP','reception',11,76],['KIOSK-01','KSK','reception',22,76],
-    ['WAREHOUSE-PC','PC','warehouse',76,63],['SCANNER-01','SCAN','warehouse',84,70],['LABEL-PRN','PRN','warehouse',70,77],['PICKER-TAB','TAB','warehouse',88,80],
-    ['DNS01','DNS','infra',44,22],['DHCP01','DHCP','infra',52,22],['MONITOR01','MON','infra',48,76],['AP-STAFF','AP','infra',56,76],['PATCH-SRV','SRV','infra',47,13],
-    ['CAM-01','CAM','iot',27,10],['CAM-02','CAM','iot',64,10],['DOOR-CTRL','DOOR','iot',31,84],['OLD-NAS','NAS','iot',61,84],['THERMO-01','SEN','iot',36,9]
+    ['RECEPTION-PC','PC','reception',8,28],['FRONT-PRN','PRN','reception',3,14],['LOBBY-AP','AP','reception',10,14],['KIOSK-01','KSK','reception',17,14],
+    ['SALES-PC01','PC','sales',18,40],['SALES-PC02','PC','sales',9,52],['SALES-LAPTOP','LT','sales',18,56],['SALES-PHONE','PH','sales',16,70],['SALES-PRN','PRN','sales',27,52],
+    ['DNS01','DNS','infra',38,23],['DHCP01','DHCP','infra',47,23],['PATCH-SRV','SRV','infra',37,10],['WEB-DMZ','WEB','infra',55,23],['CAM-02','CAM','iot',59,10],['ARCHIVE','ARC','infra',63,23],['OLD-NAS','NAS','iot',68,10],
+    ['ACC-PC01','PC','accounts',63,44],['ACC-PC02','PC','accounts',55,57],['PAYROLL-PC','PAY','accounts',64,61],['ACC-PRN','PRN','accounts',72,57],['NAS-ACCOUNTS','NAS','accounts',55,73],
+    ['WAREHOUSE-PC','PC','warehouse',75,44],['SCANNER-01','SCAN','warehouse',70,57],['LABEL-PRN','PRN','warehouse',80,57],['PICKER-TAB','TAB','warehouse',88,57],['AP-STAFF','AP','infra',88,72],
+    ['MONITOR01','MON','infra',44,56],['CAM-01','CAM','iot',40,70],['FIREWALL','FW','infra',48,75],['PACKET-LOSS','LOSS','infra',40,88],['VAULT-GATE','GATE','iot',57,88],['DOOR-CTRL','DOOR','iot',67,88],['THERMO-01','SEN','iot',77,88],
+    ['BACKUP-NAS','NAS','accounts',83,73]
   ];
   let current = 'START';
   let hops = 0;
@@ -56,10 +57,14 @@
   function q(s){ return document.querySelector(s); }
   function qa(s){ return Array.from(document.querySelectorAll(s)); }
   function nodeEl(id){ return document.querySelector('[data-node="'+id+'"]'); }
+  function setPos(id,left,top){ const n=nodeEl(id); if(n){ n.style.left=left+'%'; n.style.top=top+'%'; } }
+  function layoutMainNodes(){ setPos('START',4,44); setPos('SWITCH-01',19,44); setPos('ROUTER-A',34,44); setPos('CORE-02',49,44); setPos('FILESERV',88,44); setPos('PRINTER',25,58); setPos('GUEST-PC',24,28); }
   function addOfficeNodes(){
     const map = q('#pprMap');
     if(!map || map.querySelector('[data-office-connected="1"]')) return;
     office.forEach(function(item){
+      const existing = nodeEl(item[0]);
+      if(existing){ existing.style.left=item[3]+'%'; existing.style.top=item[4]+'%'; existing.classList.add('ppr-office-node','ppr-office-node-'+item[2]); return; }
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'ppr-node ppr-office-node ppr-office-node-' + item[2];
@@ -78,7 +83,7 @@
     svg.id = 'pprOfficeLines';
     svg.setAttribute('class','ppr-office-lines');
     map.insertBefore(svg, map.firstChild);
-    drawConnectionLines();
+    setTimeout(drawConnectionLines, 60);
     window.addEventListener('resize', drawConnectionLines);
   }
   function centerOf(id){
@@ -106,10 +111,15 @@
         if(!pa || !pb) return;
         const line = document.createElementNS('http://www.w3.org/2000/svg','line');
         line.setAttribute('x1',pa.x); line.setAttribute('y1',pa.y); line.setAttribute('x2',pb.x); line.setAttribute('y2',pb.y);
-        line.setAttribute('class', key.indexOf('FILESERV')>=0 || key.indexOf('CORE-02')>=0 ? 'ppr-office-line ppr-office-line-core' : 'ppr-office-line');
+        line.setAttribute('class', routeClass(a,b));
         svg.appendChild(line);
       });
     });
+  }
+  function routeClass(a,b){
+    const key = [a,b].join('|');
+    if(['START|SWITCH-01','SWITCH-01|ROUTER-A','ROUTER-A|CORE-02','CORE-02|FILESERV'].includes(key) || ['SWITCH-01|START','ROUTER-A|SWITCH-01','CORE-02|ROUTER-A','FILESERV|CORE-02'].includes(key)) return 'ppr-office-line ppr-office-line-core';
+    return 'ppr-office-line';
   }
   function moveWormTo(id){
     const map = q('#pprMap'), worm = q('#pprWorm'), node = nodeEl(id);
@@ -130,11 +140,11 @@
   }
   function choose(id){
     if(busy || id===current) return;
-    if(!(graph[current]||[]).includes(id)){ setConsole('Patch: That device is on the office map, but it is not a direct hop from here.'); return; }
+    if(!(graph[current]||[]).includes(id)){ setConsole('Patch: That device is visible, but it is not a direct hop from here. Follow the tree branches.'); return; }
     current = id; hops += 1; update();
     if(id === 'FILESERV') { setConsole('Patch: FILESERV reached. Golden Egg unlocked.'); setTimeout(function(){ q('#pprReward').hidden=false; },350); return; }
     const degree = (graph[id]||[]).length;
-    setConsole('Patch: Reached '+id+'. '+degree+' connected path'+(degree===1?'':'s')+' available. Find the route to FILESERV.');
+    setConsole('Patch: Reached '+id+'. '+degree+' connected branch'+(degree===1?'':'es')+' available. Find the route to FILESERV.');
   }
   function interceptClicks(){
     document.addEventListener('click', function(e){
@@ -145,11 +155,12 @@
     }, true);
   }
   function init(){
+    layoutMainNodes();
     addOfficeNodes();
     addConnectionLines();
     interceptClicks();
     update();
-    setConsole('Patch: Office network expanded. Every visible device is now connected. Hop carefully to FILESERV.');
+    setConsole('Patch: Office network is now organised like a tree. Follow branches carefully to FILESERV.');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init, {once:true}); else init();
 })();
