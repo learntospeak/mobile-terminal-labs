@@ -49,12 +49,45 @@
     gap: 8px !important;
   }
 
+  .terminal-page .terminal-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .terminal-page .terminal-output-shell {
+    order: 1 !important;
+    min-height: 260px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 16px !important;
+  }
+
+  .terminal-page .terminal-output {
+    min-height: 240px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 18px !important;
+  }
+
+  .terminal-page .terminal-mobile-dock {
+    order: 2 !important;
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 10px 0 18px !important;
+    background: transparent !important;
+    z-index: 2 !important;
+  }
+
   .terminal-page .trainer-controls,
   .terminal-page .terminal-controls {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 8px !important;
     position: static !important;
+    order: 2 !important;
   }
 
   .terminal-page .trainer-controls button,
@@ -62,6 +95,28 @@
     min-width: 0 !important;
     width: auto !important;
     max-width: 100% !important;
+    min-height: 44px !important;
+    padding: 8px 6px !important;
+  }
+
+  .terminal-page .terminal-dock-input-mount,
+  .terminal-page #terminalDockInputMount {
+    order: 3 !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: 8px !important;
+  }
+
+  .terminal-page .terminal-input-shell {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .terminal-page .terminal-run-btn {
+    width: 100% !important;
+    min-height: 44px !important;
   }
 
   .terminal-page pre,
