@@ -92,6 +92,7 @@
   }
   loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
   loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal2");
+  loadStylesheet("terminalMobileEmergencyStylesheet", "./terminal-mobile-emergency.css?v=20260525emergency1");
   loadTerminalPatches();
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", removeInvestigationExperimentUi, { once: true });
