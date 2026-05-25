@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patch Ping Run</title>
+  <link rel="stylesheet" href="./patch-ping-run-standalone.css?v=1">
+</head>
+<body>
+  <main class="ppr-shell">
+    <header class="ppr-header">
+      <a class="ppr-back" href="./patch-ping-run-device-preview.html?v=standalone">← Mood Board</a>
+      <div>
+        <p class="ppr-kicker">Hidden Mini-Game Prototype</p>
+        <h1>Patch Ping Run</h1>
+        <p class="ppr-copy">Guide the packet worm through the network to reach <strong>FILESERV</strong>. Tap connected nodes to move.</p>
+      </div>
+      <div class="ppr-stat-card">
+        <span>Target</span>
+        <strong>FILESERV</strong>
+      </div>
+    </header>
+
+    <section class="ppr-terminal-card" aria-label="Secret terminal discovery setup">
+      <p class="ppr-terminal-line">C:\Lab&gt; type old-game-note.txt</p>
+      <p class="ppr-terminal-muted">Network training, 1998. Back when packets were young and networks were wild.</p>
+      <p class="ppr-terminal-line">Try: <strong>patch-ping-run</strong></p>
+    </section>
+
+    <section class="ppr-game-card" aria-labelledby="pprGameTitle">
+      <div class="ppr-game-head">
+        <div>
+          <p class="ppr-kicker">Patch Ping Run</p>
+          <h2 id="pprGameTitle">Route the packet</h2>
+        </div>
+        <div class="ppr-status-pill" id="pprStatusPill">Hops: 0</div>
+      </div>
+
+      <div class="ppr-map" id="pprMap" aria-label="Network map">
+        <div class="ppr-zone ppr-zone-lan">LAN</div>
+        <div class="ppr-zone ppr-zone-core">CORE / DMZ</div>
+        <div class="ppr-zone ppr-zone-vault">SERVER VAULT</div>
+
+        <div class="ppr-edge ppr-e-start-switch ppr-edge-good"></div>
+        <div class="ppr-edge ppr-e-switch-router ppr-edge-good"></div>
+        <div class="ppr-edge ppr-e-router-core ppr-edge-good"></div>
+        <div class="ppr-edge ppr-e-core-target ppr-edge-good"></div>
+        <div class="ppr-edge ppr-e-switch-printer ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-switch-guest ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-router-dmz ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-router-archive ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-core-loss ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-core-firewall ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-target-backup ppr-edge-decoy"></div>
+        <div class="ppr-edge ppr-e-target-vault ppr-edge-decoy"></div>
+
+        <button class="ppr-node ppr-node-start" data-node="START" type="button">START<span>packet spawn</span></button>
+        <button class="ppr-node ppr-node-switch" data-node="SWITCH-01" type="button">SWITCH-01<span>first hop</span></button>
+        <button class="ppr-node ppr-node-router" data-node="ROUTER-A" type="button">ROUTER-A<span>branch point</span></button>
+        <button class="ppr-node ppr-node-core" data-node="CORE-02" type="button">CORE-02<span>deep route</span></button>
+        <button class="ppr-node ppr-node-target" data-node="FILESERV" type="button">FILESERV<span>target host</span></button>
+
+        <button class="ppr-node ppr-node-printer ppr-node-decoy" data-node="PRINTER" type="button">PRINTER<span>timeout</span></button>
+        <button class="ppr-node ppr-node-guest ppr-node-decoy" data-node="GUEST-PC" type="button">GUEST-PC<span>wrong LAN</span></button>
+        <button class="ppr-node ppr-node-dmz ppr-node-decoy" data-node="WEB-DMZ" type="button">WEB-DMZ<span>decoy</span></button>
+        <button class="ppr-node ppr-node-archive ppr-node-decoy" data-node="ARCHIVE" type="button">ARCHIVE<span>old route</span></button>
+        <button class="ppr-node ppr-node-loss ppr-node-decoy" data-node="PACKET-LOSS" type="button">PACKET LOSS<span>unstable</span></button>
+        <button class="ppr-node ppr-node-firewall ppr-node-decoy" data-node="FIREWALL" type="button">FIREWALL<span>blocked</span></button>
+        <button class="ppr-node ppr-node-backup ppr-node-decoy" data-node="BACKUP-NAS" type="button">BACKUP-NAS<span>wrong server</span></button>
+        <button class="ppr-node ppr-node-vault ppr-node-decoy" data-node="VAULT-GATE" type="button">VAULT-GATE<span>secret branch</span></button>
+
+        <div class="ppr-worm" id="pprWorm" aria-hidden="true">&gt;_</div>
+      </div>
+
+      <div class="ppr-console" id="pprConsole">Patch: Tap SWITCH-01 to start the run.</div>
+
+      <div class="ppr-actions">
+        <button id="pprRestartBtn" type="button">Restart</button>
+        <button id="pprHintBtn" type="button">Hint</button>
+      </div>
+    </section>
+
+    <section class="ppr-reward" id="pprReward" hidden>
+      <div class="ppr-egg-card">
+        <p class="ppr-kicker">Legendary Reward</p>
+        <div class="ppr-egg"><span></span></div>
+        <h2>Golden Egg Found</h2>
+        <p>Packet delivered to FILESERV. Nice work, technician.</p>
+        <button id="pprPlayAgainBtn" type="button">Play Again</button>
+      </div>
+    </section>
+  </main>
+  <script src="./patch-ping-run-standalone.js?v=1"></script>
+</body>
+</html>
