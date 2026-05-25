@@ -20,7 +20,7 @@
     'CAM-02':['WEB-DMZ'],
     'ARCHIVE':['ROUTER-A','OLD-NAS'],
     'OLD-NAS':['ARCHIVE'],
-    'CORE-02':['ROUTER-A','ACC-PC01','WAREHOUSE-PC','MONITOR01','FIREWALL','FILESERV'],
+    'CORE-02':['ROUTER-A','ACC-PC01','WAREHOUSE-PC','MONITOR01','FIREWALL'],
     'ACC-PC01':['CORE-02','ACC-PC02','PAYROLL-PC','ACC-PRN'],
     'ACC-PC02':['ACC-PC01','NAS-ACCOUNTS'],
     'PAYROLL-PC':['ACC-PC01'],
@@ -35,10 +35,10 @@
     'CAM-01':['MONITOR01'],
     'FIREWALL':['CORE-02','PACKET-LOSS','VAULT-GATE'],
     'PACKET-LOSS':['FIREWALL'],
-    'VAULT-GATE':['FIREWALL','DOOR-CTRL'],
+    'VAULT-GATE':['FIREWALL','DOOR-CTRL','FILESERV'],
     'DOOR-CTRL':['VAULT-GATE','THERMO-01'],
     'THERMO-01':['DOOR-CTRL'],
-    'FILESERV':['CORE-02','BACKUP-NAS'],
+    'FILESERV':['VAULT-GATE','BACKUP-NAS'],
     'BACKUP-NAS':['FILESERV','NAS-ACCOUNTS'],
     'PRINTER':['SWITCH-01']
   };
@@ -48,7 +48,7 @@
     ['DNS01','DNS','infra',38,23],['DHCP01','DHCP','infra',47,23],['PATCH-SRV','SRV','infra',37,10],['WEB-DMZ','WEB','infra',55,23],['CAM-02','CAM','iot',59,10],['ARCHIVE','ARC','infra',63,23],['OLD-NAS','NAS','iot',68,10],
     ['ACC-PC01','PC','accounts',63,44],['ACC-PC02','PC','accounts',55,57],['PAYROLL-PC','PAY','accounts',64,61],['ACC-PRN','PRN','accounts',72,57],['NAS-ACCOUNTS','NAS','accounts',55,73],
     ['WAREHOUSE-PC','PC','warehouse',75,44],['SCANNER-01','SCAN','warehouse',70,57],['LABEL-PRN','PRN','warehouse',80,57],['PICKER-TAB','TAB','warehouse',88,57],['AP-STAFF','AP','infra',88,72],
-    ['MONITOR01','MON','infra',44,56],['CAM-01','CAM','iot',40,70],['FIREWALL','FW','infra',48,75],['PACKET-LOSS','LOSS','infra',40,88],['VAULT-GATE','GATE','iot',57,88],['DOOR-CTRL','DOOR','iot',67,88],['THERMO-01','SEN','iot',77,88],
+    ['MONITOR01','MON','infra',44,56],['CAM-01','CAM','iot',40,70],['FIREWALL','FW','infra',48,75],['PACKET-LOSS','LOSS','infra',40,88],['VAULT-GATE','GATE','iot',64,82],['DOOR-CTRL','DOOR','iot',74,88],['THERMO-01','SEN','iot',84,88],
     ['BACKUP-NAS','NAS','accounts',83,73]
   ];
   let current = 'START';
@@ -111,15 +111,10 @@
         if(!pa || !pb) return;
         const line = document.createElementNS('http://www.w3.org/2000/svg','line');
         line.setAttribute('x1',pa.x); line.setAttribute('y1',pa.y); line.setAttribute('x2',pb.x); line.setAttribute('y2',pb.y);
-        line.setAttribute('class', routeClass(a,b));
+        line.setAttribute('class','ppr-office-line');
         svg.appendChild(line);
       });
     });
-  }
-  function routeClass(a,b){
-    const key = [a,b].join('|');
-    if(['START|SWITCH-01','SWITCH-01|ROUTER-A','ROUTER-A|CORE-02','CORE-02|FILESERV'].includes(key) || ['SWITCH-01|START','ROUTER-A|SWITCH-01','CORE-02|ROUTER-A','FILESERV|CORE-02'].includes(key)) return 'ppr-office-line ppr-office-line-core';
-    return 'ppr-office-line';
   }
   function moveWormTo(id){
     const map = q('#pprMap'), worm = q('#pprWorm'), node = nodeEl(id);
@@ -142,9 +137,9 @@
     if(busy || id===current) return;
     if(!(graph[current]||[]).includes(id)){ setConsole('Patch: That device is visible, but it is not a direct hop from here. Follow the tree branches.'); return; }
     current = id; hops += 1; update();
-    if(id === 'FILESERV') { setConsole('Patch: FILESERV reached. Golden Egg unlocked.'); setTimeout(function(){ q('#pprReward').hidden=false; },350); return; }
+    if(id === 'FILESERV') { setConsole('Patch: FILESERV reached through the secure vault path. Golden Egg unlocked.'); setTimeout(function(){ q('#pprReward').hidden=false; },350); return; }
     const degree = (graph[id]||[]).length;
-    setConsole('Patch: Reached '+id+'. '+degree+' connected branch'+(degree===1?'':'es')+' available. Find the route to FILESERV.');
+    setConsole('Patch: Reached '+id+'. '+degree+' connected branch'+(degree===1?'':'es')+' available. Find the secure route to FILESERV.');
   }
   function interceptClicks(){
     document.addEventListener('click', function(e){
@@ -160,7 +155,7 @@
     addConnectionLines();
     interceptClicks();
     update();
-    setConsole('Patch: Office network is now organised like a tree. Follow branches carefully to FILESERV.');
+    setConsole('Patch: FILESERV is behind the secure branch now. No direct hop from CORE-02.');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init, {once:true}); else init();
 })();
