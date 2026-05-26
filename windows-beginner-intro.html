@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Ops Briefing - Windows Beginner Lab</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050712;
+      --panel: rgba(10, 16, 32, 0.86);
+      --cyan: #42f5ff;
+      --text: #f4f8ff;
+      --muted: #9fb3c8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 14% 8%, rgba(126, 65, 255, 0.32), transparent 30%),
+        radial-gradient(circle at 82% 12%, rgba(66, 245, 255, 0.24), transparent 26%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .intro-launcher {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      background: #070817;
+    }
+
+    .intro-frame {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      border: 0;
+      background: #070817;
+    }
+
+    .launcher-actions {
+      position: fixed;
+      z-index: 4;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(66, 245, 255, 0.22);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(10px);
+    }
+
+    .launcher-status {
+      margin: 0;
+      max-width: 220px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .launcher-btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 2px solid var(--cyan);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      background: #111936;
+      box-shadow: 4px 4px 0 #03040c, inset 0 0 14px rgba(66, 245, 255, 0.16);
+      cursor: pointer;
+    }
+
+    .launcher-btn:hover,
+    .launcher-btn:focus-visible {
+      color: #051018;
+      background: var(--cyan);
+      outline: none;
+    }
+
+    .launcher-btn[hidden] {
+      display: none;
+    }
+
+    @media (max-width: 720px) {
+      .launcher-actions {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        justify-content: flex-end;
+      }
+
+      .launcher-status {
+        margin-right: auto;
+        font-size: 0.76rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="intro-launcher" aria-label="Cyber Ops Briefing launcher">
+    <iframe
+      id="introFrame"
+      class="intro-frame"
+      title="Cyber Ops Briefing"
+      src="./side-scroller-intro/index.html?embed=terminal"
+      loading="eager"
+      allow="autoplay"
+    ></iframe>
+
+    <div class="launcher-actions">
+      <p id="launcherStatus" class="launcher-status">Cyber Ops Briefing is preparing the Windows beginner lab.</p>
+      <button id="continueBtn" class="launcher-btn" type="button" hidden>Continue</button>
+      <button id="skipIntroBtn" class="launcher-btn" type="button">Skip Intro</button>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const terminalUrl = "./terminal-coach.html?track=windows&mode=beginner&skipIntro=1&scenario=win-dir-incident-triage&resetLab=1&directLab=1";
+      const introFrame = document.getElementById("introFrame");
+      const skipIntroBtn = document.getElementById("skipIntroBtn");
+      const continueBtn = document.getElementById("continueBtn");
+      const launcherStatus = document.getElementById("launcherStatus");
+      let hasNavigated = false;
+
+      function openTerminalLab() {
+        if (hasNavigated) return;
+        hasNavigated = true;
+        window.location.href = terminalUrl;
+      }
+
+      function isTrustedIntroMessage(event) {
+        const fromIntroFrame = introFrame?.contentWindow && event.source === introFrame.contentWindow;
+        return fromIntroFrame || event.origin === window.location.origin;
+      }
+
+      window.addEventListener("message", (event) => {
+        if (!isTrustedIntroMessage(event)) return;
+        if (event.data?.type === "netlab:intro-complete") {
+          openTerminalLab();
+        }
+      });
+
+      skipIntroBtn?.addEventListener("click", openTerminalLab);
+      continueBtn?.addEventListener("click", openTerminalLab);
+
+      window.setTimeout(() => {
+        if (hasNavigated) return;
+        continueBtn.hidden = false;
+        launcherStatus.textContent = "Still loading? Continue to the lab whenever you are ready.";
+      }, 22000);
+    })();
+  </script>
+</body>
+</html>
