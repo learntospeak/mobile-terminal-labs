@@ -10,8 +10,8 @@
     const forced = params.get("intro") === "1";
     const skipped = params.get("skipIntro") === "1";
 
-    if (skipped) return false;
     if (forced) return true;
+    if (skipped) return false;
     if (hasDirectLabRequest()) return false;
     return Boolean(config.isBeginnerMode);
   }
