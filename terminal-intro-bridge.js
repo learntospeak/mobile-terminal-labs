@@ -5,6 +5,31 @@
   let fallbackTimer = 0;
   let closeTimer = 0;
 
+  function installTaskNoteSuppression() {
+    if (document.getElementById("terminalTaskNoteSuppression")) return;
+
+    const style = document.createElement("style");
+    style.id = "terminalTaskNoteSuppression";
+    style.textContent = `
+      .terminal-page #taskCompleteCard,
+      .terminal-page #taskCompleteOverlay {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function hideTaskNoteElements() {
+    ["taskCompleteCard", "taskCompleteOverlay"].forEach((id) => {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.hidden = true;
+      element.setAttribute("aria-hidden", "true");
+    });
+  }
+
   function hasDirectLabRequest() {
     const params = new URLSearchParams(window.location.search);
     return Boolean(params.get("scenario") || params.get("scenarioId") || params.get("lesson"));
@@ -69,6 +94,8 @@
     fallbackTimer = window.setTimeout(closeIntro, MAX_INTRO_MS);
   }
 
+  installTaskNoteSuppression();
+
   window.addEventListener("message", (event) => {
     const frame = document.getElementById("terminalIntroFrame");
     const fromIntroFrame = frame?.contentWindow && event.source === frame.contentWindow;
@@ -79,6 +106,7 @@
   });
 
   document.addEventListener("DOMContentLoaded", () => {
+    hideTaskNoteElements();
     document.getElementById("terminalIntroSkipBtn")?.addEventListener("click", () => closeIntro());
 
     if (shouldShowIntro()) {
