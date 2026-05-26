@@ -1,7 +1,7 @@
 (() => {
   function hasDirectLabRequest() {
     const params = new URLSearchParams(window.location.search);
-    return Boolean(params.get("scenario") || params.get("scenarioId") || params.get("lesson") || params.get("skipIntro") === "1");
+    return Boolean(params.get("scenario") || params.get("scenarioId") || params.get("lesson"));
   }
 
   function shouldShowIntro() {
@@ -10,8 +10,10 @@
     const forced = params.get("intro") === "1";
     const skipped = params.get("skipIntro") === "1";
 
-    if (skipped || hasDirectLabRequest()) return false;
-    return forced || Boolean(config.isBeginnerMode);
+    if (skipped) return false;
+    if (forced) return true;
+    if (hasDirectLabRequest()) return false;
+    return Boolean(config.isBeginnerMode);
   }
 
   function closeIntro() {
