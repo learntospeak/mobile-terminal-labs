@@ -1,5 +1,5 @@
 (function(){
-  const stableWindowsStart = './open-lab.html?track=windows&scenario=win-dir-incident-triage&mode=beginner&v=home-start-stable';
+  const stableWindowsStart = './open-lab.html?track=windows&scenario=win-dir-incident-triage&mode=beginner&intro=1&v=home-start-stable';
 
   function shouldRouteToWindowsLab(link){
     if(!link || !link.href) return false;
