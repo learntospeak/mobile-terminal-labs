@@ -4844,3 +4844,12 @@ body.command-sheet-open .command-sheet {
     --terminal-control-count: 6;
   }
 }
+
+
+@media (max-width: 768px) {
+  .terminal-page.terminal-beginner-mode .terminal-form,
+  .terminal-page.terminal-beginner-mode #terminalForm,
+  .terminal-page.terminal-beginner-mode .terminal-input-shell {
+    display: none !important;
+  }
+}
