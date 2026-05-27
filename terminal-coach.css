@@ -4864,3 +4864,14 @@ body.command-sheet-open .command-sheet {
     display: none !important;
   }
 }
+
+
+@media (max-width: 768px) {
+  html.terminal-beginner-mode .terminal-page .terminal-form,
+  html.terminal-beginner-mode .terminal-page #terminalForm,
+  html.terminal-beginner-mode .terminal-page #terminalDockInputMount,
+  html.terminal-beginner-mode .terminal-page #terminalInlineInputSlot .terminal-input-shell,
+  html.terminal-beginner-mode .terminal-page .terminal-dock-input-mount {
+    display: none !important;
+  }
+}
