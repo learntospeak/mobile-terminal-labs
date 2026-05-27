@@ -81,7 +81,7 @@
     })();
   </script>
   <script src="./terminalEngine.js?v=20260515modal1" defer></script>
-  <script src="./terminal-intro-bridge.js?v=20260515modal1" defer></script>
+  <script src="./terminal-intro-bridge.js?v=20260527simplify1" defer></script>
   <script src="./commandSheet.js?v=20260502coach2" defer></script>
 </head>
 <body class="terminal-page">
@@ -419,93 +419,86 @@
             </div>
 
             <div id="beginnerTaskStrip" class="beginner-task-strip" hidden>
-              <p id="beginnerTaskStripLabel" class="beginner-task-kicker">Try this</p>
-              <p id="beginnerCurrentTaskText" class="beginner-task-text">Check the current scenario objective.</p>
-              <p id="beginnerTaskHelpText" class="beginner-task-help">Not sure? Use Command Help, Hint, or Walkthrough.</p>
+              <p id="beginnerTaskStripLabel" class="beginner-task-strip-label">Current Task</p>
+              <p id="beginnerCurrentTaskText" class="beginner-task-strip-text"></p>
+              <p id="beginnerTaskHelpText" class="beginner-task-strip-help"></p>
             </div>
 
-            <div id="beginnerHelpStrip" class="beginner-help-strip" hidden>
-              <p id="beginnerHelpStripText" class="beginner-help-strip-copy">Not sure? Use Command Help, Hint, or Walkthrough.</p>
-            </div>
-
-            <div class="trainer-controls terminal-controls">
-              <button id="commandSheetBtn" type="button" data-icon="?" data-open-command-sheet aria-haspopup="dialog" aria-controls="commandSheet" aria-label="Command Help" title="Command Help">Commands</button>
-              <button id="hintBtn" type="button" data-icon="!" aria-label="Hint" title="Hint">Hint</button>
-              <button id="watchWalkthroughBtn" type="button" data-icon=">" aria-label="Walkthrough" title="Walkthrough">Guide</button>
-              <button id="needHelpBtn" type="button" data-icon="AI" aria-label="Ask Coach" title="Ask Coach">Ask Coach</button>
-              <button id="startScenarioBtn" type="button" data-icon="▶" aria-label="Start selected problem" title="Start selected problem">Start</button>
-              <button id="previousScenarioBtn" type="button" data-icon="<" aria-label="Previous scenario" title="Previous scenario">Previous</button>
-              <button id="resetScenarioBtn" type="button" data-icon="R" aria-label="Reset current scenario" title="Reset current scenario">Reset</button>
-              <button id="nextScenarioBtn" type="button" data-icon=">" aria-label="Next scenario" title="Next scenario">Next</button>
-            </div>
-
-            <div id="terminalDockInputMount" class="terminal-dock-input-mount">
-              <form id="terminalForm" class="terminal-input-shell" autocomplete="off">
-                <label id="terminalPrompt" class="terminal-prompt-label" for="terminalInput">student@lab:~$</label>
-                <input id="terminalInput" class="terminal-input" type="text" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="none" enterkeyhint="send">
-                <button id="runCommandBtn" class="terminal-run-btn" type="submit">Run</button>
-              </form>
+            <div class="terminal-controls">
+              <button id="hintBtn" class="terminal-help-btn" type="button">Hint</button>
+              <button id="watchWalkthroughBtn" class="terminal-help-btn" type="button">Watch</button>
+              <button id="needHelpBtn" class="terminal-help-btn terminal-help-btn-primary" type="button">Ask Coach</button>
+              <button class="terminal-help-btn" type="button" data-open-command-sheet>Commands</button>
             </div>
             <div id="terminalMobileControlMount" class="terminal-mobile-control-mount"></div>
           </div>
+
+          <form id="terminalForm" class="terminal-form">
+            <label class="terminal-input-label" for="terminalInput">Command input</label>
+            <span id="terminalPrompt" class="terminal-prompt">$</span>
+            <input id="terminalInput" class="terminal-input" type="text" autocomplete="off" spellcheck="false" aria-describedby="stepObjective">
+            <button class="terminal-run-btn" type="submit">Run</button>
+          </form>
         </section>
       </div>
 
-      <article id="missionReviewCard" class="support-card mission-review-card mission-review-page" hidden>
-        <h3>Mission Review</h3>
-        <p id="missionReviewOverall" class="mission-review-overall"></p>
-        <div id="missionReviewCategories" class="mission-review-grid">
-          <div class="mission-review-item">
-            <p class="mission-case-label">Commands Used</p>
-            <p id="reviewTroubleshootingScore" class="mission-review-score"></p>
-            <p id="reviewTroubleshootingFeedback" class="mission-case-copy"></p>
+      <section id="missionReviewCard" class="mission-review-card" hidden>
+        <div class="mission-review-head">
+          <p class="mission-review-kicker">Mission Review</p>
+          <h2>After-Action Report</h2>
+          <p id="missionReviewOverall">Reviewing your troubleshooting workflow.</p>
+        </div>
+        <div class="mission-review-grid">
+          <article class="mission-review-metric">
+            <p class="mission-review-label">Troubleshooting Path</p>
+            <strong id="reviewTroubleshootingScore">--</strong>
+            <p id="reviewTroubleshootingFeedback"></p>
+          </article>
+          <article class="mission-review-metric">
+            <p class="mission-review-label">Command Accuracy</p>
+            <strong id="reviewAccuracyScore">--</strong>
+            <p id="reviewAccuracyFeedback"></p>
+          </article>
+          <article class="mission-review-metric">
+            <p class="mission-review-label">Efficiency</p>
+            <strong id="reviewEfficiencyScore">--</strong>
+            <p id="reviewEfficiencyFeedback"></p>
+          </article>
+          <article class="mission-review-metric">
+            <p class="mission-review-label">Verification Habits</p>
+            <strong id="reviewVerificationScore">--</strong>
+            <p id="reviewVerificationFeedback"></p>
+          </article>
+          <article class="mission-review-metric">
+            <p class="mission-review-label">Risk Awareness</p>
+            <strong id="reviewRiskScore">--</strong>
+            <p id="reviewRiskFeedback"></p>
+          </article>
+        </div>
+        <div class="mission-review-body">
+          <div>
+            <p class="mission-review-subtitle">What went well</p>
+            <ul id="missionReviewStrengths"></ul>
           </div>
-          <div class="mission-review-item">
-            <p class="mission-case-label">Issue Found</p>
-            <p id="reviewAccuracyScore" class="mission-review-score"></p>
-            <p id="reviewAccuracyFeedback" class="mission-case-copy"></p>
-          </div>
-          <div class="mission-review-item">
-            <p class="mission-case-label">Concept</p>
-            <p id="reviewEfficiencyScore" class="mission-review-score"></p>
-            <p id="reviewEfficiencyFeedback" class="mission-case-copy"></p>
-          </div>
-          <div class="mission-review-item">
-            <p class="mission-case-label">Closure</p>
-            <p id="reviewVerificationScore" class="mission-review-score"></p>
-            <p id="reviewVerificationFeedback" class="mission-case-copy"></p>
-          </div>
-          <div class="mission-review-item">
-            <p class="mission-case-label">Risk</p>
-            <p id="reviewRiskScore" class="mission-review-score"></p>
-            <p id="reviewRiskFeedback" class="mission-case-copy"></p>
+          <div>
+            <p class="mission-review-subtitle">Next improvement</p>
+            <ul id="missionReviewImprovements"></ul>
           </div>
         </div>
-        <div class="mission-case-block">
-          <p class="mission-case-label">What You Did Well</p>
-          <ul id="missionReviewStrengths" class="mission-case-list"></ul>
-        </div>
-        <div class="mission-case-block">
-          <p class="mission-case-label">Improve Next Time</p>
-          <ul id="missionReviewImprovements" class="mission-case-list"></ul>
-        </div>
-        <div class="mission-case-block">
-          <p class="mission-case-label">Real-World Takeaway</p>
-          <p id="missionReviewTakeaway" class="mission-case-copy"></p>
-        </div>
-      </article>
+        <p id="missionReviewTakeaway" class="mission-review-takeaway"></p>
+      </section>
 
       <div id="ticketBriefingOverlay" class="ticket-briefing-overlay" hidden></div>
       <aside id="ticketBriefingCard" class="ticket-briefing-card" aria-hidden="true" aria-labelledby="ticketBriefingTitle" hidden>
         <div class="ticket-briefing-shell">
           <div class="ticket-briefing-head">
             <div>
-              <p id="ticketBriefingKicker" class="ticket-briefing-kicker">Problem</p>
-              <h2 id="ticketBriefingTitle">Problem</h2>
+              <p id="ticketBriefingKicker" class="ticket-briefing-kicker">Support Ticket</p>
+              <h2 id="ticketBriefingTitle">Ticket Briefing</h2>
             </div>
             <button id="ticketBriefingCloseBtn" class="ticket-briefing-close" type="button" aria-label="Close ticket briefing">Close</button>
           </div>
-          <div class="ticket-briefing-meta">
+          <div class="ticket-briefing-meta" aria-label="Ticket metadata">
             <span id="ticketBriefingId" class="scenario-mini-badge" hidden></span>
             <span id="ticketBriefingPriority" class="scenario-mini-badge" hidden></span>
             <span id="ticketBriefingReportedBy" class="scenario-mini-badge" hidden></span>
@@ -513,34 +506,34 @@
             <span id="ticketBriefingRole" class="scenario-mini-badge" hidden></span>
             <span id="ticketBriefingEstimatedTime" class="scenario-mini-badge" hidden></span>
           </div>
-          <div id="ticketBriefingBeginnerBlock" class="ticket-briefing-block beginner-ticket-briefing" hidden>
-            <div class="beginner-ticket-section">
-              <p class="ticket-briefing-label">Problem</p>
+          <div id="ticketBriefingBeginnerBlock" class="ticket-briefing-block ticket-briefing-beginner-block" hidden>
+            <div class="ticket-briefing-beginner-section">
+              <p class="ticket-briefing-label">What happened?</p>
               <p id="ticketBriefingBeginnerHappened" class="ticket-briefing-copy"></p>
             </div>
-            <div class="beginner-ticket-section">
-              <p class="ticket-briefing-label">What it means</p>
+            <div class="ticket-briefing-beginner-section">
+              <p class="ticket-briefing-label">What does this mean?</p>
               <p id="ticketBriefingBeginnerMeaning" class="ticket-briefing-copy"></p>
             </div>
-            <div class="beginner-ticket-section">
-              <p class="ticket-briefing-label">Do this first</p>
+            <div class="ticket-briefing-beginner-section">
+              <p class="ticket-briefing-label">Try this first</p>
               <p id="ticketBriefingBeginnerTryFirst" class="ticket-briefing-copy"></p>
             </div>
           </div>
-          <div id="ticketBriefingVisualBlock" class="ticket-briefing-block" hidden>
-            <p class="ticket-briefing-label">Show me</p>
-            <div id="ticketBriefingCommandMap" class="beginner-command-meaning-map" hidden></div>
-            <div id="ticketBriefingFolderGuideMap" class="beginner-folder-guide-map" hidden></div>
+          <div id="ticketBriefingVisualBlock" class="ticket-briefing-block ticket-briefing-visual-block" hidden>
+            <p class="ticket-briefing-label">Beginner command map</p>
+            <div id="ticketBriefingCommandMap" class="beginner-command-meaning-map"></div>
+            <div id="ticketBriefingFolderGuideMap" class="beginner-folder-guide-map"></div>
           </div>
-          <div id="ticketBriefingMoreToggleBlock" class="ticket-briefing-block ticket-briefing-more-toggle" hidden>
-            <button id="ticketBriefingMoreBtn" class="beginner-secondary-btn" type="button" aria-expanded="false">More details</button>
+          <div id="ticketBriefingMoreToggleBlock" class="ticket-briefing-more-toggle" hidden>
+            <button id="ticketBriefingMoreBtn" class="beginner-secondary-btn" type="button" aria-expanded="false">Show full ticket details</button>
           </div>
           <div id="ticketBriefingAffectedBlock" class="ticket-briefing-block" hidden>
             <p class="ticket-briefing-label">Affected System</p>
             <p id="ticketBriefingAffectedSystem" class="ticket-briefing-copy"></p>
           </div>
           <div id="ticketBriefingSummaryBlock" class="ticket-briefing-block" hidden>
-            <p class="ticket-briefing-label">Ticket Summary</p>
+            <p class="ticket-briefing-label">Summary</p>
             <p id="ticketBriefingSummary" class="ticket-briefing-copy"></p>
           </div>
           <div id="ticketBriefingUserReportBlock" class="ticket-briefing-block" hidden>
