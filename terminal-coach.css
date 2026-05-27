@@ -4853,3 +4853,14 @@ body.command-sheet-open .command-sheet {
     display: none !important;
   }
 }
+
+
+@media (max-width: 768px) {
+  .terminal-page.terminal-beginner-mode .terminal-form,
+  .terminal-page.terminal-beginner-mode #terminalForm,
+  .terminal-page.terminal-beginner-mode #terminalDockInputMount,
+  .terminal-page.terminal-beginner-mode #terminalInlineInputSlot .terminal-input-shell,
+  .terminal-page.terminal-beginner-mode .terminal-dock-input-mount {
+    display: none !important;
+  }
+}
