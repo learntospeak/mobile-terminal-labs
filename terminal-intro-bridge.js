@@ -40,9 +40,10 @@
     const params = new URLSearchParams(window.location.search);
     const forced = params.get("intro") === "1";
     const skipped = params.get("skipIntro") === "1";
+    const windowsBeginnerLab = config.environmentCategory === "windows" && config.isBeginnerMode;
 
+    if (skipped || windowsBeginnerLab) return false;
     if (forced) return true;
-    if (skipped) return false;
     if (hasDirectLabRequest()) return false;
     return Boolean(config.isBeginnerMode);
   }
