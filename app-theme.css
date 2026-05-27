@@ -229,12 +229,33 @@ body:not(.home-dashboard) .mascot-message {
     padding: 10px;
   }
 
+  body.terminal-page:not(.home-dashboard) {
+    padding: 0;
+  }
+
+  body.terminal-page:not(.home-dashboard) .rack-room,
+  body.terminal-page:not(.home-dashboard) .terminal-shell {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  body.terminal-page:not(.home-dashboard) .terminal-output-shell {
+    min-height: 0;
+  }
+
   body:not(.home-dashboard) .router-shell,
   body:not(.home-dashboard) .lab-panel,
   body:not(.home-dashboard) .support-card,
   body:not(.home-dashboard) .terminal-output-shell,
   body:not(.home-dashboard) .terminal-mobile-dock {
     border-radius: 16px;
+  }
+
+  body.terminal-page:not(.home-dashboard) .router-shell,
+  body.terminal-page:not(.home-dashboard) .lab-panel,
+  body.terminal-page:not(.home-dashboard) .terminal-output-shell,
+  body.terminal-page:not(.home-dashboard) .terminal-mobile-dock {
+    border-radius: 0;
   }
 
   body:not(.home-dashboard) .trainer-controls button,

@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Terminal Coach</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./style.css?v=20260429micro1">
-  <link rel="stylesheet" href="./terminal-coach.css?v=20260527earlybeginner1">
+  <link rel="stylesheet" href="./terminal-coach.css?v=20260527mobiletoggle3">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="./supabase-config.js?v=20260421sup1" defer></script>
   <script src="./app-data.js?v=20260429micro1" defer></script>
@@ -78,13 +78,24 @@
         commandSheetCategories: active.commandSheetCategories,
         scenarioFilter: (scenario) => scenario.mode !== "challenge" && scenario.environmentCategory === active.environmentCategory
       };
+      document.documentElement.classList.toggle("terminal-beginner-mode", beginnerMode);
+      document.documentElement.dataset.environmentCategory = active.environmentCategory;
     })();
   </script>
-  <script src="./terminalEngine.js?v=20260515modal1" defer></script>
+  <script src="./terminalEngine.js?v=20260527mobiletoggle3" defer></script>
   <script src="./terminal-intro-bridge.js?v=20260527simplify1" defer></script>
   <script src="./commandSheet.js?v=20260502coach2" defer></script>
 </head>
 <body class="terminal-page">
+  <script>
+    (() => {
+      const config = window.TerminalCoachConfig || {};
+      document.body.classList.toggle("terminal-beginner-mode", Boolean(config.isBeginnerMode));
+      if (config.environmentCategory) {
+        document.body.dataset.environmentCategory = config.environmentCategory;
+      }
+    })();
+  </script>
   <div class="rack-room">
     <div class="router-shell terminal-shell">
       <div class="router-top">
@@ -425,10 +436,14 @@
             </div>
 
             <div class="terminal-controls">
-              <button id="hintBtn" class="terminal-help-btn" type="button">Hint</button>
-              <button id="watchWalkthroughBtn" class="terminal-help-btn" type="button">Watch</button>
-              <button id="needHelpBtn" class="terminal-help-btn terminal-help-btn-primary" type="button">Ask Coach</button>
-              <button class="terminal-help-btn" type="button" data-open-command-sheet>Commands</button>
+              <button id="hintBtn" class="terminal-help-btn" type="button" data-icon="?">Hint</button>
+              <button id="watchWalkthroughBtn" class="terminal-help-btn" type="button" data-icon="▶">Watch</button>
+              <button id="needHelpBtn" class="terminal-help-btn terminal-help-btn-primary" type="button" data-icon="!">Ask Coach</button>
+              <button class="terminal-help-btn" type="button" data-open-command-sheet data-icon="CMD">Commands</button>
+              <button id="startScenarioBtn" type="button" data-icon="▶" aria-label="Start selected problem" title="Start selected problem">Start</button>
+              <button id="previousScenarioBtn" type="button" data-icon="<" aria-label="Previous scenario" title="Previous scenario">Previous</button>
+              <button id="resetScenarioBtn" type="button" data-icon="R" aria-label="Reset current scenario" title="Reset current scenario">Reset</button>
+              <button id="nextScenarioBtn" type="button" data-icon=">" aria-label="Next scenario" title="Next scenario">Next</button>
             </div>
             <div id="terminalMobileControlMount" class="terminal-mobile-control-mount"></div>
           </div>

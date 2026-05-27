@@ -90,8 +90,8 @@
       removeInvestigationExperimentUi();
     }, 0);
   }
-  loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260520theme1");
-  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260521modal2");
+  loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260527mobiletoggle1");
+  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260527mobiletoggle1");
   loadTerminalPatches();
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", removeInvestigationExperimentUi, { once: true });

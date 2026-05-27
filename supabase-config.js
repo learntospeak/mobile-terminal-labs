@@ -10,7 +10,7 @@
     const css = document.createElement("link");
     css.id = "appThemeStylesheet";
     css.rel = "stylesheet";
-    css.href = "./app-theme.css?v=20260520theme1";
+    css.href = "./app-theme.css?v=20260527mobiletoggle1";
     document.head.appendChild(css);
   }
 

@@ -263,9 +263,11 @@
 
   .terminal-page #beginnerOnboardingCard,
   .terminal-page .beginner-onboarding-card {
+    position: fixed !important;
+    inset: 0 !important;
     width: calc(100vw - 20px) !important;
     max-width: calc(100vw - 20px) !important;
-    margin: 10px auto 16px !important;
+    margin: 0 !important;
     padding: 18px 14px !important;
   }
 }

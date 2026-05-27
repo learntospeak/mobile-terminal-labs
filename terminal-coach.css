@@ -2070,6 +2070,10 @@
   opacity: 0.38;
 }
 
+.terminal-controls button[hidden] {
+  display: none !important;
+}
+
 .terminal-panel {
   display: flex;
   flex-direction: column;
@@ -3650,7 +3654,9 @@
   }
 
   .terminal-page .rack-room {
+    width: 100%;
     max-width: 100%;
+    min-width: 0;
     display: flex;
     min-height: var(--terminal-mobile-viewport-height);
     height: var(--terminal-mobile-viewport-height);
@@ -3660,6 +3666,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: var(--terminal-mobile-viewport-height);
     height: var(--terminal-mobile-viewport-height);
     max-height: var(--terminal-mobile-viewport-height);
@@ -3754,6 +3762,8 @@
     display: flex;
     flex: 1 1 auto;
     gap: 0;
+    width: 100%;
+    min-width: 0;
     min-height: 0;
     height: 100%;
     overflow: hidden;
@@ -3763,6 +3773,8 @@
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
     min-height: 0;
     height: 100%;
     max-height: 100%;
@@ -3803,6 +3815,8 @@
     flex: 0 0 auto;
     flex-shrink: 0;
     order: 3;
+    width: 100%;
+    min-width: 0;
     position: relative;
     z-index: 2;
     gap: 0;
@@ -3810,6 +3824,10 @@
     border-top: 1px solid rgba(71, 85, 105, 0.58);
     background: linear-gradient(180deg, rgba(6, 10, 14, 0.98) 0%, rgba(3, 7, 12, 1) 100%);
     box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.2);
+    max-height: min(42vh, 280px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .beginner-mode-banner {
@@ -3830,17 +3848,10 @@
 
   .terminal-page.terminal-beginner-mode .terminal-controls {
     display: grid;
-    grid-template-columns: repeat(4, 44px);
+    grid-template-columns: repeat(auto-fit, minmax(40px, 44px));
     justify-content: start;
     gap: 8px;
     margin: 0 0 10px;
-  }
-
-  .terminal-page.terminal-beginner-mode #startScenarioBtn,
-  .terminal-page.terminal-beginner-mode #previousScenarioBtn,
-  .terminal-page.terminal-beginner-mode #resetScenarioBtn,
-  .terminal-page.terminal-beginner-mode #nextScenarioBtn {
-    display: none;
   }
 
   .terminal-page.terminal-beginner-mode .beginner-task-strip,
@@ -4328,7 +4339,13 @@
   }
 
   .beginner-onboarding-card {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9501 !important;
     padding: 10px;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
   }
 
   .beginner-onboarding-shell {
@@ -4675,6 +4692,12 @@ body:not(.command-sheet-open) .command-sheet {
 
 body.command-sheet-open .command-sheet {
   visibility: visible;
+}
+
+@media (max-width: 768px) {
+  body:not(.command-sheet-open) .command-sheet {
+    transform: translateY(100%);
+  }
 }
 
 .command-sheet-overlay[hidden] {

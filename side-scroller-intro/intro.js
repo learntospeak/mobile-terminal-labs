@@ -7,6 +7,7 @@ const soundBtn = document.getElementById("soundBtn");
 const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const embedMode = new URLSearchParams(window.location.search).get("embed");
+const terminalLabUrl = "../terminal-coach.html?track=windows&mode=beginner&skipIntro=1";
 
 let audioContext = null;
 let masterGain = null;
@@ -27,6 +28,19 @@ function configureEmbeddedMode() {
   document.querySelector(".eyebrow").textContent = "Beginner terminal lab";
   document.querySelector(".prototype-toolbar h1").textContent = "Cyber Ops Briefing";
   document.querySelector(".crt-note").textContent = "Opening the beginner terminal lab...";
+}
+
+function openTerminalLab() {
+  window.location.href = terminalLabUrl;
+}
+
+function completeIntro() {
+  if (embedMode === "terminal") {
+    window.parent?.postMessage({ type: "netlab:intro-complete" }, window.location.origin);
+    return;
+  }
+
+  openTerminalLab();
 }
 
 async function ensureAudio() {
@@ -344,11 +358,13 @@ const steps = [
       stage.classList.add("show-crt");
       sceneStatus.textContent = embedMode === "terminal"
         ? "Opening Beginner Terminal Lab..."
-        : "Prototype terminal transition. Not connected to the real lab yet.";
+        : "Opening Beginner Terminal Lab...";
       if (embedMode === "terminal") {
         window.setTimeout(() => {
-          window.parent?.postMessage({ type: "netlab:intro-complete" }, window.location.origin);
+          completeIntro();
         }, 900);
+      } else {
+        window.setTimeout(completeIntro, 900);
       }
     }
   }

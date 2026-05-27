@@ -994,7 +994,49 @@
       return;
     }
 
+    const mobileBeginnerMode = isBeginnerMode() && isMobileTerminalLayout();
+
+    const setManualInputSuppressed = (suppressed) => {
+      els.terminalForm.hidden = suppressed;
+      els.terminalForm.setAttribute("aria-hidden", suppressed ? "true" : "false");
+      if (els.terminalInput) {
+        els.terminalInput.disabled = suppressed;
+        if (suppressed && document.activeElement === els.terminalInput) {
+          els.terminalInput.blur();
+        }
+      }
+    };
+
+    const parkManualInput = () => {
+      let parking = document.getElementById("terminalHiddenInputParking");
+      if (!parking) {
+        parking = document.createElement("div");
+        parking.id = "terminalHiddenInputParking";
+        parking.hidden = true;
+        document.body.appendChild(parking);
+      }
+      if (els.terminalForm.parentElement !== parking) {
+        parking.appendChild(els.terminalForm);
+      }
+    };
+
+    const mountMobileControls = () => {
+      if (!els.terminalMobileControlMount) {
+        return;
+      }
+      [
+        els.terminalControls,
+        els.beginnerTaskStrip,
+        els.beginnerHelpStrip
+      ].filter(Boolean).forEach((node) => {
+        if (node.parentElement !== els.terminalMobileControlMount) {
+          els.terminalMobileControlMount.appendChild(node);
+        }
+      });
+    }
+
     if (inlineMobileInput) {
+      setManualInputSuppressed(false);
       if (els.terminalInlineInputSlot) {
         [
           els.beginnerTaskStrip,
@@ -1011,19 +1053,15 @@
     }
 
     syncMobileTerminalInputMode();
+    mountMobileControls();
 
-    if (els.terminalMobileControlMount) {
-      [
-        els.terminalControls,
-        els.beginnerTaskStrip,
-        els.beginnerHelpStrip
-      ].filter(Boolean).forEach((node) => {
-        if (node.parentElement !== els.terminalMobileControlMount) {
-          els.terminalMobileControlMount.appendChild(node);
-        }
-      });
+    if (mobileBeginnerMode) {
+      setManualInputSuppressed(true);
+      parkManualInput();
+      return;
     }
 
+    setManualInputSuppressed(false);
     if (els.terminalDockInputMount && els.terminalForm.parentElement !== els.terminalDockInputMount) {
       els.terminalDockInputMount.appendChild(els.terminalForm);
     }
@@ -1036,15 +1074,20 @@
     if (!visualViewport) {
       return {
         visibleHeight: layoutHeight,
+        layoutHeight,
         keyboardOffset: 0,
         offsetTop: 0
       };
     }
 
+    const visibleHeight = Math.min(Math.round(visualViewport.height || layoutHeight), layoutHeight);
+    const offsetTop = Math.max(0, Math.round(visualViewport.offsetTop || 0));
+
     return {
-      visibleHeight: Math.round(visualViewport.height),
-      keyboardOffset: Math.max(0, Math.round(layoutHeight - (visualViewport.height + visualViewport.offsetTop))),
-      offsetTop: Math.max(0, Math.round(visualViewport.offsetTop || 0))
+      visibleHeight,
+      layoutHeight,
+      keyboardOffset: Math.max(0, Math.round(layoutHeight - (visibleHeight + offsetTop))),
+      offsetTop
     };
   }
 
@@ -1092,14 +1135,16 @@
 
     session.mobileViewportRaf = window.requestAnimationFrame(() => {
       session.mobileViewportRaf = 0;
-      const { visibleHeight, keyboardOffset } = mobileViewportMetrics();
+      const metrics = mobileViewportMetrics();
       const activeInput = document.activeElement === els.terminalInput;
+      const visibleHeight = activeInput ? metrics.visibleHeight : metrics.layoutHeight;
+      const keyboardOffset = activeInput ? metrics.keyboardOffset : 0;
       const baselineViewportHeight = session.mobileStableViewportHeight || visibleHeight;
       const viewportLoss = Math.max(0, baselineViewportHeight - visibleHeight);
       const keyboardOpen = Boolean(activeInput);
       const keyboardViewportActive = keyboardOpen && (keyboardOffset > 48 || viewportLoss > 64 || visibleHeight < baselineViewportHeight - 48);
 
-      if (!session.mobileStableViewportHeight || (!activeInput && visibleHeight >= session.mobileStableViewportHeight)) {
+      if (!session.mobileStableViewportHeight || !activeInput || visibleHeight >= session.mobileStableViewportHeight) {
         session.mobileStableViewportHeight = visibleHeight;
       }
 
@@ -3466,6 +3511,10 @@
       return;
     }
 
+    if (!session.state) {
+      return;
+    }
+
     if (!panel) {
       panel = document.createElement("section");
       panel.className = "terminal-mobile-command-panel";
@@ -4653,6 +4702,13 @@
     }
 
     const force = Boolean(options.force);
+    const skipIntro = new URLSearchParams(window.location.search).get("skipIntro") === "1";
+    if (!force && skipIntro) {
+      session.beginnerGuideSeen = true;
+      closeBeginnerGuide({ restoreFocus: false });
+      return;
+    }
+
     const alreadySeen = readLocalFlag(beginnerGuideStorageKey());
     if (!force && alreadySeen) {
       session.beginnerGuideSeen = true;
@@ -9205,7 +9261,10 @@
   function bindEvents() {
     if (!els.terminalForm || !els.terminalInput) {
       console.error("[TerminalDebug] terminal form/input missing");
-    } else if (els.terminalForm.offsetParent === null || els.terminalInput.offsetParent === null) {
+    } else if (
+      (!isBeginnerMode() || !isMobileTerminalLayout()) &&
+      (els.terminalForm.offsetParent === null || els.terminalInput.offsetParent === null)
+    ) {
       console.warn("[TerminalDebug] terminal form may be hidden", {
         formHidden: els.terminalForm.offsetParent === null,
         inputHidden: els.terminalInput.offsetParent === null
@@ -9385,6 +9444,10 @@
     if (els.beginnerOnboardingStartBtn) {
       els.beginnerOnboardingStartBtn.addEventListener("click", () => {
         closeBeginnerGuide({ restoreFocus: false });
+        if (isMobileTerminalLayout() && session.ticketBriefingOpen) {
+          closeTicketBriefing({ restoreFocus: false });
+          return;
+        }
         if (session.ticketBriefingOpen && els.ticketBriefingStartBtn) {
           els.ticketBriefingStartBtn.focus({ preventScroll: true });
         } else {
@@ -9508,6 +9571,8 @@
 
     const handleViewportResize = () => {
       syncMobileViewportMetrics();
+      renderMobileCommandChoices();
+      syncMobileAppBarActions();
       if (document.activeElement === els.terminalInput) {
         scheduleMobileTerminalReveal(48);
       }
@@ -9568,6 +9633,18 @@
 
     window.addEventListener("resize", handleViewportResize);
     window.addEventListener("orientationchange", handleViewportResize);
+    window.addEventListener("pageshow", () => {
+      syncTerminalInputPlacement();
+      syncMobileViewportMetrics();
+      renderMobileCommandChoices();
+      syncMobileAppBarActions();
+    });
+    const mobileLayoutQuery = window.matchMedia("(max-width: 768px)");
+    if (typeof mobileLayoutQuery.addEventListener === "function") {
+      mobileLayoutQuery.addEventListener("change", handleViewportResize);
+    } else if (typeof mobileLayoutQuery.addListener === "function") {
+      mobileLayoutQuery.addListener(handleViewportResize);
+    }
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", handleViewportResize);
