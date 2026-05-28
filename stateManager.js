@@ -427,6 +427,149 @@
     return { ok: true };
   }
 
+  function addAmbientDirectory(state, path) {
+    if (!state.fs[normalizePath(state, path, getRootPath(state))]) {
+      ensureDirectory(state, path);
+    }
+  }
+
+  function addAmbientFile(state, fileDef) {
+    const normalized = normalizePath(state, fileDef.path, getRootPath(state));
+    if (!state.fs[normalized]) {
+      createFile(state, fileDef);
+    }
+  }
+
+  function addAmbientFilesForDirectory(state, dirPath, files) {
+    files.forEach((file) => {
+      addAmbientFile(state, {
+        path: `${dirPath}/${file.name}`,
+        content: file.content,
+        hidden: Boolean(file.hidden),
+        attributes: file.attributes || []
+      });
+    });
+  }
+
+  function applyWindowsFilesystemDressing(state) {
+    [
+      "C:/Lab/Archive",
+      "C:/Lab/Archive/Old",
+      "C:/Lab/Evidence",
+      "C:/Lab/Notes",
+      "C:/Lab/Reports/Drafts",
+      "C:/Lab/Temp/Staging",
+      "C:/Lab/Tickets",
+      "C:/Lab/Tools",
+      "C:/Lab/Tools/Docs",
+      "C:/Lab/Tools/Scripts",
+      "C:/Users/student/Desktop/Tickets",
+      "C:/Users/student/Downloads/Installers"
+    ].forEach((dir) => addAmbientDirectory(state, dir));
+
+    addAmbientFilesForDirectory(state, "C:/Lab", [
+      { name: "README.txt", content: "Lab workspace. Check the ticket before changing files.\r\n" },
+      { name: "case-index.txt", content: "INC-1042  open\r\nINC-1041  archived\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Reports", [
+      { name: "draft-summary.txt", content: "Draft summary - verify evidence before submitting.\r\n" },
+      { name: "previous-ticket.txt", content: "Previous ticket closed after service restart.\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Logs", [
+      { name: "system.log", content: "INFO boot complete\r\nWARN update retry scheduled\r\n" },
+      { name: "access-old.log", content: "analyst login accepted\r\nservice account reviewed\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Notes", [
+      { name: "handoff-note.txt", content: "Night shift asked for a clean evidence trail.\r\n" },
+      { name: "scratch.txt", content: "Remember to confirm the exact folder before copying.\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Archive", [
+      { name: "readme.txt", content: "Older material lives here. Do not use it unless the ticket asks.\r\n" },
+      { name: "old-case-note.bak", content: "Archived note from a previous case.\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Temp", [
+      { name: "session.tmp", content: "temporary workspace marker\r\n" },
+      { name: "do-not-delete-current.txt", content: "Current collection marker.\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Tools/Docs", [
+      { name: "usage-notes.txt", content: "Tool notes: list folders before running scripts.\r\n" },
+      { name: "network-checklist.txt", content: "ipconfig, ping, nslookup, route print\r\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "C:/Lab/Tickets", [
+      { name: "open-ticket.txt", content: "User reports intermittent access to shared resources.\r\n" },
+      { name: "triage-queue.txt", content: "network share, backup job, workstation identity\r\n" }
+    ]);
+  }
+
+  function applyLinuxFilesystemDressing(state) {
+    [
+      "/home/student/archive",
+      "/home/student/downloads/tmp",
+      "/home/student/evidence",
+      "/home/student/notes",
+      "/home/student/output/old",
+      "/home/student/reports/drafts",
+      "/home/student/scripts/helpers",
+      "/home/student/targets",
+      "/tmp/lab",
+      "/var/log/archive",
+      "/srv/app",
+      "/srv/app/logs"
+    ].forEach((dir) => addAmbientDirectory(state, dir));
+
+    addAmbientFilesForDirectory(state, "/home/student", [
+      { name: "README.txt", content: "Student lab home. Start with pwd and ls when unsure.\n" },
+      { name: ".bash_history", content: "pwd\nls\ncat reports/readme.txt\n", hidden: true }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/reports", [
+      { name: "draft-notes.txt", content: "Draft notes - replace guesses with evidence.\n" },
+      { name: "old-summary.txt", content: "Older summary kept for comparison only.\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/targets", [
+      { name: "scope.txt", content: "Stay inside the lab hosts and documented target names.\n" },
+      { name: "hosts-backup.txt", content: "web-lab\nmail-lab\nfileserver\nmetasploitable2\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/output", [
+      { name: "scan-draft.txt", content: "Draft output from an earlier practice run.\n" },
+      { name: "notes.tmp", content: "temporary output notes\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/downloads", [
+      { name: "download-log.txt", content: "2026-04-17 package cached\n2026-04-17 evidence copied\n" },
+      { name: "README.txt", content: "Downloaded lab material and temporary files.\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/recon", [
+      { name: "recon-notes.txt", content: "Confirm target names before scanning.\n" },
+      { name: "old-targets.txt", content: "legacy-web\nlegacy-mail\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/evidence", [
+      { name: "chain-of-custody.txt", content: "Record what was read, copied, or moved.\n" },
+      { name: "old-access.log", content: "user=guest src=10.0.0.25 status=expired\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/home/student/scripts", [
+      { name: "README.md", content: "Helper scripts live in subfolders. Check before running.\n" },
+      { name: "todo.txt", content: "add argument checks\nsave output under reports\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/var/log", [
+      { name: "auth.log", content: "Accepted password for student from 10.0.0.15\n" },
+      { name: "daemon.log", content: "lab-daemon started\nlab-daemon health check ok\n" }
+    ]);
+    addAmbientFilesForDirectory(state, "/srv/app/logs", [
+      { name: "app.log", content: "INFO app boot\nWARN cache rebuild pending\n" },
+      { name: "access.log", content: "GET /health 200\nGET /login 200\n" }
+    ]);
+  }
+
+  function applyFilesystemDressing(state, base) {
+    if (base.filesystemDressing === false || isCiscoState(state)) return;
+
+    if (isWindowsState(state)) {
+      applyWindowsFilesystemDressing(state);
+      return;
+    }
+
+    applyLinuxFilesystemDressing(state);
+  }
+
   function createState(environment) {
     const base = clone(environment);
     const ciscoPlatform = base.platform === "cisco";
@@ -503,6 +646,7 @@
 
     (base.directories || []).forEach((dir) => ensureDirectory(state, dir));
     (base.files || []).forEach((file) => createFile(state, file));
+    applyFilesystemDressing(state, base);
 
     return state;
   }
