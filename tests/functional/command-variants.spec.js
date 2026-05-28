@@ -111,24 +111,24 @@ test("Command variants: alternate solutions complete matching objectives", async
   await loadScenarioById(page, "win-netstat-connection-audit");
   await runTerminalCommand(page, "netstat", { resetBefore: true });
   await runTerminalCommand(page, "netstat -a");
-  const netstatAlt = await runTerminalCommand(page, "netstat -aon");
+  const netstatAlt = await runTerminalCommand(page, "netstat -an | findstr LISTENING");
   await page.waitForTimeout(150);
   const netstatTask = await readText(page, "#stepObjective");
   report.commandResults.push(netstatAlt);
-  pushCheck(report, "netstat -aon completes PID objective", netstatAlt.accepted && /Filter the PID view/i.test(netstatTask), `${netstatTask} | ${netstatAlt.notes}`);
-  addLabHealth(report, { commandsTested: ["netstat -aon"], acceptedVariations: netstatAlt.accepted ? ["netstat -aon"] : [], rejectedReasonableAlternatives: netstatAlt.accepted ? [] : ["netstat -aon"] });
-  expect(netstatAlt.accepted && /Filter the PID view/i.test(netstatTask)).toBeTruthy();
+  pushCheck(report, "findstr LISTENING completes listening-port objective", netstatAlt.accepted && /netstat-review/i.test(netstatTask), `${netstatTask} | ${netstatAlt.notes}`);
+  addLabHealth(report, { commandsTested: ["netstat -an | findstr LISTENING"], acceptedVariations: netstatAlt.accepted ? ["netstat -an | findstr LISTENING"] : [], rejectedReasonableAlternatives: netstatAlt.accepted ? [] : ["netstat -an | findstr LISTENING"] });
+  expect(netstatAlt.accepted && /netstat-review/i.test(netstatTask)).toBeTruthy();
 
   await loadScenarioById(page, "win-arp-and-route-review");
-  await runTerminalCommand(page, "arp -a", { resetBefore: true });
-  await runTerminalCommand(page, "arp -d");
+  await runTerminalCommand(page, "ipconfig", { resetBefore: true });
+  await runTerminalCommand(page, "arp -a");
   const routeAlt = await runTerminalCommand(page, "netstat -r");
   await page.waitForTimeout(150);
   const routeTask = await readText(page, "#stepObjective");
   report.commandResults.push(routeAlt);
-  pushCheck(report, "netstat -r completes route-table objective", routeAlt.accepted && /IPv4 routes/i.test(routeTask), `${routeTask} | ${routeAlt.notes}`);
+  pushCheck(report, "netstat -r completes route-table objective", routeAlt.accepted && /neighbor-route/i.test(routeTask), `${routeTask} | ${routeAlt.notes}`);
   addLabHealth(report, { commandsTested: ["netstat -r"], acceptedVariations: routeAlt.accepted ? ["netstat -r"] : [], rejectedReasonableAlternatives: routeAlt.accepted ? [] : ["netstat -r"] });
-  expect(routeAlt.accepted && /IPv4 routes/i.test(routeTask)).toBeTruthy();
+  expect(routeAlt.accepted && /neighbor-route/i.test(routeTask)).toBeTruthy();
 
   await loadScenarioById(page, "win-ipconfig-and-getmac-audit");
   await runTerminalCommand(page, "ipconfig", { resetBefore: true });
@@ -136,9 +136,9 @@ test("Command variants: alternate solutions complete matching objectives", async
   await page.waitForTimeout(150);
   const ipconfigTask = await readText(page, "#stepObjective");
   report.commandResults.push(dnsDetail);
-  pushCheck(report, "ipconfig /all satisfies DNS-server lookup task", dnsDetail.accepted && /saved DNS answers/i.test(ipconfigTask) && /DNS/i.test(dnsDetail.notes), `${ipconfigTask} | ${dnsDetail.notes}`);
+  pushCheck(report, "ipconfig /all satisfies adapter-detail task", dnsDetail.accepted && /getmac|hardware address/i.test(ipconfigTask) && /DNS|Physical Address/i.test(dnsDetail.notes), `${ipconfigTask} | ${dnsDetail.notes}`);
   addLabHealth(report, { commandsTested: ["ipconfig /all"], acceptedVariations: dnsDetail.accepted ? ["ipconfig /all"] : [], rejectedReasonableAlternatives: dnsDetail.accepted ? [] : ["ipconfig /all"] });
-  expect(dnsDetail.accepted && /saved DNS answers/i.test(ipconfigTask)).toBeTruthy();
+  expect(dnsDetail.accepted && /getmac|hardware address/i.test(ipconfigTask)).toBeTruthy();
 
   await attachSmokeData(testInfo, report);
 });

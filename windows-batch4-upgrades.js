@@ -1,7 +1,7 @@
 (function(){
 var e=window.ScenarioEngine;if(!e||!Array.isArray(e.scenarios))return;
 function f(id){return e.scenarios.find(function(x){return x&&x.id===id;});}
-function c(x){return{command:x};}function made(p,n){return{command:n||'echo',fileExists:p};}function gone(p,n){return{command:n||'rmdir',fileMissing:p};}function cd(p){return{command:'cd',finalCwd:p};}
+function c(x){if(x==='findstr')return{pipelineCommands:['findstr']};if(x==='route')return{raw:/^(route\s+print|netstat\s+-r)\b/i};return{command:x};}function made(p,n){return{command:n||'echo',fileExists:p};}function gone(p,n){return{command:n||'rmdir',fileMissing:p};}function cd(p){return{command:'cd',finalCwd:p};}
 var ex=[{match:{command:'dir'},feedback:'Good check. Confirm files and folders before acting.'},{match:{command:'type'},feedback:'Good verification. Read evidence before closing the ticket.'},{match:{command:'echo'},feedback:'Good documentation step. Save a short result note.'},{match:{raw:/^cd\s+\.\.$/i},feedback:'You moved back one folder. Check the prompt before continuing.'}];
 function base(files){return{platform:'cmd',cwd:'C:/Lab/Reports',directories:['C:/Lab','C:/Lab/Reports','C:/Lab/Temp','C:/Lab/Review','C:/Lab/Logs','C:/Lab/Startup','C:/Lab/Archive'],files:files||[{path:'C:/Lab/Reports/readme.txt',content:'Put ticket notes here.\n'}]};}
 function patch(id,title,obj,focus,env,steps){var s=f(id);if(!s||s.__batch4)return;s.__batch4=true;s.title=title;s.objective=obj;s.commandFocus=focus;s.environment=Object.assign({},s.environment||{},env);s.steps=steps.map(function(st){st.exploration=st.exploration||ex;return st;});}

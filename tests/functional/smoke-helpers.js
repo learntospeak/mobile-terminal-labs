@@ -186,6 +186,7 @@ async function resetTerminalScenario(page) {
   if (await reset.count()) {
     await dismissTicketBriefingIfPresent(page);
     await dismissTaskCompleteIfPresent(page);
+    await dismissCommandExplainerIfPresent(page);
     if (await reset.isVisible()) {
       await reset.click();
     } else {
@@ -194,6 +195,7 @@ async function resetTerminalScenario(page) {
     await page.waitForTimeout(250);
     await dismissTicketBriefingIfPresent(page);
     await dismissTaskCompleteIfPresent(page);
+    await dismissCommandExplainerIfPresent(page);
   }
 }
 

@@ -1,7 +1,7 @@
 (function(){
 var e=window.ScenarioEngine;if(!e||!Array.isArray(e.scenarios))return;
 function f(id){return e.scenarios.find(function(x){return x&&x.id===id;});}
-function c(x){return{command:x};}function made(p,n){return{command:n||'echo',fileExists:p};}
+function c(x){return x==='findstr'?{pipelineCommands:['findstr']}:{command:x};}function made(p,n){return{command:n||'echo',fileExists:p};}
 var ex=[{match:{command:'dir'},feedback:'Good check. Confirm where you are and what files are available.'},{match:{command:'type'},feedback:'Good verification step. Read the evidence before concluding.'},{match:{command:'echo'},feedback:'Good documentation step. Short notes help close the ticket.'}];
 function patch(id,title,obj,focus,env,steps){var s=f(id);if(!s||s.__batch2)return;s.__batch2=true;s.title=title;s.objective=obj;s.commandFocus=focus;s.environment=Object.assign({},s.environment||{},env);s.steps=steps.map(function(st){st.exploration=st.exploration||ex;return st;});}
 function step(o,fam,demo){return{objective:o,commandFamily:fam,hints:['Read the task.','Use '+fam+'.','Try `'+demo+'`.'],demoCommand:demo,accepts:[c(fam)]};}

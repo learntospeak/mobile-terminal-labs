@@ -23,8 +23,8 @@ test("Home Resume button opens a safe beginner lab fallback", async ({ page }) =
   await expect(resume).toHaveText(/Resume/i);
 
   await resume.click();
-  await expect(page).toHaveURL(/terminal-coach\.html.*track=windows/);
-  await expect(page.locator("#terminalPageTitle")).toBeVisible();
+  await expect(page).toHaveURL(/windows-beginner-intro\.html/);
+  await expect(page.locator("main")).toContainText(/Cyber Ops Briefing|Windows beginner lab/i);
 });
 
 test("Home Resume button continues saved lab progress", async ({ page }) => {
@@ -42,8 +42,6 @@ test("Home Resume button continues saved lab progress", async ({ page }) => {
   await expect(page.locator("#resumeLastBtn")).toHaveText(/Resume Last Lab/);
 
   await page.locator("#resumeLastBtn").click();
-  await expect(page.locator("#hubResumeModal")).toBeVisible();
-  await page.locator("#hubResumeContinue").click();
   await expect(page).toHaveURL(/terminal-coach\.html.*track=linux/);
   await expect(page.locator("#terminalOutput")).toBeVisible();
 });
