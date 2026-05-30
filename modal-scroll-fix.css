@@ -41,6 +41,12 @@
   overflow-wrap: anywhere;
 }
 
+.terminal-page #missionReviewCard[hidden],
+.terminal-page .mission-review-card[hidden],
+.terminal-page .mission-review-page[hidden] {
+  display: none !important;
+}
+
 @media (max-width: 760px) {
   html.terminal-review-open,
   body.terminal-review-open,
@@ -77,6 +83,14 @@
     pointer-events: none;
     background: rgba(2, 6, 12, 0.78);
     backdrop-filter: blur(6px);
+  }
+
+  body.terminal-review-open .terminal-page #missionReviewCard:not([hidden]),
+  body.terminal-review-open .terminal-page .mission-review-card:not([hidden]),
+  body.terminal-review-open .terminal-page .mission-review-page:not([hidden]) {
+    display: grid !important;
+    z-index: 10000 !important;
+    pointer-events: auto !important;
   }
 
   .terminal-page #missionReviewCard .mission-review-head,

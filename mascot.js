@@ -91,7 +91,7 @@
     }, 0);
   }
   loadStylesheet("appThemeStylesheet", "./app-theme.css?v=20260527mobiletoggle1");
-  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260530reviewmodal1");
+  loadStylesheet("terminalModalScrollFixStylesheet", "./modal-scroll-fix.css?v=20260530reviewmodal2");
   loadTerminalPatches();
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", removeInvestigationExperimentUi, { once: true });

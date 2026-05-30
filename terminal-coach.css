@@ -3747,6 +3747,21 @@
     backdrop-filter: blur(6px);
   }
 
+  body.terminal-review-open #missionReviewCard:not([hidden]),
+  body.terminal-review-open .mission-review-card:not([hidden]) {
+    display: grid !important;
+    position: fixed !important;
+    inset: calc(env(safe-area-inset-top) + 10px) 10px calc(env(safe-area-inset-bottom) + 10px) !important;
+    z-index: 10000 !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(var(--terminal-mobile-viewport-height) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px) !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    pointer-events: auto !important;
+  }
+
   .terminal-page {
     --terminal-mobile-dock-space: 0px;
     min-height: var(--terminal-mobile-viewport-height);

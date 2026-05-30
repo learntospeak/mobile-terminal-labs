@@ -137,3 +137,38 @@ test("mobile mission review opens as a contained readable modal", async ({ page 
   await expect(page.locator("[data-mobile-command-choice]").first()).toBeVisible();
   await expect(page.locator("body")).not.toHaveClass(/terminal-review-open/);
 });
+
+test("wide mobile mission review renders above the haze", async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 768, height: 844 } });
+  try {
+    await completeNotesMission(page);
+    const review = page.locator("#missionReviewCard");
+    await expect(review).toBeVisible();
+
+    const paintState = await page.evaluate(() => {
+      const card = document.querySelector("#missionReviewCard");
+      const close = document.querySelector("#missionReviewCard .mission-review-close");
+      const rect = card?.getBoundingClientRect();
+      const centerX = rect ? Math.floor(rect.left + rect.width / 2) : 0;
+      const centerY = rect ? Math.floor(rect.top + Math.min(rect.height / 2, 220)) : 0;
+      const topElement = document.elementFromPoint(centerX, centerY);
+      return {
+        display: card ? getComputedStyle(card).display : "",
+        zIndex: card ? Number(getComputedStyle(card).zIndex) : 0,
+        closeVisible: close ? getComputedStyle(close).display !== "none" : false,
+        topElementInsideCard: Boolean(topElement && card?.contains(topElement)),
+        width: rect?.width || 0,
+        height: rect?.height || 0
+      };
+    });
+
+    expect(paintState.display).not.toBe("none");
+    expect(paintState.zIndex).toBeGreaterThanOrEqual(10000);
+    expect(paintState.closeVisible).toBe(true);
+    expect(paintState.topElementInsideCard).toBe(true);
+    expect(paintState.width).toBeGreaterThan(0);
+    expect(paintState.height).toBeGreaterThan(0);
+  } finally {
+    await page.close();
+  }
+});
