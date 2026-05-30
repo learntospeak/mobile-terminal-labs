@@ -3729,7 +3729,8 @@
           hints: [
             "The problem is scope, not just speed.",
             "You need more than Nmap's default port selection.",
-            "Use the option that checks the full TCP range."
+            "Use the option that checks the full TCP range.",
+            "Try `nmap -p- custom-app`."
           ],
           explanation: "When the default scan misses the expected service, the correct next move is to widen the search space to all TCP ports.",
           whyThisMatters: "Coverage decisions matter. A narrow scan can hide the very service you are trying to prove exists.",
@@ -4095,7 +4096,8 @@
           hints: [
             "Host identity and port identity are different checks.",
             "A failed service connection does not always mean the host is wrong.",
-            "Reconnect to metasploitable2 on the real SMTP port."
+            "Reconnect to metasploitable2 on the real SMTP port.",
+            "Try `nc metasploitable2 25`."
           ],
           explanation: "When the host is right but the port is wrong, the correct recovery is to adjust the service port, not abandon the target.",
           whyThisMatters: "Operators separate host problems from port problems instead of treating them as the same failure.",
@@ -4209,7 +4211,8 @@
           hints: [
             "This is a raw connectivity check to a secure web port.",
             "You do not need a local listener for this task.",
-            "Connect directly to web-lab on port 443."
+            "Connect directly to web-lab on port 443.",
+            "Try `nc web-lab 443`."
           ],
           explanation: "Even when the higher-level protocol is HTTPS, Netcat can still tell you whether the socket accepts the connection.",
           whyThisMatters: "Operators often separate transport reachability from full application-layer testing.",

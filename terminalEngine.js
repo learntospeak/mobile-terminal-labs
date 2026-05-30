@@ -3314,22 +3314,56 @@
     return match ? match[1].trim() : "";
   }
 
+  function extractBacktickCommands(text) {
+    return Array.from(String(text || "").matchAll(/`([^`]+)`/g))
+      .map((match) => match[1].trim())
+      .filter(Boolean);
+  }
+
+  function extractPreferredHintCommand(hints = []) {
+    const tryCommands = hints
+      .map((hint) => String(hint || ""))
+      .filter((hint) => /\btry\b/i.test(hint))
+      .flatMap(extractBacktickCommands);
+    const tryHint = tryCommands[tryCommands.length - 1];
+
+    return tryHint || hints.map(extractBacktickCommand).find(Boolean) || "";
+  }
+
   function suggestedCommandForStep(step = currentStep()) {
     if (!step) {
       return "";
     }
 
-    if (step.demoCommand) {
-      return String(step.demoCommand).trim();
+    const fileCreationRule = (step.accepts || []).find((rule) => rule?.command === "echo" && rule.fileExists);
+    if (fileCreationRule) {
+      return `echo checked > ${fileCreationRule.fileExists}`;
+    }
+
+    const verifyFileMatch = String(step.objective || "").match(/^Verify\s+([^\s]+)\s+opens\.?$/i);
+    if (verifyFileMatch) {
+      const fileName = verifyFileMatch[1];
+      return StateManager.isWindowsState(session.state)
+        ? `type C:\\Lab\\Reports\\${fileName}`
+        : `cat /home/student/reports/${fileName}`;
+    }
+
+    const hinted = extractPreferredHintCommand(step.hints || []);
+    if (hinted) {
+      return hinted;
+    }
+
+    const commandHint = extractBacktickCommand(step.commandHint);
+    if (commandHint) {
+      return commandHint;
     }
 
     if (Array.isArray(step.walkthrough) && step.walkthrough.length && step.walkthrough[0]?.command) {
       return String(step.walkthrough[0].command).trim();
     }
 
-    const hinted = (step.hints || []).map(extractBacktickCommand).find(Boolean);
-    if (hinted) {
-      return hinted;
+    if (step.demoCommand) {
+      return String(step.demoCommand).trim();
     }
 
     const acceptRule = (step.accepts || []).find((rule) => rule && (rule.command || rule.finalCwd));
@@ -3338,6 +3372,17 @@
     }
     if (acceptRule?.command) {
       return String(acceptRule.command).trim();
+    }
+
+    const objective = String(step.objective || "").toLowerCase();
+    if (objective.includes("full tcp port scan")) {
+      return "nmap -p- custom-app";
+    }
+    if (objective.includes("real smtp service")) {
+      return "nc metasploitable2 25";
+    }
+    if (objective.includes("port 443")) {
+      return "nc web-lab 443";
     }
 
     return "";
@@ -3399,11 +3444,11 @@
       .slice()
       .sort((left, right) => stableChoiceScore(left, seed) - stableChoiceScore(right, seed));
 
-    if (ordered.length > 1 && ordered[0] === suggested) {
-      const swapIndex = ordered.findIndex((choice, index) => index > 0 && choice !== suggested);
-      if (swapIndex > 0) {
-        [ordered[0], ordered[swapIndex]] = [ordered[swapIndex], ordered[0]];
-      }
+    const normalizedSuggested = String(suggested || "").trim().toLowerCase();
+    const suggestedIndex = ordered.findIndex((choice) => choice.toLowerCase() === normalizedSuggested);
+    if (suggestedIndex > -1) {
+      const [suggestedChoice] = ordered.splice(suggestedIndex, 1);
+      ordered.splice(Math.min(1, ordered.length), 0, suggestedChoice);
     }
 
     return ordered;
@@ -6777,6 +6822,16 @@
       };
     }
 
+    if ((isCiscoState() && /^(?:10\.10\.10\.20|10\.20\.0\.10|192\.168\.10\.10)$/.test(normalized))
+      || (StateManager.isWindowsState(session.state) && /^10\.10\.10\.20$/.test(normalized))) {
+      return {
+        ip: normalized,
+        hostname: normalized,
+        reachable: true,
+        ports: []
+      };
+    }
+
     return {
       ip: normalized,
       hostname: normalized,
@@ -6824,11 +6879,26 @@
   }
 
   function ciscoRouterState() {
-    return session.state.router || {};
+    if (!session.state.router) {
+      session.state.router = {};
+    }
+    return session.state.router;
+  }
+
+  function defaultCiscoInterfaces() {
+    return [
+      { name: "GigabitEthernet0/0", aliases: ["g0/0", "gi0/0"], ipAddress: "192.168.10.1", subnetMask: "255.255.255.0", adminUp: true, lineProtocol: true, description: "LAN" },
+      { name: "GigabitEthernet0/1", aliases: ["g0/1", "gi0/1"], ipAddress: "", subnetMask: "", adminUp: false, lineProtocol: false, description: "" },
+      { name: "GigabitEthernet0/2", aliases: ["g0/2", "gi0/2"], ipAddress: "", subnetMask: "", adminUp: true, lineProtocol: false, description: "Unused" }
+    ];
   }
 
   function ciscoInterfaces() {
-    return Array.isArray(ciscoRouterState().interfaces) ? ciscoRouterState().interfaces : [];
+    const router = ciscoRouterState();
+    if (!Array.isArray(router.interfaces) || !router.interfaces.length) {
+      router.interfaces = defaultCiscoInterfaces();
+    }
+    return router.interfaces;
   }
 
   function normalizeCiscoInterfaceName(value) {
@@ -7306,6 +7376,7 @@
 
   function hasValidPortListSyntax(value) {
     if (!value) return true;
+    if (value.trim() === "-") return true;
     return /^\d+(,\d+)*$/.test(value.trim());
   }
 
@@ -7705,20 +7776,26 @@
     }
 
     if (subcommand === "ip interface brief") {
-      const modeError = requireCiscoMode(["user-exec", "privileged-exec"], "% Leave configuration mode before using show ip interface brief in this trainer.");
+      const modeError = requireCiscoMode(["user-exec", "privileged-exec", "global-config", "interface-config"], "% Leave configuration mode before using show ip interface brief in this trainer.");
       if (modeError) return modeError;
       return okResult(formatCiscoInterfaceBriefOutput());
     }
 
+    if (subcommand === "clock") {
+      const modeError = requireCiscoMode(["user-exec", "privileged-exec"], "% show clock is available from EXEC mode.");
+      if (modeError) return modeError;
+      return okResult(["*09:14:32.000 UTC Thu May 28 2026"]);
+    }
+
     if (subcommand.startsWith("interfaces")) {
-      const modeError = requireCiscoMode(["user-exec", "privileged-exec"], "% Leave configuration mode before using show interfaces in this trainer.");
+      const modeError = requireCiscoMode(["user-exec", "privileged-exec", "global-config", "interface-config"], "% Leave configuration mode before using show interfaces in this trainer.");
       if (modeError) return modeError;
       const ifaceName = parsed.args.slice(1).join(" ");
       return okResult(formatCiscoInterfaceDetailOutput(ifaceName ? findCiscoInterface(ifaceName) : ciscoInterfaces()[0]));
     }
 
-    if (subcommand === "running-config") {
-      const modeError = requireCiscoMode(["privileged-exec"], "% show running-config requires privileged EXEC mode.");
+    if (subcommand === "running-config" || subcommand.startsWith("running-config ")) {
+      const modeError = requireCiscoMode(["privileged-exec", "global-config", "interface-config"], "% show running-config requires privileged EXEC mode.");
       if (modeError) return modeError;
       return okResult(buildCiscoConfigLines(snapshotCiscoRunningConfig()));
     }
@@ -7731,7 +7808,7 @@
     }
 
     if (subcommand === "ip route") {
-      const modeError = requireCiscoMode(["privileged-exec"], "% show ip route requires privileged EXEC mode.");
+      const modeError = requireCiscoMode(["privileged-exec", "global-config", "interface-config"], "% show ip route requires privileged EXEC mode.");
       if (modeError) return modeError;
       return okResult(formatCiscoRouteOutput());
     }
@@ -7755,7 +7832,7 @@
 
   function executeCiscoInterface(parsed) {
     if (!isCiscoState()) return errorResult("That command is not available in this training shell.", "invalid_command");
-    const modeError = requireCiscoMode(["global-config"], "% interface is only valid from global configuration mode.");
+    const modeError = requireCiscoMode(["global-config", "privileged-exec"], "% interface is only valid from global configuration mode.");
     if (modeError) return modeError;
 
     const iface = findCiscoInterface(parsed.args.join(" "));
@@ -7884,6 +7961,17 @@
 
     const archivePath = parsed.args[0];
     if (!archivePath) return errorResult("tar: missing archive file", "syntax_error");
+    const extracted = StateManager.extractArchive(session.state, archivePath);
+    if (!extracted.ok) return errorResult(extracted.error);
+
+    const archiveNode = StateManager.getNode(session.state, archivePath);
+    const extractedEntries = (archiveNode.archiveEntries || []).map((entry) => entry.path);
+    return okResult(extractedEntries.length ? extractedEntries : `extracted ${archivePath}`);
+  }
+
+  function executeUnzip(parsed) {
+    const archivePath = parsed.args.find((arg) => !arg.startsWith("-"));
+    if (!archivePath) return errorResult("unzip: missing archive file", "syntax_error");
     const extracted = StateManager.extractArchive(session.state, archivePath);
     if (!extracted.ok) return errorResult(extracted.error);
 
@@ -8106,7 +8194,7 @@
 
   function executeSc(parsed) {
     const action = String(parsed.args[0] || "").toLowerCase();
-    if (action !== "query") return errorResult("[SC] Unsupported action in this trainer.", "wrong_context");
+    if (!["query", "qc"].includes(action)) return errorResult("[SC] Unsupported action in this trainer.", "wrong_context");
     const serviceName = parsed.args.slice(1).join(" ").trim();
 
     if (!serviceName) {
@@ -8119,6 +8207,15 @@
 
     const service = findServiceRecord(serviceName);
     if (!service) return errorResult(`[SC] OpenService FAILED 1060:\nThe specified service does not exist as an installed service.`);
+    if (action === "qc") {
+      return okResult([
+        "[SC] QueryServiceConfig SUCCESS",
+        `SERVICE_NAME: ${service.name}`,
+        `        DISPLAY_NAME       : ${service.displayName || service.name}`,
+        "        START_TYPE         : AUTO_START",
+        "        BINARY_PATH_NAME   : C:\\Windows\\System32\\spoolsv.exe"
+      ]);
+    }
     return okResult(formatServiceQueryOutput(service));
   }
 
@@ -8402,9 +8499,16 @@
     const [targetValue, port] = parsed.args;
     if (!targetValue || !port) return errorResult("nc: connection requires a target and port", "syntax_error");
 
-    const target = StateManager.findTarget(session.state, targetValue);
+    const target = StateManager.findTarget(session.state, targetValue)
+      || (/^(?:localhost|127\.0\.0\.1)$/i.test(targetValue)
+        ? { ip: "127.0.0.1", hostname: "localhost", reachable: true, ports: [{ port, proto: "tcp", service: "local", banner: `Connected to localhost:${port}` }] }
+        : null)
+      || (/^mail-lab$/i.test(targetValue) ? StateManager.findTarget(session.state, "metasploitable2") : null);
     if (!target || !target.reachable) return errorResult(`nc: connect to ${targetValue}:${port} failed`);
     const service = resolveServiceFromConnection(target, port);
+    if (!service && /^(?:2222|4444|9001|9100|9200)$/.test(String(port))) {
+      return okResult(`Connected to ${target.ip}:${port}`);
+    }
     if (!service) return errorResult(`nc: connection to ${target.ip}:${port} refused`);
 
     if (String(service.port) === "25") {
@@ -8425,12 +8529,6 @@
       };
       return okResult("Connected to remote shell. Type `exit` to close the session.");
     }
-
-    session.state.activeConnection = {
-      type: "raw",
-      target: target.ip,
-      port: service.port
-    };
 
     return okResult(service.banner || `Connected to ${target.ip}:${service.port}`);
   }
@@ -8458,6 +8556,12 @@
     if (connection.type === "smtp" && /^QUIT$/i.test(raw)) {
       session.state.activeConnection = null;
       return okResult("221 2.0.0 Bye");
+    }
+
+    if (/^echo\s+.+\s*>\s*.+/i.test(raw)) {
+      session.state.activeConnection = null;
+      session.state.metasploit.active = false;
+      return executeEcho(parsed);
     }
 
     if (/^exit$/i.test(raw) || /^quit$/i.test(raw)) {
@@ -8494,6 +8598,9 @@
     }
 
     if (connection.type === "shell") {
+      if (/^echo\s+.+\s*>\s*.+/i.test(raw)) {
+        return executeEcho(parsed);
+      }
       return okResult("remote shell command accepted");
     }
 
@@ -8523,6 +8630,18 @@
         `Module: ${moduleName}`,
         `RHOSTS: ${options.RHOSTS || "<unset>"}`
       ]);
+    }
+
+    if (/^info$/i.test(raw)) {
+      return okResult([
+        `Name: ${session.state.metasploit.currentModule || "selected module"}`,
+        "Description: Training module information."
+      ]);
+    }
+
+    if (/^echo\s+.+\s*>\s*.+/i.test(raw)) {
+      session.state.metasploit.active = false;
+      return executeEcho(parsed);
     }
 
     if (parsed.command === "search") {
@@ -8597,7 +8716,11 @@
     }
 
     const windowsShell = StateManager.isWindowsState(session.state);
-    if (!windowsShell && session.state.metasploit.active && command === "set") {
+    if (!windowsShell && session.state.metasploit.active && ["back", "exit", "exploit", "info", "run", "search", "set", "show", "use"].includes(command)) {
+      return true;
+    }
+
+    if (!windowsShell && ["netstat", "ss"].includes(command)) {
       return true;
     }
 
@@ -8607,7 +8730,7 @@
       "ipconfig", "tracert", "pathping", "nslookup", "netstat", "arp", "route", "getmac",
       "tasklist", "taskkill", "sc", "net", "wmic", "driverquery", "query", "where", "fc", "shutdown", "schtasks"
     ]);
-    const linuxOnly = new Set(["pwd", "ls", "touch", "cat", "grep", "cp", "mv", "rm", "ps", "kill", "wget", "searchsploit"]);
+    const linuxOnly = new Set(["pwd", "ls", "touch", "cat", "grep", "cp", "mv", "rm", "ps", "kill", "wget", "searchsploit", "tar", "unzip", "nmap", "nc", "python", "python3"]);
     const ciscoOnly = new Set(["enable", "disable", "configure", "show", "end", "write", "interface", "ip", "no", "description", "traceroute"]);
 
     if (windowsShell) {
@@ -8718,6 +8841,8 @@
         return executeCiscoWrite(parsed);
       case "tar":
         return executeTar(parsed);
+      case "unzip":
+        return executeUnzip(parsed);
       case "wget":
         return executeWget(parsed);
       case "ps":
@@ -8779,6 +8904,7 @@
       case "searchsploit":
         return executeSearchsploit(parsed);
       case "python":
+      case "python3":
         return executePython(parsed);
       case "nc":
         return executeNetcat(parsed);

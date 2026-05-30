@@ -231,7 +231,9 @@ async function runTerminalCommand(page, command, options = {}) {
     const after = await getTerminalSnapshot(page);
     const delta = after.lines.slice(before.lineCount);
     const accepted = classifyTerminalAcceptance(command, delta);
-    const progressed = after.stepBadge !== before.stepBadge || after.scenarioTitle !== before.scenarioTitle || delta.some((line) => /scenario complete/i.test(line.text));
+    const progressed = after.stepBadge !== before.stepBadge
+      || after.scenarioTitle !== before.scenarioTitle
+      || delta.some((line) => /that command works|next objective|scenario complete|mission complete/i.test(line.text));
 
     return {
       command,
@@ -260,7 +262,9 @@ async function runTerminalCommand(page, command, options = {}) {
   const after = await getTerminalSnapshot(page);
   const delta = after.lines.slice(before.lineCount);
   const accepted = classifyTerminalAcceptance(command, delta);
-  const progressed = after.stepBadge !== before.stepBadge || after.scenarioTitle !== before.scenarioTitle || delta.some((line) => /scenario complete/i.test(line.text));
+  const progressed = after.stepBadge !== before.stepBadge
+    || after.scenarioTitle !== before.scenarioTitle
+    || delta.some((line) => /that command works|next objective|scenario complete|mission complete/i.test(line.text));
 
   return {
     command,

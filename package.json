@@ -5,10 +5,19 @@
     "test:smoke": "playwright test --config=playwright.config.js",
     "test:functional": "playwright test --config=playwright.config.js",
     "test:functional:headed": "playwright test --config=playwright.config.js --headed",
+    "test:website-qa": "playwright test tests/functional/website-quality.spec.js --config=playwright.config.js",
+    "test:website-qa:headed": "playwright test tests/functional/website-quality.spec.js --config=playwright.config.js --headed",
+    "test:a11y": "playwright test tests/functional/website-quality.spec.js --config=playwright.config.js --grep \"Accessibility\"",
+    "test:responsive": "playwright test tests/functional/website-quality.spec.js --config=playwright.config.js --grep \"Responsive\"",
+    "test:terminal-completion": "playwright test tests/functional/terminal-completion.spec.js --config=playwright.config.js",
+    "test:command-usability": "playwright test tests/functional/command-usability.spec.js --config=playwright.config.js",
+    "test:lab-health": "playwright test tests/functional/lab-health-audit.spec.js --config=playwright.config.js",
+    "test:terminal-qa": "playwright test tests/functional/lab-health-audit.spec.js tests/functional/terminal-completion.spec.js tests/functional/command-usability.spec.js --config=playwright.config.js",
     "test:terminal-journey": "playwright test tests/functional/terminal-journey-comprehensive.spec.js --config=playwright.config.js",
     "test:terminal-journey:full": "node tests/functional/run-terminal-journey-full.js"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.54.0"
   }
 }

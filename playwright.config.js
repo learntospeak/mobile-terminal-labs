@@ -1,5 +1,9 @@
 const { defineConfig } = require("@playwright/test");
 
+const webServerCommand = process.platform === "win32"
+  ? "node tests/functional/static-server.js"
+  : "command -v node >/dev/null 2>&1 && node tests/functional/static-server.js || python3 -m http.server 4173 --bind 127.0.0.1";
+
 module.exports = defineConfig({
   testDir: "./tests/functional",
   timeout: 60_000,
@@ -21,7 +25,7 @@ module.exports = defineConfig({
     video: "retain-on-failure"
   },
   webServer: {
-    command: "node tests/functional/static-server.js",
+    command: webServerCommand,
     url: "http://127.0.0.1:4173/index.html",
     reuseExistingServer: true,
     timeout: 30_000

@@ -404,7 +404,16 @@
     if (!archive) return { ok: false, error: "Archive not found" };
     if (archive.type !== "file") return { ok: false, error: "Path is not a file" };
     if (!archive.archiveEntries || !archive.archiveEntries.length) {
-      return { ok: false, error: "Archive has no extractable entries" };
+      const archiveName = getNameFromPath(archive.path)
+        .replace(/\.tar\.gz$/i, "")
+        .replace(/\.tgz$/i, "")
+        .replace(/\.zip$/i, "");
+      archive.archiveEntries = [
+        { path: archiveName, type: "dir" },
+        { path: `${archiveName}/README.txt`, content: `Extracted contents for ${archiveName}.\n` },
+        { path: `${archiveName}/manifest.txt`, content: `${archiveName} manifest\n` },
+        { path: `${archiveName}/app.conf`, content: "mode=lab\n" }
+      ];
     }
 
     const parent = archive.path.slice(0, archive.path.lastIndexOf("/")) || getRootPath(state);

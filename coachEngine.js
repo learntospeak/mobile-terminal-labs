@@ -74,7 +74,12 @@
 
     if (rule.raw && rule.raw instanceof RegExp && !rule.raw.test(raw)) return false;
     if (rule.rawEquals && raw !== rule.rawEquals) return false;
-    if (rule.command && parsed.command !== rule.command) return false;
+    if (rule.command) {
+      const expectedCommand = String(rule.command).toLowerCase();
+      const actualCommand = String(parsed.command || "").toLowerCase();
+      const pipelineCommands = (execution.pipelineCommands || []).map((command) => String(command || "").toLowerCase());
+      if (actualCommand !== expectedCommand && !pipelineCommands.includes(expectedCommand)) return false;
+    }
     if (rule.mode && execution.mode !== rule.mode) return false;
     if (rule.flagsAll && !includesAll(parsed.flagsExpanded || [], rule.flagsAll)) return false;
     if (rule.flagsAny && !includesAny(parsed.flagsExpanded || [], rule.flagsAny)) return false;
@@ -99,6 +104,40 @@
     if (execution.status === "syntax_error") return "wrong_syntax";
     if (execution.status === "runtime_error") return "wrong_context";
     return "wrong_context";
+  }
+
+  function inferNaturalVerificationSuccess(step, execution) {
+    const objective = String(step?.objective || "");
+    const verifyMatch = objective.match(/^Verify\s+(?:(\S+)|.+?)\s+opens(?:\s+from\s+([A-Za-z0-9_-]+))?/i);
+    const parsed = execution.primary || execution.command || {};
+    const command = String(parsed.command || "").toLowerCase();
+    const raw = normalizeRaw(execution.raw).replace(/\\/g, "/").toLowerCase();
+
+    if (!verifyMatch || !["cat", "type"].includes(command) || execution.status !== "ok") {
+      return null;
+    }
+
+    const explicitFileName = verifyMatch[1] && /\.[a-z0-9]+$/i.test(verifyMatch[1]) ? verifyMatch[1] : "";
+    const commandFileName = String((parsed.args || [])[0] || "").split(/[\\/]/).pop();
+    const fileName = String(explicitFileName || commandFileName || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").toLowerCase();
+    const folderName = String(verifyMatch[2] || "").toLowerCase();
+    const mentionsFile = new RegExp(`(?:^|[\\s/])${fileName}$`).test(raw);
+    const mentionsFolder = !folderName || raw.includes(`/${folderName}/${fileName}`) || !raw.includes("/");
+
+    if (!mentionsFile || !mentionsFolder) {
+      return null;
+    }
+
+    return {
+      success: true,
+      source: "success",
+      classification: "success",
+      feedback: step.successFeedback || "That verification command opens the expected file.",
+      coach: step.explanation || "Relative file names are valid when your prompt is already in the right folder.",
+      hint: null,
+      countsAsAttempt: false,
+      advanceBy: 1
+    };
   }
 
   function getHintTierFromAttempts(attempts) {
@@ -216,6 +255,11 @@
         countsAsAttempt: false,
         advanceBy: matchedSuccess.advanceBy || 1
       };
+    }
+
+    const naturalVerification = inferNaturalVerificationSuccess(step, execution);
+    if (naturalVerification) {
+      return naturalVerification;
     }
 
     const matchedExploration = exploration.find((entry) => matchRule(entry.match, execution, state));
