@@ -12,6 +12,15 @@ test.use({
   trace: "retain-on-failure"
 });
 
+async function loadMobileNotesMission(page) {
+  await gotoAndStabilize(page, "/terminal-coach.html?track=windows&mode=beginner&skipIntro=1");
+  await page.evaluate(() => localStorage.setItem("networkingGame.explainerSeen.ping", "1")).catch(() => {});
+  await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("win-cd-notes-folder"));
+  await page.waitForTimeout(200);
+  await dismissTicketBriefingIfPresent(page);
+  await dismissCommandExplainerIfPresent(page);
+}
+
 async function clickMobileCommand(page, command) {
   const clicked = await page.evaluate((target) => {
     const normalizedTarget = target.trim().toLowerCase();
@@ -25,12 +34,7 @@ async function clickMobileCommand(page, command) {
 }
 
 async function completeNotesMission(page) {
-  await gotoAndStabilize(page, "/terminal-coach.html?track=windows&mode=beginner&skipIntro=1");
-  await page.evaluate(() => localStorage.setItem("networkingGame.explainerSeen.ping", "1")).catch(() => {});
-  await page.evaluate(() => window.TerminalEngine?.loadScenarioById?.("win-cd-notes-folder"));
-  await page.waitForTimeout(200);
-  await dismissTicketBriefingIfPresent(page);
-  await dismissCommandExplainerIfPresent(page);
+  await loadMobileNotesMission(page);
 
   for (const command of [
     "dir",
@@ -48,6 +52,30 @@ async function completeNotesMission(page) {
     }, null, { timeout: 8_000 }).catch(() => {});
   }
 }
+
+test("mobile mission review stays hidden before mission completion", async ({ page }) => {
+  await loadMobileNotesMission(page);
+  await expect(page.locator("#missionReviewCard")).toBeHidden();
+  await expect(page.locator("[data-mobile-command-choice]").first()).toBeVisible();
+
+  const hiddenState = await page.evaluate(() => {
+    const card = document.querySelector("#missionReviewCard");
+    const rect = card?.getBoundingClientRect();
+    return {
+      hiddenAttr: card?.hasAttribute("hidden") || false,
+      display: card ? getComputedStyle(card).display : "",
+      bodyLocked: document.body.classList.contains("terminal-review-open"),
+      width: rect?.width || 0,
+      height: rect?.height || 0
+    };
+  });
+
+  expect(hiddenState.hiddenAttr).toBe(true);
+  expect(hiddenState.display).toBe("none");
+  expect(hiddenState.bodyLocked).toBe(false);
+  expect(hiddenState.width).toBe(0);
+  expect(hiddenState.height).toBe(0);
+});
 
 test("mobile mission review opens as a contained readable modal", async ({ page }) => {
   await completeNotesMission(page);
@@ -103,4 +131,9 @@ test("mobile mission review opens as a contained readable modal", async ({ page 
   expect(layout.closeLeft).toBeGreaterThan(layout.card.left + layout.card.width * 0.55);
   expect(layout.gridTop).toBeGreaterThan(layout.headBottom - 1);
   expect(layout.gridColumns).toBe(1);
+
+  await page.locator("#missionReviewCard .mission-review-close").click();
+  await expect(review).toBeHidden();
+  await expect(page.locator("[data-mobile-command-choice]").first()).toBeVisible();
+  await expect(page.locator("body")).not.toHaveClass(/terminal-review-open/);
 });
