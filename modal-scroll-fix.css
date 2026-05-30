@@ -69,12 +69,39 @@
     border-radius: 18px !important;
   }
 
-  .terminal-page #missionReviewCard > h3,
-  .terminal-page .mission-review-card > h3,
-  .terminal-page .mission-review-page > h3 {
-    font-size: clamp(24px, 8vw, 34px) !important;
+  body.terminal-review-open::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(2, 6, 12, 0.78);
+    backdrop-filter: blur(6px);
+  }
+
+  .terminal-page #missionReviewCard .mission-review-head,
+  .terminal-page .mission-review-card .mission-review-head,
+  .terminal-page .mission-review-page .mission-review-head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: start !important;
+    gap: 8px 12px !important;
+  }
+
+  .terminal-page #missionReviewCard .mission-review-head > :not(.mission-review-close),
+  .terminal-page .mission-review-card .mission-review-head > :not(.mission-review-close),
+  .terminal-page .mission-review-page .mission-review-head > :not(.mission-review-close) {
+    grid-column: 1 !important;
+  }
+
+  .terminal-page #missionReviewCard .mission-review-head h2,
+  .terminal-page #missionReviewCard .mission-review-head h3,
+  .terminal-page .mission-review-card .mission-review-head h2,
+  .terminal-page .mission-review-card .mission-review-head h3,
+  .terminal-page .mission-review-page .mission-review-head h2,
+  .terminal-page .mission-review-page .mission-review-head h3 {
+    font-size: clamp(22px, 7vw, 28px) !important;
     line-height: 1.1 !important;
-    margin-right: 0 !important;
+    margin: 0 !important;
     padding-right: 0 !important;
   }
 
@@ -94,16 +121,20 @@
   .terminal-page #missionReviewCard [aria-label*="Close"],
   .terminal-page .mission-review-card [aria-label*="Close"],
   .terminal-page .mission-review-page [aria-label*="Close"] {
-    position: sticky !important;
-    top: 0 !important;
+    grid-column: 2 !important;
+    grid-row: 1 / span 3 !important;
+    align-self: start !important;
+    position: static !important;
     z-index: 2 !important;
-    display: block !important;
-    width: 100% !important;
-    margin: 0 0 14px 0 !important;
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 68px !important;
+    margin: 0 !important;
   }
 
   .terminal-page #missionReviewCategories,
-  .terminal-page .mission-review-grid {
+  .terminal-page .mission-review-grid,
+  .terminal-page .mission-review-body {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 12px !important;

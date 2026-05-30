@@ -4943,9 +4943,12 @@
     const conceptPracticed = conciseReviewConcept(scenario);
     const reviewTakeaway = conciseReviewTakeaway(scenario, verificationScore);
 
-    els.missionReviewCard.hidden = !session.scenarioCompleted || session.missionReviewDismissed;
-    els.missionReviewCard.setAttribute("aria-hidden", els.missionReviewCard.hidden ? "true" : "false");
-    if (!session.scenarioCompleted || session.missionReviewDismissed) {
+    const reviewHidden = !session.scenarioCompleted || session.missionReviewDismissed;
+    els.missionReviewCard.hidden = reviewHidden;
+    els.missionReviewCard.setAttribute("aria-hidden", reviewHidden ? "true" : "false");
+    document.documentElement.classList.toggle("terminal-review-open", !reviewHidden);
+    document.body.classList.toggle("terminal-review-open", !reviewHidden);
+    if (reviewHidden) {
       return;
     }
 
@@ -4990,15 +4993,22 @@
     closeBtn.setAttribute("aria-label", "Close mission review");
     closeBtn.addEventListener("click", () => closeMissionReview());
 
-    const heading = els.missionReviewCard.querySelector("h3");
-    if (heading) {
-      const header = document.createElement("div");
-      header.className = "mission-review-head";
-      heading.parentNode.insertBefore(header, heading);
-      header.append(heading, closeBtn);
-    } else {
-      els.missionReviewCard.prepend(closeBtn);
+    const header = els.missionReviewCard.querySelector(".mission-review-head");
+    if (header) {
+      header.append(closeBtn);
+      return;
     }
+
+    const heading = els.missionReviewCard.querySelector("h2, h3");
+    if (heading) {
+      const generatedHeader = document.createElement("div");
+      generatedHeader.className = "mission-review-head";
+      heading.parentNode.insertBefore(generatedHeader, heading);
+      generatedHeader.append(heading, closeBtn);
+      return;
+    }
+
+    els.missionReviewCard.prepend(closeBtn);
   }
 
   function closeMissionReview() {
@@ -5007,6 +5017,8 @@
       els.missionReviewCard.hidden = true;
       els.missionReviewCard.setAttribute("aria-hidden", "true");
     }
+    document.documentElement.classList.remove("terminal-review-open");
+    document.body.classList.remove("terminal-review-open");
     focusTerminalInputAtEnd();
   }
 

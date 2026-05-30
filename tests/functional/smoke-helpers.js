@@ -451,6 +451,7 @@ module.exports = {
   classifyTerminalAcceptance,
   computeSubnetAnswer,
   createSmokeReport,
+  dismissCommandExplainerIfPresent,
   dismissTaskCompleteIfPresent,
   dismissTicketBriefingIfPresent,
   gotoAndStabilize,
